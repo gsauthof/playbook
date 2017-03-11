@@ -1,0 +1,23 @@
+---
+# preferable use some stable name, e.g.:
+# sda: /dev/disk/by-id/ata-SAMSUNG-usw
+sda: sda
+sdb: sdb
+tz: Europe/Berlin
+ntphost: de.pool.ntp.org
+eth0: enp0s8
+eths:
+  - eth1: enp0s9
+hostname: localhost.localdomain
+# generate crypted password inside e.g. a python shell:
+# python3
+# import crypt
+# crypt.crypt('geheim')
+rootpw: $6$etc
+users:
+  - name: juser
+    pw: $6$usw
+# optionally encrypt / and /home
+#luks_pw: geheim
+ssh_pubkey: "ssh-ed25519 CA01FE juser@example.org"
+---

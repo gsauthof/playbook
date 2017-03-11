@@ -1,0 +1,179 @@
+{{! kickstart template file, generate the real config with e.g.
+
+    $ mustache config.yaml ks.cfg.mustache > ks.cfg
+}}
+
+# use most textual installer
+# just omitting graphical yields some curses frontend that
+# hides information
+text
+
+# extra safety-net
+ignoredisk --only-use={{sda}},{{sdb}}
+
+keyboard --vckeymap=us --xlayouts='us'
+lang en_US.UTF-8
+timezone {{tz}} --isUtc --ntpservers={{ntphost}}
+
+network  --bootproto=dhcp --device={{eth0}} --ipv6=auto --activate
+{{#eths}}
+network  --bootproto=dhcp --device={{eth1}} --onboot=off --ipv6=auto
+{{/eths}}
+network  --hostname={{hostname}}
+
+auth --enableshadow --passalgo=sha512
+rootpw --iscrypted {{rootpw}}
+{{#users}}
+user --groups=wheel --name={{name}} --password={{pw}} --iscrypted --shell=/usr/bin/zsh
+{{/users}}
+
+bootloader --location=mbr --boot-drive={{sda}}
+
+clearpart --all --initlabel --drives={{sda}},{{sdb}}
+
+part raid.1 --fstype="mdmember" --ondisk={{sda}} --size=2048
+part raid.2 --fstype="mdmember" --ondisk={{sdb}} --size=2048
+part btrfs.1 --fstype="btrfs" --ondisk={{sda}} --size=5000 --grow {{#luks_pw}}--encrypted --passphrase {{luks_pw}}{{/luks_pw}}
+part btrfs.2 --fstype="btrfs" --ondisk={{sdb}} --size=5000 --grow {{#luks_pw}}--encrypted --passphrase {{luks_pw}}{{/luks_pw}}
+raid /boot --device=boot --fstype="ext4" --level=RAID1 raid.1 raid.2
+btrfs none --label=fedora --data=raid1 btrfs.1 btrfs.2
+btrfs / --subvol --name=root LABEL=fedora
+btrfs /home --subvol --name=home LABEL=fedora
+
+# Don't run the setup agent
+firstboot --disable
+
+#reboot
+# doesn't work with F25, cf.
+# https://bugzilla.redhat.com/show_bug.cgi?id=1424730
+#reboot --kexec
+#
+halt
+
+
+
+# install the other packages after the first update
+# with enabled network repository - in the %post section
+%packages
+vim-enhanced
+# not part of the server DVD
+#zsh
+%end
+
+
+
+%post --log=/root/ks-post.log
+
+set -x
+
+dnf -y update
+
+dnf -y install ddrescue dstat git hdparm htop iotop iperf iperf3 kexec-tools lshw lsof ltrace memtester mosh ncdu nbd nmap ntpdate patch pciutils python3-tracer screen socat strace tcpdump xfsprogs zsh
+
+function add_ssh_key
+{
+  cd "$1"
+  mkdir -p .ssh
+  chmod 700 .ssh
+  echo '{{ssh_pubkey}}' > .ssh/authorized_keys
+  chmod 600 .ssh/authorized_keys
+}
+
+function setup_root
+{
+  usermod -s /usr/bin/zsh root
+  add_ssh_key /root
+  cd /root
+  [ -d config ] || \
+    git clone https://github.com/gsauthof/user-config.git config
+  cd config
+  git pull
+  git submodule update --init
+  ./install.sh
+  cd /root
+}
+
+function setup_user
+{
+  add_ssh_key "/home/$1"
+  cd "/home/$1"
+  for filename in first-boot-user.sh ; do
+    cat <<EOF > "$filename"
+set -eux
+
+cd /home/"$1"
+[ -d config ] || \
+  git clone https://github.com/gsauthof/user-config.git config
+cd config
+git pull
+git submodule update --init
+./install.sh
+cd /home/"$1"
+mkdir -p project
+cd project
+[ -d utility ] || \
+  git clone https://github.com/gsauthof/utility.git
+cd utility
+git pull
+EOF
+  done
+  chown "$1":"$1" "$filename"
+  su - "$1" "$filename"
+}
+
+function track_etc
+{
+  cd /root
+  git config --global user.email "root@example.com"
+  git config --global user.name "Root User"
+  git --work-tree=/etc --git-dir=etc.git init
+}
+
+function disable_disk_bufferbloat
+{
+  cd /root/etc.git
+  cat <<EOF > /etc/sysctl.d/01-disk-bufferbloat.conf
+vm.dirty_background_bytes=107374182
+vm.dirty_bytes=214748364
+EOF
+
+  git add sysctl.d/01-disk-bufferbloat.conf
+  git commit -m 'add anti-bufferbloat sysctl config' || true
+}
+
+function set_noatime_mount
+{
+  cd /root/etc.git
+  git add fstab
+  git commit -m 'add fstab' || true
+
+  sed -i 's/^\(UUID=.\+\/.\+defaults\>\)/\1,noatime/' /etc/fstab
+  git add fstab
+  git commit -m 'disable atime writing' || true
+}
+
+function disable_pw_auth
+{
+  cd /root/etc.git
+  git add -- ssh/sshd_config
+  git commit -m 'add ssh/sshd_config' || true
+
+  sed -i 's/^\(PasswordAuthentication\) yes/\1 no/' /etc/ssh/sshd_config
+  git add -- ssh/sshd_config
+  git commit -m 'disable ssh password authentication' || true
+}
+
+
+setup_root
+{{#users}}
+setup_user {{name}}
+{{/users}}
+track_etc
+disable_disk_bufferbloat
+set_noatime_mount
+disable_pw_auth
+
+%end
+
+
+
