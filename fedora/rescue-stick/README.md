@@ -93,6 +93,21 @@ USB mass storage device (i.e. as if it were a harddisk).
 Basically every BIOS shipped after 2002 or so should be
 sufficient.
 
+Of course, how to exactly instruct the BIOS to boot from the USB
+stick varies much between different vendors and versions. Some
+provide an extra boot menu that can be entered via pressing ESC,
+F12, F7 or something like that. With others the only way to boot
+from a USB mass storage device is to enter the real BIOS setup
+(e.g. via DEL or ESC), entering the boot order menu and selecting
+the USB stick there. Some BIOS also hide the USB stick under the
+category 'harddisks'. For certain use cases it would be optimal
+to be able to configure the BIOS boot order such that - if a USB
+stick is present - the BIOS should first try to boot from it
+before trying other devices. Unfortunately, while many BIOS
+support this for flopyy, cdrom, USB-floppy, USB-cdrom and similar
+legacy devices they don't support it for USB mass storage devices
+(i.e. USB sticks).
+
 ## Outlook
 
 Currently, the build script uses the Fedora base image that is
