@@ -55,6 +55,9 @@ halt
 # install the other packages after the first update
 # with enabled network repository - in the %post section
 %packages
+# the core group is selected by default
+# the kernel-modules package is not part of the core group!
+kernel-modules
 vim-enhanced
 # not part of the server DVD
 #zsh
@@ -68,7 +71,7 @@ set -x
 
 dnf -y update
 
-dnf -y install ddrescue dstat git hdparm htop iotop iperf iperf3 kexec-tools lshw lsof ltrace memtester mosh ncdu nbd nmap ntpdate patch pciutils python3-tracer screen socat strace tcpdump xfsprogs zsh
+dnf -y install ddrescue dstat git hdparm htop iotop iperf iperf3 kexec-tools lshw lsof ltrace memtester mosh ncdu nbd nmap ntpdate patch pciutils psmisc python3-tracer screen socat strace tcpdump xfsprogs zsh
 
 function add_ssh_key
 {
