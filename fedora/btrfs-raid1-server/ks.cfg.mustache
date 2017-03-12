@@ -167,6 +167,24 @@ function disable_pw_auth
   git commit -m 'disable ssh password authentication' || true
 }
 
+function add_kernel_params
+{
+  git add default/grub
+  git commit -m 'add default/grub' || true
+
+  for p in quiet 'console=tty0' ; do
+    if grep "GRUB_CMDLINE_LINUX=.\+$p" /etc/default/grub > /dev/null 2>&1 ; then
+      continue
+    fi
+
+    sed -i 's/^\(GRUB_CMDLINE_LINUX=.\+\)"$/\1 '"$p"'"/' /etc/default/grub
+  done
+  git add default/grub
+  git commit -m "add console kernel parameters" || true
+
+  find /boot -name grub.cfg -exec grub2-mkconfig -o  '{}' ';'
+}
+
 
 setup_root
 {{#users}}
@@ -176,6 +194,7 @@ track_etc
 disable_disk_bufferbloat
 set_noatime_mount
 disable_pw_auth
+add_kernel_params
 
 %end
 
