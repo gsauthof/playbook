@@ -92,7 +92,8 @@ function setup_root
   cd config
   git pull
   git submodule update --init
-  ./install.sh
+  # a kickstart %post chroot doesn't set HOME to /root ...
+  HOME=/root ./install.sh
   cd /root
 }
 
