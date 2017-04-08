@@ -103,6 +103,7 @@ function setup_user
 {
   add_ssh_key "/home/$1"
   cd "/home/$1"
+  chown -R "$1:$1" .ssh
   for filename in first-boot-user.sh ; do
     cat <<EOF > "$filename"
 set -eux
