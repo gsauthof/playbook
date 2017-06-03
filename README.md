@@ -17,6 +17,11 @@ automating system installations.
   contains a non-trivial post-section for applying some
   useful defaults.
 
+- `android` - snippets and Android app id lists for getting
+  started with a fresh Android device. That means for
+  semi-automatically installing a bunch of apps from the
+  google and/or the f-droid store.
+
 See also the README.md files in the subdirectories.
 
 [f]: https://en.wikipedia.org/wiki/Fedora_(operating_system)
