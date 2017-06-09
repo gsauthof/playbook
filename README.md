@@ -17,6 +17,10 @@ automating system installations.
   contains a non-trivial post-section for applying some
   useful defaults.
 
+- `fedora/workstation` - a good default package selection
+  for a development workstation (~500 packages).
+  (TODO: add some setup and configuration files)
+
 - `android` - snippets and Android app id lists for getting
   started with a fresh Android device. That means for
   semi-automatically installing a bunch of apps from the
