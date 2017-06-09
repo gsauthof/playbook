@@ -45,4 +45,31 @@ Explicitly specify the F-Droid store app:
     $ function fdinstall { adb shell am start -a android.intent.action.VIEW -d 'market://details?id='"$1" org.fdroid.fdroid }
     $ adinstall com.termux
 
+## Termux
+
+After the [Termux app][termux] is running and the [`openssh` package][ssh] is
+installed, installing the default package list is basically just
+a matter of setting up ssh. For example:
+
+Inside termux:
+
+    $ mkdir .ssh
+    $ cat > .ssh/authorized_keys # copy and paste a pub key
+    $ sshd                       # listens on 8022, any username goes
+
+On a workstation:
+
+    $ < termux-package.list ssh android.example.org xargs apt install
+
+Some initial setup (inside termux):
+
+    git clone https://github.com/gsauthof/utility.git
+    git clone https://github.com/gsauthof/user-config.git config
+    cd config/
+    bash install.sh
+    cd ..
+    pip install ipython
+
+[termux]: https://github.com/termux
+[ssh]: https://termux.com/ssh.html
 
