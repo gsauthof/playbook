@@ -8,17 +8,25 @@ ch.sbb.mobile.android.b2c
 com.casticalabs.forecastie
 com.csipsimple
 com.csipsimple.plugins.codecs.pack1
+com.fjsoft.mylocalaccount
 com.floern.xkcd
+com.keuwl.functiongenerator
 com.simplemobiletools.gallery
 com.xabber.android
 de.azapps.mirakelandroid
 de.dwd.ku1fg.pollen
 de.myhermes.app
+de.uni_potsdam.hpi.openmensa
 kvj.taskw
 me.guillaumin.android.osmtracker
 mnc.android.zvvticket
 net.openvpn.openvpn
 net.xelnaga.exchanger
+org.intoorbit.spectrum
+org.fedorahosted.freeotp
 org.openintents.notepad
 org.openintents.shopping
 org.secuso.privacyfriendlyweather
+org.sufficientlysecure.localcalendar
+se.anyro.nfc_reader,NFC reader,true,true,https://github.com/nadam/nfc-reader,
+uk.co.nickfines.RealCalc

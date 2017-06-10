@@ -1,24 +1,31 @@
 id,name,playstore,fdroid,source,url
 at.mroland.android.apps.nfctaginfo,NFC TagInfo,true,false,
+com.abcdjdj.rootverifier,Checks if device is rooted,false,true,https://github.com/abcdjdj/RootVerifier-APP,
 com.android.gpstest,GPSTest,true,false,https://github.com/barbeau/gpstest,
 com.android.keepass,KeePassDroid,true,true,https://github.com/bpellin/keepassdroid,
 com.artifex.mupdfdemo,MuPDF Reader,true,false,http://git.ghostscript.com/?p=mupdf.git;a=summary,https://www.mupdf.com/
 com.alphablind.nabu,NABU Vogelführer,true,false,
 com.bosch.glm100C,Bosch Measurements,true,false,
 com.cubic.cumo.android.rmv,RMV Fahrplanauskunft/Tickets,true,false,
+com.farproc.barometer,Baromter,true,false
 com.fsck.k9,K9-Mail,true,true,https://github.com/k9mail/k-9
 com.google.android.apps.authenticator2,Google Authenticator 2-factor,true,false,
+com.google.android.apps.genie.geniewidget,Google News,true,false,
 com.google.android.apps.maps,Google Maps,true,false,
 com.google.android.youtube,Youtube,true,false,
 com.google.zxing.client.android,Barcode Scanner,true,true,https://github.com/zxing/zxing,
 com.ilit.wikipaintings,Wikipaintings,true,false,
+com.keuwl.spiritlevel,Bubble Level ad-free,true,false,
+com.mendhak.gpslogger,GPS logger,true,true,https://github.com/mendhak/gpslogger/,
 com.mdv.VRRCompanion,VRR Fahrplanauskunft/Tickets,true,false,
+com.mubi,Arthouse netflix - 1 movie for each day,true,false,
 com.netflix.mediaclient,Netflix,true,false,
 com.ptvag.android.adacgasprices,ADAC Spritpreise,true,false,
 com.termux,Termux,true,true,https://github.com/termux,https://termux.com/
 com.teslacoilsw.launcher,Nova Launcher,true,false,,http://novalauncher.com/
-com.tughi.aggregator,Aggregator Feed Reader,true,false,https://github.com/tughi/aggregator-android/,
+com.tughi.aggregator,Aggregator Feed Reader,true,false,,
 com.twitter.android,Official Twitter app (supports alerts),true,false,
+com.uberspot.a2048,2048 the game,true,true,https://github.com/uberspot/2048-android
 de.byte_fm.app,Byte FM,true,false,
 de.danoeh.antennapod,Antennapod,true,true,https://github.com/AntennaPod/AntennaPod,
 de.deutschebahn.bahnhoflive,DB Bahnhöfe,true,false,
@@ -32,12 +39,19 @@ de.vrsinfo,VRS Fahrplanauskunft/Tickets,true,false,
 net.he.networktools,HE.net Networktools,true,false,
 net.osmand,OSMand,true,false,https://github.com/osmandapp/Osmand/,
 net.sourceforge.servestream,Servestream,true,true,https://sourceforge.net/projects/servestream/,
+org.efalk.rpncalc,RPN calculator,true,false,
+org.fdroid.fdroid,The F-Droid open source app store,false,true
+org.geometerplus.zlibrary.ui.android,FBreader epub reader,true,false,https://github.com/geometer/FBReaderJ,
 org.mariotaku.twidere,Twidere Twitter Client,true,true,https://github.com/TwidereProject/Twidere-Android,
 org.mozilla.firefox,Firefox,true,false,https://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/Build_Instructions/Simple_Firefox_for_Android_build#Getting_the_source.,https://www.mozilla.org/firefox/android/
 org.navitproject.navit,Navit OSM navigation,true,true,http://wiki.navit-project.org/index.php/Main_Page,
+org.ntpsync,NTP client,true,true,https://github.com/Free-Software-for-Android/NTPSync,
 org.quantumbadger.redreader,Redreader Reddit browser,true,true,https://github.com/QuantumBadger/RedReader,
+org.secuso.privacyfriendlynotes,Notes,true,true,https://github.com/SecUSo/privacy-friendly-notes/,https://www.secuso.informatik.tu-darmstadt.de/en/secuso/research/results/privacy-friendly-apps/notes/
+org.secuso.privacyfriendlysudoku,Sudoko game without ads,true,true,https://www.secuso.informatik.tu-darmstadt.de/en/secuso/research/results/privacy-friendly-apps/notes/,
 org.thoughtcrime.securesms,Signal,true,false,https://github.com/WhisperSystems/Signal-Android,https://whispersystems.org/
 org.videolan.vlc,VLC Mediaplayer,true,false,https://wiki.videolan.org/GetTheSource/,http://www.videolan.org/
 org.wikipedia,Wikipedia,true,true,https://www.mediawiki.org/wiki/Wikimedia_Apps/Team/Android/App_hacking,
 org.zephyrsoft.trackworktime,Track Work Time,true,true,https://github.com/mathisdt/trackworktime,https://zephyrsoft.org/trackworktime
+streetwalrus.usbmountr,Create USB mass storage devices,false,true,https://github.com/Streetwalrus/android_usb_msd,
 taxi.android.client,MyTaxi,true,false,

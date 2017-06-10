@@ -1,5 +1,35 @@
 
+## Content
+
+- app.csv - selection of good Android apps
+- special.csv - special purpose Android apps that don't make
+  sense for everybody
+- archive.csv - Android apps that I used at some point but
+  currently don't because there are abandoned, outdated, there
+  are better alternatives, the author turned the app into
+  nag-ware, the author turned the app into ad-ware and/or
+  I currently have no need for it
+- func.sh - shell functions for interacting with the device
+- termux-package.list - good default package selection for Termux
+
+
+## Preliminaries
+
+Some of the below commands use the `adb` command (the Android
+Debug Bridge), which is e.g. part of the `android-tools` Fedora
+package. For it to work one has to enable the Developer options
+on the android device (cheat code: tap several times on the
+build-number in the about-phone settings). The developer options
+contain a 'Android Debugging' switch that has to be enabled. ADB
+works over a standard USB cable and is cryptographically secured
+(the device has to learn the host's fingerprint and thus displays
+a confirmation dialog).
+
 ## Commands
+
+Pretty print a CSV file:
+
+    $ column -s, -t app.csv
 
 Extract a list of app ids from your 'my apps' page from your
 Google Play account (cf. https://play.google.com/apps):
@@ -10,8 +40,9 @@ Google Play account (cf. https://play.google.com/apps):
 
 Get a list of app ids that are installed on a phone:
 
-    $ adb shell 'pm list packages -f' \
-       | awk -F '[:=]' '$2 !~ /\/system\// {print $3}' | sort > nexus.ids
+    $ function adids { adb shell 'pm list packages -f' \
+       | awk -F '[:=]' '$2 !~ /\/system\// {print $3}' | sort }
+    $ adids > nexus.ids
 
 Display the app ids that are not part of the Google Play account:
 
