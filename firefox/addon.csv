@@ -1,0 +1,14 @@
+mozilla_url,slug,guid,name,compatible_android,compatible_57,url
+https://addons.mozilla.org/en-US/firefox/addon/google-search-link-fix/,google-search-link-fix,jid0-XWJxt5VvCXkKzQK99PhZqAn7Xbg@jetpack,Google search link fix,true,true,https://github.com/palant/searchlinkfix
+https://addons.mozilla.org/en-US/firefox/addon/german-dictionary/,german-dictionary,de-DE@dictionaries.addons.mozilla.org,German Dictionary,true,false,https://addons.mozilla.org/en-US/firefox/addon/german-dictionary/
+https://addons.mozilla.org/en-US/firefox/addon/url-relay/,url-relay,urlrelay@osa-p.net,URL Relay,false,false,http://www.osa-p.net/
+https://addons.mozilla.org/en-US/firefox/addon/refcontrol/,refcontrol,{455D905A-D37C-4643-A9E2-F6FEFAA0424A},RefControl,false,false,http://www.stardrifter.org/refcontrol/
+https://addons.mozilla.org/en-US/firefox/addon/vimperator/,vimperator,vimperator@mozdev.org,Vimperator,false,false,http://www.vimperator.org/
+https://addons.mozilla.org/en-US/thunderbird/addon/united-states-english-spellche/,united-states-english-spellche,en-US@dictionaries.addons.mozilla.org,United States English Spellchecker,false,false,https://addons.mozilla.org/it/firefox/addon/3497
+https://addons.mozilla.org/en-US/firefox/addon/tree-style-tab/,tree-style-tab,treestyletab@piro.sakura.ne.jp,Tree Style Tab,false,false,http://piro.sakura.ne.jp/xul/_treestyletab.html.en
+https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/,ublock-origin,uBlock0@raymondhill.net,uBlock Origin,true,false,https://github.com/gorhill/uBlock#ublock-origin
+https://addons.mozilla.org/en-US/firefox/addon/resurrect-pages/,resurrect-pages,{0c8fbd76-bdeb-4c52-9b24-d587ce7b9dc3},Resurrect Pages,false,false,https://github.com/arantius/resurrect-pages
+https://addons.mozilla.org/en-US/firefox/addon/self-destructing-cookies/,self-destructing-cookies,jid0-9XfBwUWnvPx4wWsfBWMCm4Jj69E@jetpack,Self-Destructing Cookies,true,false,https://addons.mozilla.org/en-US/firefox/addon/self-destructing-cookies/
+https://addons.mozilla.org/en-US/firefox/addon/user-agent-overrider/,user-agent-overrider,useragentoverrider@qixinglu.com,User Agent Overrider,false,false,https://github.com/muzuiget/user_agent_overrider
+https://addons.mozilla.org/en-US/firefox/addon/tamper-data/,tamper-data,{9c51bd27-6ed8-4000-a2bf-36cb95c0c947},Tamper Data,false,false,http://tamperdata.mozdev.org
+https://addons.mozilla.org/en-US/firefox/addon/tab-groups-panorama/,tab-groups-panorama,tabgroups@quicksaver,Tab Groups,false,false,http://fasezero.com/
