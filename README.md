@@ -10,6 +10,8 @@ automating system installations.
   semi-automatically installing a bunch of apps from the
   google and/or the f-droid store.
 
+- `chromium` - a selection of essential Chrome extensions
+
 - `fedora/rescue-stick` - scripts that install [Fedora][f] on a raw
   disk, e.g. on a USB mass storage device, with a configuration
   suitable for system administration tasks (think: repairing a
