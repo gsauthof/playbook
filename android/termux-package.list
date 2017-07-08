@@ -24,6 +24,7 @@ openssh
 patch
 procps
 python
+rsync
 screen
 socat
 strace

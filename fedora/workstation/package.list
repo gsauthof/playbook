@@ -24,6 +24,7 @@ aspell-en
 autoconf213
 autossh
 batik-css
+binwalk
 bison
 bison-devel
 bonnie++
@@ -31,6 +32,7 @@ boost-devel
 boost-doc
 boost-examples
 botan-devel
+bsdiff
 cabal-install
 cabextract
 capnproto
@@ -155,6 +157,7 @@ iperf
 iperf3
 ipv6calc
 isomaster
+ispc
 iwyu
 java-1.8.0-openjdk
 jpilot
@@ -247,6 +250,7 @@ mingw64-gcc-c++
 mingw64-libxml2
 mingw64-qt5-qtbase-devel
 minicom
+mkosi
 mmv
 monit
 moreutils
@@ -296,6 +300,7 @@ pavucontrol
 pax
 pcsc-tools
 perf
+pgpdump
 picocom
 pilot-link
 pingus
@@ -325,6 +330,7 @@ python3-devel
 python3-dns
 python3-flask
 python3-ipython
+python3-lockfile
 python3-nltk
 python3-pelican
 python3-plumbum
@@ -455,6 +461,8 @@ transmission-qt
 transmission-remote-gtk
 tsocks
 tweak
+u2f-host
+u2f-server
 udftools
 umbrello
 unar
