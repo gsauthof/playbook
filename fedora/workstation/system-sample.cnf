@@ -1,0 +1,31 @@
+[self]
+download-dir = .
+old-etc = /mnt/old-root/etc
+
+[init]
+device=/dev/vdb
+#mirror=/dev/vdc
+password-file=pw
+release=26
+authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
+
+[target]
+git-name = Joe User
+git-mail = juser@example.org
+hostname = hostb.example.org
+user = juser
+restore-postfix = true
+custom-etc-files = NetworkManager/conf.d/00-unmanaged
+    cups/ppd/FS-C5100DN.ppd
+    cups/printers.conf
+    firewalld/services/murmur.xml
+    murmur/murmur.ini
+    ssh/ssh_host_ecdsa_key
+    ssh/ssh_host_ecdsa_key.pub
+    ssh/ssh_host_ed25519_key
+    ssh/ssh_host_ed25519_key.pub
+    ssh/ssh_host_rsa_key
+    ssh/ssh_host_rsa_key.pub
+    sysconfig/network-scripts/ifcfg-Auto_somewlan
+    sysconfig/network-scripts/keys-Auto_somewlan
+    trafficserver/records.config

@@ -31,7 +31,6 @@ bonnie++
 boost-devel
 boost-doc
 boost-examples
-botan-devel
 bsdiff
 cabal-install
 cabextract
@@ -236,7 +235,6 @@ mingw32-libpng-static
 mingw32-libxml2
 mingw32-nsis
 mingw32-nsiswrapper
-mingw32-openjpeg-static
 mingw32-pcre-static
 mingw32-qt5-qtbase-devel
 mingw32-qt5-qtbase-static
