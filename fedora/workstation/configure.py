@@ -531,11 +531,15 @@ def has_partitions(dev):
       return True
   return False
 
-@execute_once
-def create_partitions():
+def get_devices():
   devs = [ cnf['init']['device'] ]
   if 'mirror' in cnf['init']:
     devs.append(cnf['init']['mirror'])
+  return devs
+
+@execute_once
+def create_partitions():
+  devs = get_devices()
   for dev in devs:
     if has_partitions(dev):
       check_output(['sfdisk', '--delete', dev])
@@ -550,37 +554,58 @@ def get_password():
 @execute_once
 def mk_fs():
   global state
-  dev = cnf['init']['device']
+  devs = get_devices()
+  if devs.__len__() == 1:
+    boot_dev = devs[0] +'1'
+  else:
+    boot_dev = '/dev/md/new-boot'
+    u = str(uuid.uuid4())
+    check_output(['mdadm', '--create', boot_dev, '--run', '--level=1',
+        '--uuid', u,
+        '--raid-devices=2' ] + [ x+'1' for x in devs ] )
+    state['stage0']['boot-raid1-uuid'] = u
   u = str(uuid.uuid4())
-  check_output(['mkfs.ext4', '-U', u, dev + '1' ])
+  check_output(['mkfs.ext4', '-U', u, boot_dev ])
   state['stage0']['fs-uuid'] = { 'boot' : u }
+  root_dev = []
   if cnf['init']['cryptsetup'] == 'true':
     pw = get_password()
-    u = str(uuid.uuid4())
-    check_output(['cryptsetup', 'luksFormat', dev + '2',
-      '--key-file', '-', '--uuid', u], input=pw, redact_input=True)
-    state['stage0']['luks-uuid'] = u
-    check_output(['cryptsetup', 'luksOpen', dev + '2', 'new-root',
-      '--key-file', '-'], input=pw, redact_input=True)
-    root_dev = '/dev/mapper/new-root'
+    state['stage0']['luks-uuid'] = []
+    for i, dev in enumerate(devs):
+      u = str(uuid.uuid4())
+      check_output(['cryptsetup', 'luksFormat', dev + '2',
+        '--key-file', '-', '--uuid', u], input=pw, redact_input=True)
+      state['stage0']['luks-uuid'].append(u)
+      d = 'new-root-{}'.format(i)
+      check_output(['cryptsetup', 'luksOpen', dev + '2', d,
+        '--key-file', '-'], input=pw, redact_input=True)
+      root_dev.append('/dev/mapper/'+d)
   else:
-    root_dev = dev + '2'
+    root_dev = [ dev + '2' for dev in devs ]
   u = str(uuid.uuid4())
-  check_output(['mkfs.btrfs', '--uuid', u, root_dev])
+  flags = [ '--data', 'raid1' ] if 'mirror' in cnf['init'] else []
+  check_output(['mkfs.btrfs', '--uuid', u ] + flags + root_dev)
   state['stage0']['fs-uuid']['root'] = u
   os.makedirs('/mnt/new-root', exist_ok=True)
-  check_output(['mount', '-o', 'noatime', root_dev, '/mnt/new-root'])
+  check_output(['mount', '-o', 'noatime', root_dev[0], '/mnt/new-root'])
   for sub_vol in [ 'root', 'home' ]:
-    check_output(['btrfs', 'subvolume', 'create', '/mnt/new-root/' + sub_vol ])
+    check_output(['btrfs', 'subvolume', 'create',
+      '/mnt/new-root/' + sub_vol ])
   check_output(['umount', '/mnt/new-root'])
-  check_output(['cryptsetup', 'luksClose', 'new-root'])
+  if cnf['init']['cryptsetup'] == 'true':
+    for i, dev in enumerate(devs):
+      check_output(['cryptsetup', 'luksClose', 'new-root-{}'.format(i)])
 
 def mount_fs():
+  if 'mirror' in cnf['init']:
+    run_output(['mdadm', '--assemble', '--scan'])
   if cnf['init']['cryptsetup'] == 'true':
     pw = get_password()
-    check_output(['cryptsetup', 'luksOpen',
-      '/dev/disk/by-uuid/'+state['stage0']['luks-uuid'],
-      'new-root', '--key-file', '-'], input=pw, redact_input=True)
+    for i, uuid in enumerate(state['stage0']['luks-uuid']):
+      check_output(['cryptsetup', 'luksOpen',
+        '/dev/disk/by-uuid/'+uuid, 'new-root-{}'.format(i),
+        '--key-file', '-'], input=pw, redact_input=True)
+  os.makedirs('/mnt/new-root', exist_ok=True)
   check_output(['mount', '-o', 'noatime,subvol=root',
     'UUID='+state['stage0']['fs-uuid']['root'], '/mnt/new-root'])
   os.makedirs('/mnt/new-root/home', exist_ok=True)
@@ -594,7 +619,8 @@ def umount_fs():
   for point in [ 'new-root/boot', 'new-root/home', 'new-root' ]:
     check_output(['umount', '/mnt/' + point ])
   if cnf['init']['cryptsetup'] == 'true':
-    check_output(['cryptsetup', 'luksClose', 'new-root'])
+    for i, uuid in enumerate(state['stage0']['luks-uuid']):
+      check_output(['cryptsetup', 'luksClose', 'new-root-{}'.format(i)])
 
 def bind_mount():
   for point in [ 'dev', 'proc', 'sys' ]:
@@ -619,14 +645,18 @@ def install_base():
   dnf_installroot('system-release')
   # the custom-environment and minimal-environment groups seem to be identical
   dnf_installroot('custom-environment', group=True)
-  dnf_installroot(['grub2', 'cryptsetup', 'btrfs-progs', 'git', 'zsh'])
+  dnf_installroot(['grub2', 'cryptsetup', 'btrfs-progs', 'mdadm',
+      'git', 'zsh'])
 
 @execute_once
 def mk_crypttab():
+  if cnf['init']['cryptsetup'] != 'true':
+    raise SkipThis()
   luks_conf = 'luks-{0} UUID={0} none'
   crypttab = '/mnt/new-root/etc/crypttab'
   with open(crypttab, 'w') as f:
-    print(luks_conf.format(state['stage0']['luks-uuid']), file=f)
+    for uuid in state['stage0']['luks-uuid']:
+      print(luks_conf.format(uuid), file=f)
 
 @execute_once
 def mk_fstab():
@@ -649,11 +679,15 @@ GRUB_DISTRIBUTOR=Fedora
 GRUB_DEFAULT=saved
 GRUB_DISABLE_SUBMENU=true
 GRUB_TERMINAL_OUTPUT=console
-GRUB_CMDLINE_LINUX="rd.luks.uuid={} quiet console=tty0 console=ttyS0,115200 bochs_drm.fbdev=off"
+GRUB_CMDLINE_LINUX="{}quiet console=tty0 console=ttyS0,115200 bochs_drm.fbdev=off"
 GRUB_DISABLE_RECOVERY=true'''
   grub_default = '/mnt/new-root/etc/default/grub'
   with open(grub_default, 'w') as f:
-    print(grub_conf.format(state['stage0']['luks-uuid']), file=f)
+    luks = ''
+    if cnf['init']['cryptsetup'] == 'true':
+      luks = ''.join('rd.luks.uuid={} '.format(x)
+                     for x in state['stage0']['luks-uuid'])
+    print(grub_conf.format(luks), file=f)
 
 def refresh_chroot():
   shutil.copy('/etc/resolv.conf', '/mnt/new-root/etc/')
@@ -667,9 +701,7 @@ def install_grub():
   # with efi-boot, it is another location ...
   check_output(['grub2-mkconfig', '-o', '/boot/grub2/grub.cfg'], chroot=True)
 
-  devs = [ cnf['init']['device'] ]
-  if 'mirror' in cnf['init']:
-    devs.append(cnf['init']['mirror'])
+  devs = get_devices()
   for dev in devs:
     check_output(['grub2-install', dev], chroot=True)
 
