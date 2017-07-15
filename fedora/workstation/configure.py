@@ -420,6 +420,7 @@ def set_ssh():
   # sshd is installed/enabled by default - just to be sure ...
   check_output(['systemctl', 'start', 'sshd.service'])
   check_output(['systemctl', 'enable', 'sshd.service'])
+  check_output(['systemctl', 'reload', 'sshd.service'])
 
 # https://lwn.net/Articles/682582/
 # https://lwn.net/Articles/708476/
