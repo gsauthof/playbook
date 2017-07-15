@@ -62,6 +62,10 @@ def mk_arg_parser():
   p.add_argument('--stage', required=True, type=int, help='Configuration stage - stage 0 creates the base system from scratch, stage 1 assumes to run in the target system')
   p.add_argument('--log', nargs='?', const='config.log', metavar='FILENAME',
       help='capture log message to file (default: config.log)')
+  p.add_argument('--mount', action='store_true',
+      help='just mount everything')
+  p.add_argument('--umount', action='store_true',
+      help='just umount everything')
   return p
 
 def parse_args(*a):
@@ -755,9 +759,17 @@ def run(args):
   if args.stage == 1:
     stage1()
   elif args.stage == 0:
-    stage0()
+    if args.mount:
+      mount_fs()
+      bind_mount()
+    elif args.umount:
+      bind_umount()
+      umount_fs()
+    else:
+      stage0()
   else:
     raise RuntimeError('Unknown stage: {}'.format(args.stage))
+  return 0
 
 def imain(*a):
   global args
