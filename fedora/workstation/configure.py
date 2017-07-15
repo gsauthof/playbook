@@ -150,12 +150,31 @@ def execute_once(fn):
         return
   return guard
 
+def quote_arg(x):
+  def need_quotes(x):
+    meta_char = [ '|', '&', ';', '(', ')', '<', '>', ' ', '\t' ]
+    other = [ "'", '"', '`', '$' ]
+    for c in meta_char + other:
+      if c in x:
+        return True
+    return False
+  if need_quotes(x):
+    r = x.replace("'", """'"'"'""")
+    return "'" + r + "'"
+  return x
+
+def test_quote_arg():
+  assert quote_arg('mdadm') == 'mdadm'
+  assert quote_arg('foo bar') == "'foo bar'"
+  assert quote_arg('<foo>') == "'<foo>'"
+  assert quote_arg("'foo'bar") == """''"'"'foo'"'"'bar'"""
+
 def run_output(cmd2, redact_input=False, chroot=False, *xs, **ys):
   prefix = []
   if chroot:
     prefix = [ 'chroot', '/mnt/new-root' ]
   cmd = prefix + cmd2
-  call = ' '.join("'{}'".format(x) for x in cmd)
+  call = ' '.join(quote_arg(x) for x in cmd)
   if 'input' in ys:
     if redact_input:
       i = '<secret>'
