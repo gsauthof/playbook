@@ -733,6 +733,11 @@ def set_authorized_keys():
     print(cnf['init']['authorized-keys'], file=f)
   os.chmod(ak, 0o600)
 
+@execute_once
+def mk_host_keys():
+  check_output(['ssh-keygen', '-A'], chroot=True)
+
+
 def stage0():
   run_output(['setenforce', '0'])
   create_partitions()
@@ -749,6 +754,7 @@ def stage0():
   create_user()
   set_authorized_keys()
   set_user_password()
+  mk_host_keys()
   print_sshd_fingerprints()
   fix_selinux_context()
   bind_umount()
