@@ -75,9 +75,16 @@ def parse_args(*a):
 
 def read_config(filename):
   c = configparser.ConfigParser()
-  c.read_dict({'target': { 'etc-mirror': '/root/etc-mirror' },
-    'init': { 'cryptsetup': 'true' }
-    })
+  c.read_dict({
+        'target': {
+          'etc-mirror': '/root/etc-mirror',
+          'init-user': 'false',
+          'restore-postfix': 'false'
+        },
+        'init': {
+          'cryptsetup': 'true'
+        }
+      })
   c.read(filename)
   if 'release' not in c['target']:
     c['target']['release'] = check_output(['rpm', '-E' '%fedora'])\
@@ -169,10 +176,12 @@ def test_quote_arg():
   assert quote_arg('<foo>') == "'<foo>'"
   assert quote_arg("'foo'bar") == """''"'"'foo'"'"'bar'"""
 
-def run_output(cmd2, redact_input=False, chroot=False, *xs, **ys):
+def run_output(cmd2, redact_input=False, chroot=False, sudo=None, *xs, **ys):
   prefix = []
   if chroot:
     prefix = [ 'chroot', '/mnt/new-root' ]
+  if sudo:
+    prefix += [ 'sudo', '-u', sudo, '--set-home' ]
   cmd = prefix + cmd2
   call = ' '.join(quote_arg(x) for x in cmd)
   if 'input' in ys:
@@ -438,27 +447,35 @@ def set_shell():
 
 @execute_once
 def set_dotfiles():
-  # other user homes are just restored from backup
-  homes = [ '/root' ]
-  for home in homes:
+  # other user homes are just restored from backup, by default
+  homes = [ ('/root', 'root' ) ]
+  if cnf['target']['init-user'] == 'true':
+    homes.append( ('/home/'+cnf['target']['user'], cnf['target']['user']) )
+  for home, user in homes:
+    sudo = user if user != 'root' else None
     work_dir = home + '/config'
     if os.path.exists(work_dir):
-      check_output(['git', 'pull'], cwd=work_dir)
+      check_output(['git', 'pull'], cwd=work_dir, sudo=sudo)
     else:
       check_output(['git', 'clone',
-          'https://github.com/gsauthof/user-config.git', work_dir ])
+          'https://github.com/gsauthof/user-config.git', work_dir ],
+          sudo=sudo)
       check_output(['git', 'submodule', 'update', '--init' ], cwd=work_dir)
-    check_output(['./install.sh'], cwd=work_dir)
+    check_output(['./install.sh'], cwd=work_dir, sudo=sudo)
 
 @execute_once
 def clone_utility():
-  work_dir = '/root/utility/'
-  if os.path.exists(work_dir):
+  homes = [ ('/root', 'root' ) ]
+  if cnf['target']['init-user'] == 'true':
+    homes.append( ('/home/'+cnf['target']['user'], cnf['target']['user']) )
+  for home, user in homes:
+    sudo = user if user != 'root' else None
+    work_dir = home + '/utility/'
     if os.path.exists(work_dir):
-      check_output(['git', 'pull'], cwd=work_dir)
+      check_output(['git', 'pull'], cwd=work_dir, sudo=sudo)
     else:
       check_output(['git', 'clone',
-          'https://github.com/gsauthof/utility.git', work_dir ])
+          'https://github.com/gsauthof/utility.git', work_dir], sudo=sudo)
 
 @execute_once
 def install_packages():
