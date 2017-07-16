@@ -1,5 +1,4 @@
-3proxy
-ImageMagick-devel
+@workstation-product-environment
 R
 RBTools
 Thunar
@@ -32,6 +31,7 @@ boost-devel
 boost-doc
 boost-examples
 bsdiff
+btrfs-progs
 cabal-install
 cabextract
 capnproto
@@ -40,7 +40,6 @@ catch-devel
 cflow
 cgdb
 check-devel
-choqok
 chromium
 chrpath
 clang
@@ -57,6 +56,7 @@ conakry-fonts
 corebird
 cppcheck
 cryptopp-devel
+cryptsetup
 cscope
 csv
 cuneiform
@@ -85,6 +85,7 @@ efibootmgr
 elinks
 enscript
 ettercap
+evince
 exif
 fbreader
 fbreader-qt
@@ -116,6 +117,7 @@ ghc-language-c-devel
 ghc-regex-posix-devel
 gimagereader-gtk
 gimp
+git
 git-cvs
 gitk
 gnome-tweak-tool
@@ -220,6 +222,7 @@ man2html
 maven
 mbrowse
 mcabber
+mdadm
 meld
 memtester
 mencoder
