@@ -14,6 +14,8 @@ git-name = Joe User
 git-mail = juser@example.org
 hostname = hostb.example.org
 user = juser
+init-user = true
+enable-services = gdm.service
 restore-postfix = true
 custom-etc-files = NetworkManager/conf.d/00-unmanaged
     cups/ppd/FS-C5100DN.ppd

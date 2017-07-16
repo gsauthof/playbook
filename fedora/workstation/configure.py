@@ -559,6 +559,15 @@ def restore_etc():
       + [ '{}/./{}'.format(old_etc, x) for x in files ] + [ '/etc' ])
   commit_etc(files, 'restore misc etc files')
 
+@execute_once
+def enable_services():
+  if 'enable-services' not in cnf['target']:
+    raise SkipThis()
+  services = cnf['target']['enable-services'].split()
+  for service in services:
+    check_output(['systemctl', 'enable', service])
+
+
 def stage1():
   mk_etc_mirror()
   commit_core_files()
@@ -576,6 +585,7 @@ def stage1():
   disable_avahi()
   restore_postfix()
   restore_etc()
+  enable_services()
   return 0
 
 def has_partitions(dev):
