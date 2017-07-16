@@ -487,6 +487,22 @@ def install_packages():
   commit_etc(['passwd', 'shadow', 'group', 'gshadow' ],
       'record users/groups created by newly installed packages')
 
+# unwanted packages that are part of an installed package group
+# Example: the harmful 'tracker' package, which is included in
+# the @workstation-product-environment
+# cf. https://bugzilla.redhat.com/show_bug.cgi?id=747689
+#     https://bugzilla.redhat.com/show_bug.cgi?id=1271872
+@execute_once
+def remove_packages():
+  filename = 'unpackage.list'
+  if not os.path.exists(filename):
+    raise SkipThis()
+  with open(filename) as f:
+    pkgs = f.read().splitlines()
+    log.info('Installing {} packages ...'.format(pkgs.__len__()))
+    run_output(['dnf', '-y', 'remove'] + pkgs)
+
+
 @execute_once
 def disable_avahi():
   check_output(['systemctl', 'disable',
@@ -556,6 +572,7 @@ def stage1():
   set_dotfiles()
   clone_utility()
   install_packages()
+  remove_packages()
   disable_avahi()
   restore_postfix()
   restore_etc()
