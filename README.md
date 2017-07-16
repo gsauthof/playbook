@@ -40,6 +40,8 @@ root setup.
   development tasks, some increase the convenience of daily
   browsing and the remaining ones are just indispensable.
 
+- `gnome-shell` - a selection of useful [GNOME Shell][gs] extensions
+
 See also the README.md files in the subdirectories.
 
 [f]: https://en.wikipedia.org/wiki/Fedora_(operating_system)
@@ -51,3 +53,4 @@ See also the README.md files in the subdirectories.
 [c]: https://en.wikipedia.org/wiki/Chromium_(web_browser)
 [a]: https://en.wikipedia.org/wiki/Android_(operating_system)
 [fdroid]: https://en.wikipedia.org/wiki/F-Droid
+[gs]: https://en.wikipedia.org/wiki/GNOME_Shell

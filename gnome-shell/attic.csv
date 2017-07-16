@@ -1,0 +1,7 @@
+uuid,name,url,system
+ShellTile@emasab.it,ShellTile,https://bitbucket.org/emasab/shelltile,false
+alternate-tab@gnome-shell-extensions.gcampax.github.com,AlternateTab,http://git.gnome.org/gnome-shell-extensions,false
+drop-down-terminal@gs-extensions.zzrough.org,Drop Down Terminal,https://github.com/zzrough/gs-extensions-drop-down-terminal,false
+refresh-wifi@kgshank.net,Refresh Wifi Connections,https://github.com/kgshank/gse-refresh-wifi,false
+background-logo@fedorahosted.org,Background Logo,https://git.fedorahosted.org/git/background-logo-extension.git,true
+user-theme@gnome-shell-extensions.gcampax.github.com,User Themes,http://git.gnome.org/gnome-shell-extensions,true

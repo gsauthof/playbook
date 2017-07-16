@@ -1,0 +1,9 @@
+uuid,name,url,system
+caffeine@patapon.info,Caffeine,https://github.com/eonpatapon/gnome-shell-extension-caffeine,false
+drive-menu@gnome-shell-extensions.gcampax.github.com,Removable Drive Menu,http://git.gnome.org/gnome-shell-extensions,false
+radio@hslbck.gmail.com,Internet Radio,https://github.com/hslbck/gnome-shell-extension-radio,false
+shell-volume-mixer@derhofbauer.at,Volume Mixer,https://github.com/aleho/gnome-shell-volume-mixer,false
+sound-output-device-chooser@kgshank.net,Sound Input & Output Device Chooser,https://github.com/kgshank/gse-sound-output-device-chooser,false
+suspend-button@laserb,Suspend Button,https://github.com/laserb/gnome-shell-extension-suspend-button,false
+topIcons@adel.gadllah@gmail.com,TopIcons,http://94.247.144.115/repo/topicons/,false
+world_clock_lite@ailin.nemui,Panel World Clock (Lite),,false
