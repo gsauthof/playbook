@@ -79,6 +79,7 @@ def read_config(filename):
         'target': {
           'etc-mirror': '/root/etc-mirror',
           'init-user': 'false',
+          'locale': 'LANG=en_US.UTF-8',
           'restore-postfix': 'false'
         },
         'init': {
@@ -567,6 +568,16 @@ def enable_services():
   for service in services:
     check_output(['systemctl', 'enable', service])
 
+@execute_once
+def set_locale():
+  locale = cnf['target']['locale']
+  def f():
+    names = [ 'locale.conf', 'vconsole.conf']
+    return [ i for i in names if os.path.exists('/etc/'+i) ] 
+  commit_etc(f(), 'add locale conf')
+  check_output(['localectl', 'set-locale', locale])
+  commit_etc(f(), 'update locale')
+
 
 def stage1():
   mk_etc_mirror()
@@ -576,6 +587,7 @@ def stage1():
   set_host()
   set_ipv6()
   set_ssh()
+  set_locale()
   disable_bufferbloat()
   set_shell()
   set_dotfiles()
