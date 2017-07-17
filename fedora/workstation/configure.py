@@ -80,7 +80,8 @@ def read_config(filename):
           'etc-mirror': '/root/etc-mirror',
           'init-user': 'false',
           'locale': 'LANG=en_US.UTF-8',
-          'restore-postfix': 'false'
+          'restore-postfix': 'false',
+          'timezone': 'Europe/Berlin'
         },
         'init': {
           'cryptsetup': 'true'
@@ -578,6 +579,10 @@ def set_locale():
   check_output(['localectl', 'set-locale', locale])
   commit_etc(f(), 'update locale')
 
+@execute_once
+def set_timezone():
+  tz = cnf['target']['timezone']
+  check_output(['ln', '-sf', '../usr/share/zoneinfo/Europe/Berlin', '/etc/localtime'])
 
 def stage1():
   mk_etc_mirror()
@@ -586,8 +591,9 @@ def stage1():
   add_livna()
   set_host()
   set_ipv6()
-  set_ssh()
   set_locale()
+  set_timezone()
+  set_ssh()
   disable_bufferbloat()
   set_shell()
   set_dotfiles()
