@@ -64,6 +64,14 @@ Better [selection behavior in the terminal][3]:
     pid=$(dconf read /org/gnome/terminal/legacy/profiles:/default | tr -d "'")
     dconf write /org/gnome/terminal/legacy/profiles:/:$pid/word-char-exceptions '@ms "-=&#:/.?@+~_%;"'
 
+Disable blinking cursor:
+
+    gsettings set org.gnome.desktop.interface cursor-blink false
+
+Disable logout confirmation dialog:
+
+    gsettings set org.gnome.SessionManager logout-prompt false
+
 Add logout button (only works on older GNOME Shell versions):
 
     gsettings set org.gnome.shell always-show-log-out true
