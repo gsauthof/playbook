@@ -81,6 +81,7 @@ def read_config(filename):
           'init-user': 'false',
           'locale': 'LANG=en_US.UTF-8',
           'restore-postfix': 'false',
+          'setup-pamu2f': 'false',
           'timezone': 'Europe/Berlin'
         },
         'init': {
@@ -599,6 +600,39 @@ def set_timezone():
   tz = cnf['target']['timezone']
   check_output(['ln', '-sf', '../usr/share/zoneinfo/Europe/Berlin', '/etc/localtime'])
 
+@execute_once
+def set_pam_u2f():
+  if cnf['target']['setup-pamu2f'] != 'true':
+    raise SkipThis()
+  old_etc = cnf['self']['old-etc']
+  u2f_map = [ i for i in [ 'u2f_map', 'u2f_mappings' ]
+      if os.path.exists(old_etc + '/' + i) ][0]
+  shutil.copy(old_etc + '/' + u2f_map, '/etc/u2f_map')
+  snippet = '''
+# assuming pamu2fcfg defaults,
+# equivalent to adding: origin=pam://$hostname appid=pam://$hostname
+# add `debug` option for verbose troubleshooting
+auth requisite pam_u2f.so authfile=/etc/u2f_map interactive
+'''
+  filenames = ['pam.d/login', 'pam.d/gdm-password']
+  commit_etc(filenames + ['u2f_map'], 'add pam files')
+  def f(state, line):
+    if state[0]:
+      return line
+    if 'pam_u2f.so' in line:
+      state[0] = True
+    if line.startswith('auth') and 'substack' in line \
+        and ('system-auth' in line or 'password-auth' in line ):
+      return line + '\n' + snippet
+    else:
+      return line
+  for filename in filenames:
+    line_edit('/etc/' + filename, functools.partial(f, [False]))
+  commit_etc(filenames, 'enable u2f auth')
+  # work around SELinux policy bug, cf.
+  # https://bugzilla.redhat.com/show_bug.cgi?id=1377451
+  check_output(['semanage', 'permissive', '-a', 'local_login_t'])
+
 def stage1():
   mk_etc_mirror()
   commit_core_files()
@@ -619,6 +653,7 @@ def stage1():
   restore_postfix()
   restore_etc()
   enable_services()
+  set_pam_u2f()
   return 0
 
 def has_partitions(dev):
