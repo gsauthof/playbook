@@ -1,6 +1,7 @@
 [self]
 download-dir = .
 old-etc = /mnt/old-root/etc
+old-var = /mnt/old-root/var
 
 [init]
 device=/dev/vdb
@@ -19,6 +20,7 @@ locale = LANG=en_US.UTF-8
 timezone = Europe/Berlin
 enable-services = gdm.service
 restore-postfix = true
+restore-postgres = true
 setup-pamu2f = true
 custom-etc-files = NetworkManager/conf.d/00-unmanaged
     cups/ppd/FS-C5100DN.ppd

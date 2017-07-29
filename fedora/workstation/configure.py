@@ -81,6 +81,7 @@ def read_config(filename):
           'init-user': 'false',
           'locale': 'LANG=en_US.UTF-8',
           'restore-postfix': 'false',
+          'restore-postgres': 'false',
           'setup-pamu2f': 'false',
           'timezone': 'Europe/Berlin'
         },
@@ -566,6 +567,14 @@ def restore_postfix():
   check_output(['systemctl', 'enable', 'postfix.service'])
 
 @execute_once
+def restore_postgres():
+  if cnf['target']['restore-postgres'] != 'true':
+    raise SkipThis()
+  old_var = cnf['self']['old-var']
+  check_output(['rsync', '-a', old_var + '/lib/pgsql/data', '/var/lib/pgsql'])
+  check_output(['postgresql-setup', '--upgrade'])
+
+@execute_once
 def restore_etc():
   if 'custom-etc-files' not in cnf['target']:
     raise SkipThis()
@@ -651,6 +660,7 @@ def stage1():
   remove_packages()
   disable_avahi()
   restore_postfix()
+  restore_postgres()
   restore_etc()
   enable_services()
   set_pam_u2f()
