@@ -269,12 +269,14 @@ def commit_etc(filenames, msg):
   run_output(['git', git_dir, 'commit', '-m', msg])
 
 def line_edit(filename, fn):
-  with tempfile.NamedTemporaryFile(mode='w', delete=False, dir=os.path.dirname(filename)) as tmp, open(filename) as f:
+  with tempfile.NamedTemporaryFile(mode='w', delete=False,
+      dir=os.path.dirname(filename)) as tmp, open(filename) as f:
     for line in f:
       if line.endswith('\n'):
         line = line[:-1]
       x = fn(line)
       print(x, file=tmp)
+  os.chmod(tmp.name, os.stat(filename).st_mode & 0o7777)
   os.rename(tmp.name, filename)
 
 def test_line_edit():
@@ -290,6 +292,18 @@ def test_line_edit():
     assert g.read() == '''hello world
 23
 '''
+  os.unlink(f.name)
+
+def test_line_edit_perm():
+  with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+    print('hello', file=f)
+  os.chmod(f.name, 0o700)
+  def fn(line):
+    pass
+  line_edit(f.name, fn)
+  assert os.stat(f.name).st_mode & 0o7777 == 0o700
+  os.unlink(f.name)
+
 
 @execute_once
 def mk_etc_mirror():
