@@ -121,7 +121,8 @@ def load_state(args):
     key = 'stage{}'.format(args.stage)
     if key in d:
       state[key] = d[key]
-      done_set = set(state[key]['done_set'])
+      if 'done_set' in state[key]:
+        done_set = set(state[key]['done_set'])
 
 def store_state(args):
   filename = args.state
