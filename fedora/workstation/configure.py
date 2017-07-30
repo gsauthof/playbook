@@ -642,6 +642,23 @@ auth requisite pam_u2f.so authfile=/etc/u2f_map interactive
   # https://bugzilla.redhat.com/show_bug.cgi?id=1377451
   check_output(['semanage', 'permissive', '-a', 'local_login_t'])
 
+def set_tlp():
+  tlp = '/etc/default/tlp'
+  if not os.path.exists(tlp):
+    raise SkipThis()
+  snippet = '''# disabled due to this warning:
+# https://wiki.archlinux.org/index.php/TLP
+#SATA_LINKPWR_ON_BAT=min_power
+SATA_LINKPWR_ON_BAT=max_performance'''
+  def f(line):
+    if line.startswith('SATA_LINKPWR_ON_BAT=min_power'):
+      return snippet
+    else:
+      return line
+  commit_etc(tlp, 'add default/tlp')
+  line_edit(tlp, f)
+  commit_etc(tlp, 'be conservative about SATA link-power settings ...')
+
 def stage1():
   mk_etc_mirror()
   commit_core_files()
@@ -659,6 +676,7 @@ def stage1():
   install_packages()
   remove_packages()
   disable_avahi()
+  set_tlp()
   restore_postfix()
   restore_postgres()
   restore_etc()
