@@ -632,7 +632,7 @@ auth requisite pam_u2f.so authfile=/etc/u2f_map interactive
       state[0] = True
     if line.startswith('auth') and 'substack' in line \
         and ('system-auth' in line or 'password-auth' in line ):
-      return line + '\n' + snippet
+      return '\n' + snippet + '\n' + line
     else:
       return line
   for filename in filenames:
