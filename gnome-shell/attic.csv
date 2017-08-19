@@ -1,5 +1,6 @@
 uuid,name,url,system
 ShellTile@emasab.it,ShellTile,https://bitbucket.org/emasab/shelltile,false
+TopIcons@phocean.net,TopIcons Plus,https://github.com/phocean/TopIcons-plus,true
 alternate-tab@gnome-shell-extensions.gcampax.github.com,AlternateTab,http://git.gnome.org/gnome-shell-extensions,false
 background-logo@fedorahosted.org,Background Logo,https://git.fedorahosted.org/git/background-logo-extension.git,true
 drop-down-terminal@gs-extensions.zzrough.org,Drop Down Terminal,https://github.com/zzrough/gs-extensions-drop-down-terminal,false

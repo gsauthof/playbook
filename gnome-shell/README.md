@@ -40,6 +40,18 @@ Bulk install (or reinstall/upgrade) all extensions:
 
 See also the official [GNOME Shell extension repository][2].
 
+## Dangerous Extensions
+
+On Fedora 26 (GNOME shell 3.24) both top icons extensions for
+displaying tray bar icons [easily crash GNOME
+shell](https://bugzilla.redhat.com/show_bug.cgi?id=1474022), i.e.
+they yield segfaults in the main gnome shell process such that
+your session terminates. Thus, as-is, there is no way to have
+old-school tray bar icons at the top side-by-side with the GNOME
+shell icons. The only reliable option to see the tray icons at
+all is to keep the bottom-left tray icon bar expanded after
+interactively expanding it (it's minimized, by default).
+
 ## Other Settings
 
 Extensions aren't the only way to customize GNOME Shell.

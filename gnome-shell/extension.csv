@@ -1,6 +1,5 @@
 uuid,name,url,system
 LogOutButton@kyle.aims.ac.za,Log Out Button,,false
-TopIcons@phocean.net,TopIcons Plus,https://github.com/phocean/TopIcons-plus,true
 caffeine@patapon.info,Caffeine,https://github.com/eonpatapon/gnome-shell-extension-caffeine,false
 datetime-format@Daniel-Khodabakhsh.github.com,Datetime Format,https://github.com/Daniel-Khodabakhsh/datetime-format,false
 drive-menu@gnome-shell-extensions.gcampax.github.com,Removable Drive Menu,http://git.gnome.org/gnome-shell-extensions,true
