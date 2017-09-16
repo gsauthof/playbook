@@ -93,6 +93,9 @@ def read_config(filename):
   if 'release' not in c['target']:
     c['target']['release'] = check_output(['rpm', '-E' '%fedora'])\
         .stdout.strip()
+  for dev in [ 'device', 'mirror' ]:
+    if dev in c['init']:
+      c['init'][dev] = os.path.realpath(c['init'][dev])
   return c
 
 
@@ -720,9 +723,10 @@ def mk_fs():
   else:
     boot_dev = '/dev/md/new-boot'
     u = str(uuid.uuid4())
+    md_dev = [ x+'1' for x in devs ]
+    check_output(['wipefs', '--all'] + md_dev)
     check_output(['mdadm', '--create', boot_dev, '--run', '--level=1',
-        '--uuid', u,
-        '--raid-devices=2' ] + [ x+'1' for x in devs ] )
+        '--uuid', u, '--raid-devices=2' ] + md_dev )
     state['stage0']['boot-raid1-uuid'] = u
   u = str(uuid.uuid4())
   check_output(['mkfs.ext4', '-U', u, boot_dev ])
@@ -744,6 +748,7 @@ def mk_fs():
     root_dev = [ dev + '2' for dev in devs ]
   u = str(uuid.uuid4())
   flags = [ '--data', 'raid1' ] if 'mirror' in cnf['init'] else []
+  check_output(['wipefs', '--all'] + root_dev)
   check_output(['mkfs.btrfs', '--uuid', u ] + flags + root_dev)
   state['stage0']['fs-uuid']['root'] = u
   os.makedirs('/mnt/new-root', exist_ok=True)
