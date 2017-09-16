@@ -83,6 +83,7 @@ def read_config(filename):
           'restore-postfix': 'false',
           'restore-postgres': 'false',
           'setup-pamu2f': 'false',
+          'setup-nfsd': 'false',
           'timezone': 'Europe/Berlin'
         },
         'init': {
@@ -327,7 +328,10 @@ def mk_etc_mirror():
 
 @execute_once
 def commit_core_files():
-  commit_etc(['crypttab', 'fstab', 'default/grub'], 'add core etc files')
+  files = ['fstab', 'default/grub']
+  if os.path.exists('/etc/' + 'crypttab'):
+    files.append('crypttab')
+  commit_etc(files, 'add core etc files')
 
 # cf. https://unix.stackexchange.com/a/40857/1131
 @execute_once
@@ -527,6 +531,8 @@ def remove_packages():
 
 @execute_once
 def disable_avahi():
+  if not os.path.exists('/usr/lib/systemd/system/avahi-daemon.socket'):
+    raise SkipThis()
   check_output(['systemctl', 'disable',
       'avahi-daemon.socket', 'avahi-daemon.service'])
   check_output(['systemctl', 'stop',
@@ -645,6 +651,7 @@ auth requisite pam_u2f.so authfile=/etc/u2f_map interactive
   # https://bugzilla.redhat.com/show_bug.cgi?id=1377451
   check_output(['semanage', 'permissive', '-a', 'local_login_t'])
 
+@execute_once
 def set_tlp():
   tlp = '/etc/default/tlp'
   if not os.path.exists(tlp):
@@ -661,6 +668,15 @@ SATA_LINKPWR_ON_BAT=max_performance'''
   commit_etc(tlp, 'add default/tlp')
   line_edit(tlp, f)
   commit_etc(tlp, 'be conservative about SATA link-power settings ...')
+
+@execute_once
+def set_nfsd():
+  if cnf['target']['setup-nfsd'] != 'true':
+    raise SkipThis()
+  check_output(['firewall-cmd', '--add-service', 'nfs'])
+  check_output(['firewall-cmd', '--permanent', '--add-service', 'nfs'])
+  check_output(['systemctl', 'enable', 'nfs-server'])
+  check_output(['systemctl', 'start', 'nfs-server'])
 
 def stage1():
   mk_etc_mirror()
@@ -685,6 +701,7 @@ def stage1():
   restore_etc()
   enable_services()
   set_pam_u2f()
+  set_nfsd()
   return 0
 
 def has_partitions(dev):

@@ -6,6 +6,7 @@ old-var = /mnt/old-root/var
 [init]
 device=/dev/vdb
 #mirror=/dev/vdc
+cryptsetup = false
 password-file=pw
 release=26
 authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
@@ -22,6 +23,7 @@ enable-services = gdm.service
 restore-postfix = true
 restore-postgres = true
 setup-pamu2f = true
+setup-nfsd = false
 custom-etc-files = NetworkManager/conf.d/00-unmanaged
     cups/ppd/FS-C5100DN.ppd
     cups/printers.conf
