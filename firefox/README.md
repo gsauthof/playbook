@@ -24,6 +24,16 @@ addons work fine with Firefox on Android. But perhaps is this
 information too conservative and some other addons can be forced
 to work on Android, as well.
 
+Those addons can be semi-automatically installed via using the
+Android Debug Bridge (ADB), e.g. after Firefox is configured as
+default browser:
+
+    $ awk -F, '$5 == "true" {print $1}' addon.csv \
+        | xargs -r -l adb shell am start -a android.intent.action.VIEW -d
+
+This opens all addons in Firefox Android, one then has to cycle
+through the open tabs and touch the install-addon button.
+
 ## Firefox 57+
 
 The addons are also marked with respect to their [Firefox 57+
