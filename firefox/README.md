@@ -42,19 +42,38 @@ Mozilla addon web-service and might be too conservative. Also,
 this is just a snapshot, and the next addon update might add
 compatibility.
 
-As of 2017-06-25 the status of some addons is:
+As of 2017-12-14 the status of some addons is:
 
-- [uBlock Origin][2] - [is ready][3], needs to update the meta-information
-- [Self-Destructing Cookies][4] - not compatible. A new alternative is
-  [Cookie AutoDelete][5] - although, it doesn't support Firefox on
-  Android and LocalStorage, yet.
+- [uBlock Origin][2] - [is ready][3]
+- [Self-Destructing Cookies][4] - not compatible and is
+  discontinued. A new alternative is
+  [Cookie AutoDelete][5] - it even supports Android.
 - [User Agent Overrider][6] - not compatible. The [author recommends][8]
   the alternative [User Agent Switcher][7] addon.
-- Tree Style Tab - not compatible. [Work in progress][9].
-- [Resurrect Pages][10] - [unclear][11]
-- [Vimperator][12] - [a lot of roadblocks][13] (the new addon API
-  currently misses some functionality)
+- Tree Style Tab - [is ready][9]. Due to webextentsion
+  limitations the new version isn't able yet to modify the UI
+  much, e.g. it can't remove the horizontal tab bar.
+  One can [create a userChrome.css][14] with the necessary
+  customizations, though, which I can't recommend enough.
+- [Resurrect Pages][10] - [is ready][11]. Due to limitations in
+  the new extensions API the resurrect links in the
+  page-not-found page are not available, though. Available are
+  the links in the context and navigation menus.
+- [Vimperator][12] - [is discontinued][13] (the new addon API
+  currently misses some functionality) and is even kind of broken
+  for the last few Firefox versions before 57. New
+  alternatives are [Vim Vixen][vv] and [Tridactyl][tri].
+  Unfortunately, currently, I can't recommend any of the two
+  because Vim Vixen includes an [unresolved security issue][15] and
+  Tridactyl [doesn't have search integrated][16] yet and it may
+  still yield some [paper][17] [cuts][18].
 
+The file `addon-57+.csv` contains all recommended addons that are
+compatible with Firefox 57+. That means it also includes the new
+alternatives that only work with Firefox 57+ because they are
+only available as webextensions. Thus, the existing file `addon.csv`
+only contains addons that also work with Firefox versions before
+57.
 
 ## Alternatives
 
@@ -85,7 +104,14 @@ uBlock Origin has the following advantages:
 [11]: https://github.com/arantius/resurrect-pages/issues/26
 [12]: https://addons.mozilla.org/en-US/firefox/addon/vimperator/
 [13]: https://github.com/vimperator/vimperator-labs/issues/705
+[14]: https://github.com/gsauthof/user-config/blob/master/.mozilla/firefox/chrome/userChrome.css
+[15]: https://github.com/ueokande/vim-vixen/issues/251
+[16]: https://github.com/cmcaine/tridactyl/issues/64
+[17]: https://github.com/cmcaine/tridactyl/issues/236
+[18]: https://github.com/cmcaine/tridactyl/issues/154#issuecomment-351753434
 [ff]: https://en.wikipedia.org/wiki/Firefox
 [ffa]: https://play.google.com/store/apps/details?id=org.mozilla.firefox
 [ff57]: https://blog.mozilla.org/addons/2017/02/16/the-road-to-firefox-57-compatibility-milestones/
 [abp]: https://addons.mozilla.org/en-US/firefox/addon/adblock-plus/
+[vv]: https://github.com/ueokande/vim-vixen
+[tri]: https://github.com/cmcaine/tridactyl

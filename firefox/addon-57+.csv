@@ -1,0 +1,9 @@
+mozilla_url,slug,guid,name,compatible_android,compatible_57,url
+https://addons.mozilla.org/en-US/firefox/addon/resurrect-pages/,resurrect-pages,{0c8fbd76-bdeb-4c52-9b24-d587ce7b9dc3},Resurrect Pages,true,true,https://github.com/arantius/resurrect-pages
+https://addons.mozilla.org/en-US/firefox/addon/tree-style-tab/,tree-style-tab,treestyletab@piro.sakura.ne.jp,Tree Style Tab,false,true,http://piro.sakura.ne.jp/xul/_treestyletab.html.en
+https://addons.mozilla.org/en-US/firefox/addon/german-dictionary/,german-dictionary,de-DE@dictionaries.addons.mozilla.org,German Dictionary,true,true,https://addons.mozilla.org/en-US/firefox/addon/german-dictionary/
+https://addons.mozilla.org/en-US/firefox/addon/united-states-english-spellche/,united-states-english-spellche,en-US@dictionaries.addons.mozilla.org,United States English Spellchecker,true,true,https://addons.mozilla.org/it/firefox/addon/3497
+https://addons.mozilla.org/en-US/firefox/addon/google-search-link-fix/,google-search-link-fix,jid0-XWJxt5VvCXkKzQK99PhZqAn7Xbg@jetpack,Google search link fix,true,true,https://github.com/palant/searchlinkfix
+https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/,ublock-origin,uBlock0@raymondhill.net,uBlock Origin,true,true,https://github.com/gorhill/uBlock#ublock-origin
+https://addons.mozilla.org/en-US/firefox/addon/cookie-autodelete/,cookie-autodelete,CookieAutoDelete@kennydo.com,Cookie AutoDelete,true,true,https://github.com/mrdokenny/Cookie-AutoDelete
+https://addons.mozilla.org/en-US/firefox/addon/vim-vixen/,vim-vixen,vim-vixen@i-beam.org,Vim Vixen,true,true,https://github.com/ueokande/vim-vixen
