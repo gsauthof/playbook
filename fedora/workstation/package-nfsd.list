@@ -37,6 +37,7 @@ patch
 pciutils
 psmisc
 python3-tracer
+rsync
 screen
 shim-x64
 smartmontools
