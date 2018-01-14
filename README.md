@@ -3,10 +3,10 @@ automating system installations.
 
 The fedora directory also showcases different approaches to
 automatically installing [Fedora][f]: using [Kickstart][ks],
-[virt-builder][virt] and [Python][p]. All the approaches deal with
-partitioning and typical post-installation tasks. Some include
-advanced configuration choices like Btrfs RAID-1 and encrypted
-root setup.
+[virt-builder][virt], [Vagrant][v] and [Python][p]. All the
+approaches deal with partitioning and typical post-installation
+tasks. Some include advanced configuration choices like Btrfs
+RAID-1 and encrypted root setup.
 
 2017, Georg Sauthoff <mail@gms.tf>
 
@@ -35,6 +35,13 @@ root setup.
   for a development workstation (~500 packages) and a
   Python script that bootstraps a customized Fedora from scratch.
 
+- `fedora/vagrant-vbox` - a good starting point for quickly
+  getting a Fedora Workstation instance up and running with
+  [VirtualBox][vb]. Use case: get a sane work environment under
+  Windows. Typical workflow: install [Cygwin][cw] (for a
+  Terminal, git and vim), install Vagrant, install VirtualBox,
+  execute `vagrant up` and profit.
+
 - `firefox` - a good default list of addons for [Firefox][ff] and
   [Firefox on Android][ffa]. Some of the addons simplify
   development tasks, some increase the convenience of daily
@@ -54,3 +61,6 @@ See also the README.md files in the subdirectories.
 [a]: https://en.wikipedia.org/wiki/Android_(operating_system)
 [fdroid]: https://en.wikipedia.org/wiki/F-Droid
 [gs]: https://en.wikipedia.org/wiki/GNOME_Shell
+[v]: https://en.wikipedia.org/wiki/Vagrant_(software)
+[vb]: https://en.wikipedia.org/wiki/VirtualBox
+[cw]: https://en.wikipedia.org/wiki/Cygwin
