@@ -1,0 +1,2 @@
+machine dyndns.inwx.com login DYNDNS_ACCOUNT_USER  password SOME_PASSWORD
+machine dyn.dns.he.net  login hostname.example.org password SOME_PASSWORD

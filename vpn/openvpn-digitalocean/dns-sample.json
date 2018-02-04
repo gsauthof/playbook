@@ -1,0 +1,4 @@
+{
+  "comment": "specify one or more ddns hostnames for applying updates",
+  "hostnames": [ "dyn.dns.he.net", "dyndns.inwx.com" ]
+}

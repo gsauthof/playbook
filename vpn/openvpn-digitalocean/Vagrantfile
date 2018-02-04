@@ -1,0 +1,61 @@
+# cf. https://github.com/devopsgroup-io/vagrant-digitalocean
+
+Vagrant.configure('2') do |config|
+
+    config.vm.box = 'digital_ocean'
+    config.vm.box_url = 'https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box'
+    config.nfs.functional = false
+
+    # config.vm.synced_folder - rsync__args/rsync__exclude defaults
+    # although, as of 2018-01, the digitalocean provider hardcodes it to
+    # 'root'
+    # cf. https://github.com/devopsgroup-io/vagrant-digitalocean/issues/183
+    # config.ssh.username = 'vagrant' # default: 'vagrant'
+
+    # the defined name will be used as droplet name
+    # if the environment variable is set to a full qualified domain name
+    # then Digitalocean automagically creates a reverse DNS record!
+    config.vm.define (ENV['do_hostname'] || 'ovpn') do |config|
+
+        config.vm.provider :digital_ocean do |provider, override|
+
+            # at least vagrant 1.9.1 (F26) doesn't support ed25519 keys
+            #override.ssh.private_key_path = '~/.ssh/do-2018-ed25519'
+            override.ssh.private_key_path = '~/.ssh/do-2018-rsa'
+
+            #override.vm.box = 'digital_ocean'
+            #override.vm.box_url = 'https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box'
+            #override.nfs.functional = false
+
+            # override.vm.hostname = 'foobar.example.org'
+
+            provider.token = ENV['do_token']
+            provider.image = 'centos-7-x64'
+            # nyc1, nyc3, tor1 (toronto)
+            provider.region = ( ENV['do_region'] || 'tor1' )
+            # 1gb is the new 512mb - as of 2018, 1gb costs 5$
+            # and the web price listing doesn't include 512mb, anymore
+            # provisioning 512mb via vagrant works, but also costs 5$ ...
+            provider.size = '1gb'
+
+            provider.ipv6 = true
+
+            provider.private_networking = false   # default: false
+            provider.backups_enabled = false      # default: false
+            #provider.ssh_key_name 'Vagrant'      # default: 'Vagrant'
+            # setup new user account, modify sudo to disable tty require
+            #provider.setup = true                # default: true
+            provider.monitoring = false           # default: false
+
+            provider.tags = [ 'openvpn', 'centos7', 'linux' ]
+
+            #override.vm.provision 'shell', inline: <<-SHELL
+            #    bash -x /vagrant/setup.sh
+            #SHELL
+            config.vm.provision 'shell', path: 'setup.sh'
+          end
+
+
+    end
+
+end
