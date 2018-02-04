@@ -80,7 +80,7 @@ The simplest way to getting started under Android is to import a
 
 Example:
 
-   $ ./mk_ovpn $do_hostname > my.ovpn
+    $ ./mk_ovpn $do_hostname > my.ovpn
 
 
 ## DNS
@@ -174,7 +174,7 @@ happens via basic auth.
 [vagrant]: https://en.wikipedia.org/wiki/Vagrant_(software)
 [do]: https://en.wikipedia.org/wiki/DigitalOcean
 [dop]: https://www.digitalocean.com/pricing/
-[openvpn]: https://en.wikipedia.org/wiki/OpenVPN
+[ovpn]: https://en.wikipedia.org/wiki/OpenVPN
 [geo]: https://en.wikipedia.org/wiki/Geo-blocking
 [ddns]: https://en.wikipedia.org/wiki/Dynamic_DNS
 [he]: https://dns.he.net/
