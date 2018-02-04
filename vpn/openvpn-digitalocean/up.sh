@@ -23,7 +23,7 @@ set -x
 
 vagrant up --provider=digital_ocean
 ./update_dns.py
-vagrant ssh -- shutdown -r now
+vagrant ssh -- shutdown -r now || true
 
 set +x
 m=$(echo "1 k $SECONDS 60 / p" | dc)
