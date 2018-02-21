@@ -2,7 +2,9 @@
 function adids
 {
   adb shell 'pm list packages -f' \
-      | awk -F '[:=]' '$2 !~ /\/system\// {print $3}' | sort
+      | grep -v '^package:/system/' \
+      | sed 's/^.*apk=//' \
+      | sort
 }
 
 function adview
