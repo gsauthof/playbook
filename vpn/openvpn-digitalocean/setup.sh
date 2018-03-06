@@ -20,7 +20,7 @@ git $git_dir add /etc/passwd /etc/group /etc/shadow /etc/yum/yum-cron-hourly.con
 git $git_dir commit -m 'add vanilla files'
 
 cp /vagrant/etc/sysconfig/iptables /etc/sysconfig/iptables
-git $git_dir add /etc/iptables/iptables.rules
+git $git_dir add /etc/sysconfig/iptables
 systemctl enable iptables.service
 systemctl start iptables.service
 
