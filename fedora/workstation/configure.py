@@ -955,8 +955,18 @@ def set_authorized_keys():
 def mk_host_keys():
   check_output(['ssh-keygen', '-A'], chroot=True)
 
+@execute_once
+def copy_self(args):
+  log.info("Copying files needed for next stage to target's /root")
+  dst = '/mnt/new-root/root'
+  for fn in [ __file__, args.config, args.state ]:
+    shutil.copy(fn, dst)
+  for fn in [ 'package.list', 'unpackage.list' ]:
+    if os.path.exists(fn):
+      shutil.copy(fn, dst)
 
-def stage0():
+
+def stage0(args):
   run_output(['setenforce', '0'])
   create_partitions()
   mk_fs()
@@ -976,6 +986,7 @@ def stage0():
   print_sshd_fingerprints()
   fix_selinux_context()
   bind_umount()
+  copy_self(args)
   umount_fs()
   return 0
 
@@ -990,7 +1001,7 @@ def run(args):
       bind_umount(do_raise=False)
       umount_fs(do_raise=False)
     else:
-      stage0()
+      stage0(args)
   else:
     raise RuntimeError('Unknown stage: {}'.format(args.stage))
   return 0
