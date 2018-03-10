@@ -214,14 +214,18 @@ def test_run_output():
   assert r.stdout == 'hello\n'
   assert r.stderr == ''
 
-def check_output(cmd, *xs, **ys):
+def check_output(cmd, do_raise=True, *xs, **ys):
   r = run_output(cmd, *xs, **ys)
   if r.returncode != 0:
     call = ' '.join("'{}'".format(x) for x in cmd)
-    raise RuntimeError(
+    m = (
         'Command exited with: {}\nCall: {}\n    Stdout: {}\n    Stderr: {}'
         .format(r.returncode, call, r.stdout, r.stderr)
         + ('    Stdin: {}'.format(ys['input']) if 'input' in ys else '') )
+    if do_raise:
+      raise RuntimeError(m)
+    else:
+      log.error(m)
   return r
 
 def test_check_output():
@@ -983,8 +987,8 @@ def run(args):
       mount_fs()
       bind_mount()
     elif args.umount:
-      bind_umount()
-      umount_fs()
+      bind_umount(do_raise=False)
+      umount_fs(do_raise=False)
     else:
       stage0()
   else:
