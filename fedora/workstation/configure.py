@@ -332,7 +332,7 @@ def mk_etc_mirror():
 
 @execute_once
 def commit_core_files():
-  files = ['fstab', 'default/grub']
+  files = ['fstab', 'default/grub', 'modprobe.d/bochs.conf']
   if os.path.exists('/etc/' + 'crypttab'):
     files.append('crypttab')
   commit_etc(files, 'add core etc files')
@@ -721,52 +721,95 @@ def get_devices():
     devs.append(cnf['init']['mirror'])
   return devs
 
+
+# echo -e 'label: gpt\nsize=1MiB, type=21686148-6449-6E6F-744E-656564454649\nsize=200MiB, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B\nsize=1GiB, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4\ntype=0FC63DAF-8483-4772-8E79-3D69D8477DE4' | sfdisk /dev/sdb
+
+# XXX verify that created partitions are 4 KiB aligned ...
+# cf. https://en.wikipedia.org/wiki/GUID_Partition_Table#Partition_type_GUIDs
+# https://en.wikipedia.org/wiki/BIOS_boot_partition
+# https://en.wikipedia.org/wiki/EFI_system_partition
 @execute_once
 def create_partitions():
+  bios_boot_type  = '21686148-6449-6E6F-744E-656564454649'
+  esp_type        = 'C12A7328-F81F-11D2-BA4B-00A0C93EC93B'
+  linux_fs_type   = '0FC63DAF-8483-4772-8E79-3D69D8477DE4'
+  linux_raid_type = 'A19D880F-05FC-4D3B-A006-743F0F84911E'
+  boot_type       = linux_fs_type
+  if len(esp_type) > 1:
+    esp_type  = linux_raid_type
+    boot_type = linux_raid_type
+  inp = '''label: gpt
+size=1MiB, type={}
+size=200MiB, type={}
+size=1GiB, type={}
+type={}
+'''.format(bios_boot_type, esp_type, boot_type, linux_fs_type)
   devs = get_devices()
   for dev in devs:
     if has_partitions(dev):
       check_output(['sfdisk', '--delete', dev])
     check_output(['sfdisk', dev],
-        input='size=1GiB, type=83, bootable\ntype=83\n')
+        input=inp)
+
 
 def get_password():
   with open(cnf['init']['password-file']) as f:
     pw = f.read().splitlines()[0].strip()
     return pw
 
+
+# mkfs.vfat /dev/sdb1
+# mkfs.ext4 /dev/sdb2
+# mkfs.btrfs /dev/sdb3
+# mount -o noatime /dev/sdb3 /mnt/new-root
+# btrfs subvolume create /mnt/new-root/root
+# btrfs subvolume create /mnt/new-root/home
+# umount /mnt/new-root
+
+def mk_raid1(name, part_no, trailing_superblock=False):
+  boot_dev = '/dev/md/new-{}'.format(name)
+  u = str(uuid.uuid4())
+  md_dev = [ x + str(part_no) for x in devs ]
+  check_output(['wipefs', '--all'] + md_dev)
+  superblock_fmt = [ '--metadata=1.0' ] if trailing_superblock else []
+  check_output(['mdadm', '--create', boot_dev, '--run', '--level=1',
+      '--uuid', u, '--raid-devices=2' ] + superblock_fmt + md_dev )
+  state['stage0']['{}-raid1-uuid'.format(name)] = u
+  return boot_dev
+
 @execute_once
 def mk_fs():
   global state
   devs = get_devices()
-  if devs.__len__() == 1:
-    boot_dev = devs[0] +'1'
+  if len(devs) == 1:
+    boot_efi_dev = devs[0] +'2'
+    boot_dev     = devs[0] +'3'
   else:
-    boot_dev = '/dev/md/new-boot'
-    u = str(uuid.uuid4())
-    md_dev = [ x+'1' for x in devs ]
-    check_output(['wipefs', '--all'] + md_dev)
-    check_output(['mdadm', '--create', boot_dev, '--run', '--level=1',
-        '--uuid', u, '--raid-devices=2' ] + md_dev )
-    state['stage0']['boot-raid1-uuid'] = u
+    boot_efi_dev = mk_raid1('boot-efi', 2, True)
+    boot_dev     = mk_raid1('boot', 3)
+  state['stage0']['fs-uuid'] = {}
   u = str(uuid.uuid4())
   check_output(['mkfs.ext4', '-U', u, boot_dev ])
-  state['stage0']['fs-uuid'] = { 'boot' : u }
+  state['stage0']['fs-uuid']['boot'] = u
+  u = str(uuid.uuid4())[0:8]
+  check_output(['mkfs.vfat', '-i', u, boot_efi_dev ])
+  u = u.upper()[:4] + '-' + u.upper()[4:]
+  state['stage0']['fs-uuid']['boot-efi'] = u
   root_dev = []
   if cnf['init']['cryptsetup'] == 'true':
     pw = get_password()
     state['stage0']['luks-uuid'] = []
     for i, dev in enumerate(devs):
       u = str(uuid.uuid4())
-      check_output(['cryptsetup', 'luksFormat', dev + '2',
+      check_output(['cryptsetup', 'luksFormat', dev + '4',
         '--key-file', '-', '--uuid', u], input=pw, redact_input=True)
       state['stage0']['luks-uuid'].append(u)
       d = 'new-root-{}'.format(i)
-      check_output(['cryptsetup', 'luksOpen', dev + '2', d,
+      check_output(['cryptsetup', 'luksOpen', dev + '4', d,
         '--key-file', '-'], input=pw, redact_input=True)
       root_dev.append('/dev/mapper/'+d)
   else:
-    root_dev = [ dev + '2' for dev in devs ]
+    root_dev = [ dev + '4' for dev in devs ]
   u = str(uuid.uuid4())
   flags = [ '--data', 'raid1' ] if 'mirror' in cnf['init'] else []
   check_output(['wipefs', '--all'] + root_dev)
@@ -781,6 +824,16 @@ def mk_fs():
   if cnf['init']['cryptsetup'] == 'true':
     for i, dev in enumerate(devs):
       check_output(['cryptsetup', 'luksClose', 'new-root-{}'.format(i)])
+
+
+# mount -o noatime,subvol=root /dev/sdb3 /mnt/new-root
+# mkdir /mnt/new-root/home
+# mount -o noatime,subvol=home /dev/sdb3 /mnt/new-root/home
+# mkdir /mnt/new-root/boot
+# mount -o noatime /dev/sdb2 /mnt/new-root/boot
+# grep efi /etc/fstab
+# mkdir /mnt/new-root/boot/efi
+# mount -o noatime /dev/sdb1 /mnt/new-root/boot/efi
 
 def mount_fs():
   if 'mirror' in cnf['init']:
@@ -800,13 +853,22 @@ def mount_fs():
   os.makedirs('/mnt/new-root/boot', exist_ok=True)
   check_output(['mount', '-o', 'noatime',
     'UUID='+state['stage0']['fs-uuid']['boot'], '/mnt/new-root/boot'])
+  os.makedirs('/mnt/new-root/boot/efi', exist_ok=True)
+  check_output(['mount', '-o', 'noatime',
+    'UUID='+state['stage0']['fs-uuid']['boot-efi'], '/mnt/new-root/boot/efi'])
 
-def umount_fs():
-  for point in [ 'new-root/boot', 'new-root/home', 'new-root' ]:
-    check_output(['umount', '/mnt/' + point ])
+
+# for i in new-root/boot/efi new-root/boot new-root/home new-root; do umount /mnt/$i; done
+
+def umount_fs(do_raise=True):
+  for point in [ 'new-root/boot/efi', 'new-root/boot', 'new-root/home', 'new-root' ]:
+    check_output(['umount', '/mnt/' + point ], do_raise=do_raise)
   if cnf['init']['cryptsetup'] == 'true':
     for i, uuid in enumerate(state['stage0']['luks-uuid']):
-      check_output(['cryptsetup', 'luksClose', 'new-root-{}'.format(i)])
+      check_output(['cryptsetup', 'luksClose', 'new-root-{}'.format(i)], do_raise=do_raise)
+
+
+# for i in dev proc sys ; do mkdir /mnt/new-root/$i -p; mount --bind /$i /mnt/new-root/$i; done
 
 def bind_mount():
   for point in [ 'dev', 'proc', 'sys' ]:
@@ -819,20 +881,29 @@ def is_mounted(point):
     s = f.read()
     return ' {} '.format(point) in s
 
-def bind_umount():
+
+# umount /mnt/new-root/sys/fs/selinux
+# for i in dev proc sys ; do umount /mnt/new-root/$i; done
+
+def bind_umount(do_raise=True):
   se_mount = '/mnt/new-root/sys/fs/selinux'
   if is_mounted(se_mount):
-    check_output(['umount', se_mount])
+    check_output(['umount', se_mount], do_raise=do_raise)
   for point in [ 'dev', 'proc', 'sys' ]:
-    check_output(['umount', '/mnt/new-root/'+point])
+    check_output(['umount', '/mnt/new-root/'+point], do_raise=do_raise)
+
+
+# dnf -y --installroot=/mnt/new-root --releasever=27 install system-release
+# dnf -y --installroot=/mnt/new-root --releasever=27 group install custom-environment
+# dnf -y --installroot=/mnt/new-root --releasever=27 install grub2-pc grub2-efi-x64 shim-x64 efibootmgr cryptsetup btrfs-progs mdadm git zsh
 
 @execute_once
 def install_base():
   dnf_installroot('system-release')
   # the custom-environment and minimal-environment groups seem to be identical
   dnf_installroot('custom-environment', group=True)
-  dnf_installroot(['grub2', 'cryptsetup', 'btrfs-progs', 'mdadm',
-      'git', 'zsh'])
+  dnf_installroot(['grub2-pc', 'grub2-efi-x64', 'shim-x64', 'efibootmgr',
+      'cryptsetup', 'btrfs-progs', 'mdadm', 'git', 'zsh'])
 
 @execute_once
 def mk_crypttab():
@@ -844,15 +915,21 @@ def mk_crypttab():
     for uuid in state['stage0']['luks-uuid']:
       print(luks_conf.format(uuid), file=f)
 
+# UUID={}   /boot/efi vfat   umask=0077,shortname=winnt   0 2
+
 @execute_once
 def mk_fstab():
-  fstab_conf = '''UUID={0:}    /boot    ext4     defaults,noatime    1 2
-UUID={1:}    /        btrfs    subvol=root,x-systemd.device-timeout=0,noatime    0 0
-UUID={1:}    /home    btrfs    subvol=home,x-systemd.device-timeout=0,noatime    0 0'''
+  fstab_conf = '''
+UUID={0}   /boot      ext4     defaults,noatime                                  1 2
+UUID={1}   /boot/efi  vfat     umask=0077,shortname=winnt,noatime                0 2
+UUID={2}   /          btrfs    subvol=root,x-systemd.device-timeout=0,noatime    0 0
+UUID={2}   /home      btrfs    subvol=home,x-systemd.device-timeout=0,noatime    0 0'''
   fstab = '/mnt/new-root/etc/fstab'
   with open(fstab, 'w') as f:
     print(fstab_conf.format(state['stage0']['fs-uuid']['boot'],
+        state['stage0']['fs-uuid']['boot-efi'],
         state['stage0']['fs-uuid']['root']), file=f)
+
 
 # Even without real serial hardware available - configuring it just in case
 # makes sense as fallback when running inside qemu.
@@ -860,12 +937,16 @@ UUID={1:}    /home    btrfs    subvol=home,x-systemd.device-timeout=0,noatime   
 # text-mode qemu (cf. https://unix.stackexchange.com/a/347751/1131).
 @execute_once
 def mk_grub_defaults():
+  # blacklisting the module via modprobe.d/ is sufficient
+  # because the next kernel install calls dract which
+  # regenerates the initramfs where the modprobe.d/ is
+  # included, as well.
   grub_conf = '''GRUB_TIMEOUT=5
 GRUB_DISTRIBUTOR=Fedora
 GRUB_DEFAULT=saved
 GRUB_DISABLE_SUBMENU=true
 GRUB_TERMINAL_OUTPUT=console
-GRUB_CMDLINE_LINUX="{}quiet console=tty0 console=ttyS0,115200 bochs_drm.fbdev=off"
+GRUB_CMDLINE_LINUX="{}quiet console=tty0 console=ttyS0,115200"
 GRUB_DISABLE_RECOVERY=true'''
   grub_default = '/mnt/new-root/etc/default/grub'
   with open(grub_default, 'w') as f:
@@ -874,22 +955,61 @@ GRUB_DISABLE_RECOVERY=true'''
       luks = ''.join('rd.luks.uuid={} '.format(x)
                      for x in state['stage0']['luks-uuid'])
     print(grub_conf.format(luks), file=f)
+  bochs_blacklist = '/mnt/new-root/etc/modprobe.d/bochs.conf'
+  with open(bochs_blacklist, 'w') as f:
+    print('blacklist bochs_drm', file=f)
+
+
+# cp /etc/resolv.conf /mnt/new-root/etc
 
 def refresh_chroot():
   shutil.copy('/etc/resolv.conf', '/mnt/new-root/etc/')
+
+
+# chroot /mnt/new-root
+# dnf -y install kernel
+# exit
 
 @execute_once
 def install_inside_chroot():
   dnf_install('kernel', chroot=True)
 
+
+# chown /mnt/new-root
+# for i in /boot/grub2/grub.cfg /boot/efi/EFI/fedora/grub.cfg ; do grub2-mkconfig -o $i; done
+# grub2-install --target=i386-pc /dev/sdb
+# # no need to call grub2-install a second time for UEFI - the package install was sufficient
+# exit
+
+# Details on why to use linux16 instead of linux on legacy systems:
+# https://bugzilla.redhat.com/show_bug.cgi?id=1196065#c13
+# cf. /etc/grub.d/10_linux to see how Fedora sets
+# the defaults when running on a Legacy/UEFI system
 @execute_once
 def install_grub():
+  running_on_efi = os.path.exists('/sys/firmware/efi')
+  def f(exp, repl, line):
+    return exp.sub(repl, line)
   # with efi-boot, it is another location ...
-  check_output(['grub2-mkconfig', '-o', '/boot/grub2/grub.cfg'], chroot=True)
-
+  for p in [ '/boot/efi/EFI/fedora/grub.cfg', '/boot/grub2/grub.cfg' ]:
+    check_output(['grub2-mkconfig', '-o', p], chroot=True)
+    # Fix the choice made in /etc/grub.d/10_linux
+    if running_on_efi and '/EFI/' not in p:
+      exp = re.compile('\\b(linux|initrd)efi\\b')
+      repl = '\\g<1>16'
+    elif not running_on_efi and '/EFI' in p:
+      exp = re.compile('\\b(linux|initrd)16\\b')
+      repl = '\\1efi'
+    else:
+      continue
+    line_edit('/mnt/new-root/' + p, functools.partial(f, exp, repl))
+  # The UEFI firmware just searches for a VFAT partition
+  # that contains some expected paths, thus,
+  # there is no need to call grub2-install for UEFI.
   devs = get_devices()
   for dev in devs:
-    check_output(['grub2-install', dev], chroot=True)
+    check_output(['grub2-install', '--target=i386-pc', dev], chroot=True)
+
 
 def has_user(user):
   with open('/mnt/new-root/etc/passwd') as f:
@@ -927,6 +1047,14 @@ def print_sshd_fingerprints():
     r = check_output(['ssh-keygen', '-l', '-f', name])
     s += '\n    ' + r.stdout.strip()
   log.info(s)
+
+
+# mount --bind /mnt/new-root /mnt/new-root/mnt/tmp
+# chroot /mnt/new-root
+# restorecon -rv -e /proc -e /dev -e /sys /
+# for i in /proc /dev /sys; do chcon --reference=$i /mnt/tmp$i; done
+# exit
+# umount /mnt/new-root/mnt/tmp
 
 def fix_selinux_context():
   check_output(['load_policy', '-i'], chroot=True)

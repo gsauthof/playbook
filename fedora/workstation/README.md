@@ -102,6 +102,38 @@ situation and then restart configure. To force the re-execution
 of some tasks the state file can be edited with a text editor,
 simply deleted and there is also a `--clear` command line option.
 
+## UEFI
+
+The stage 0 partitions the disk or disks, creates the filesystems
+and installs the bootloader in a way such that the result boots
+on legacy [BIOS][bios] and [UEFI][uefi] firmware systems. That
+means that it implements a hybrid approach.
+
+In detail this is achieved via:
+
+1. Unconditionally creating [GPT partitions][gpt]. The legacy
+   BIOS boot only cares about the [MBR][mbr] and not about the
+   partition scheme.
+   Also, GPT still leaves space for the MBR (for backwards
+   compatibility). [Grub2][grub2] has no problems to read GPT
+   partitions when booted via legacy BIOS.
+2. Creating a [BIOS Boot Partition][bbp]. This is required when
+   installing Grub2 into the MBR of a GPT. In DOS style
+   partitioning Grub2 uses the space between the MBR and the
+   first partition. This isn't available with GPT, thus this
+   extra (tiny) partition.
+3. Unconditionally installing [Grub2][grub2] into the [MBR][mbr]
+   *and* into the [EFI System Partition][esp]. This works because
+   UEFI-only systems ignore the MBR and Legacy boot systems just
+   use the MBR.
+
+The advantages of this hybrid approach are:
+
+- flexibility - the system disk/disks can easily transplanted
+  between UEFI and legacy boot systems
+- simplicity - the same provisioning code is executed on all
+  systems
+
 ## See also
 
 Yum, the predecessor of Dnf, also has an installroot mode. Debian
@@ -130,3 +162,10 @@ dracut, certainly doesn't apply to Fedora 26.
 [f]: https://en.wikipedia.org/wiki/Fedora_(operating_system)
 [git]: https://en.wikipedia.org/wiki/Git
 [2]: https://www.djc.id.au/blog/fedora-from-scratch
+[gpt]: https://en.wikipedia.org/wiki/GUID_Partition_Table
+[esp]: https://en.wikipedia.org/wiki/EFI_system_partition
+[bbp]: https://en.wikipedia.org/wiki/BIOS_boot_partition
+[uefi]: https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface
+[bios]: https://en.wikipedia.org/wiki/BIOS
+[mbr]: https://en.wikipedia.org/wiki/Master_boot_record
+[grub2]: https://en.wikipedia.org/wiki/GNU_GRUB#Version_2_(GRUB)
