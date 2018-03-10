@@ -887,8 +887,10 @@ def is_mounted(point):
 
 def bind_umount(do_raise=True):
   se_mount = '/mnt/new-root/sys/fs/selinux'
-  if is_mounted(se_mount):
-    check_output(['umount', se_mount], do_raise=do_raise)
+  conn_mount = '/mnt/new-root/sys/fs/fuse/connections'
+  for m in [ se_mount, conn_mount ]:
+    if is_mounted(m):
+      check_output(['umount', m], do_raise=do_raise)
   for point in [ 'dev', 'proc', 'sys' ]:
     check_output(['umount', '/mnt/new-root/'+point], do_raise=do_raise)
 
