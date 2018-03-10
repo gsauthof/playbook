@@ -730,12 +730,13 @@ def get_devices():
 # https://en.wikipedia.org/wiki/EFI_system_partition
 @execute_once
 def create_partitions():
+  devs = get_devices()
   bios_boot_type  = '21686148-6449-6E6F-744E-656564454649'
   esp_type        = 'C12A7328-F81F-11D2-BA4B-00A0C93EC93B'
   linux_fs_type   = '0FC63DAF-8483-4772-8E79-3D69D8477DE4'
   linux_raid_type = 'A19D880F-05FC-4D3B-A006-743F0F84911E'
   boot_type       = linux_fs_type
-  if len(esp_type) > 1:
+  if len(dev) > 1:
     esp_type  = linux_raid_type
     boot_type = linux_raid_type
   inp = '''label: gpt
@@ -744,7 +745,6 @@ size=200MiB, type={}
 size=1GiB, type={}
 type={}
 '''.format(bios_boot_type, esp_type, boot_type, linux_fs_type)
-  devs = get_devices()
   for dev in devs:
     if has_partitions(dev):
       check_output(['sfdisk', '--delete', dev])
