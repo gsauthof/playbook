@@ -1152,9 +1152,10 @@ def mk_host_keys():
   check_output(['ssh-keygen', '-A'], chroot=True)
 
 @execute_once
-def copy_self(args):
+def copy_self():
   log.info("Copying files needed for next stage to target's /root")
-  dst = '/mnt/new-root/root'
+  dst = '/mnt/new-root/root/play-{}'.format(cnf['init']['release'])
+  os.makedirs(dst, exist_ok=True)
   for fn in [ __file__, args.config, args.state ]:
     shutil.copy(fn, dst)
   for fn in [ 'package.list', 'unpackage.list' ]:
@@ -1162,7 +1163,7 @@ def copy_self(args):
       shutil.copy(fn, dst)
 
 
-def stage0(args):
+def stage0():
   run_output(['setenforce', '0'])
   create_partitions()
   mk_fs()
@@ -1182,12 +1183,12 @@ def stage0(args):
   print_sshd_fingerprints()
   fix_selinux_context()
   bind_umount()
-  copy_self(args)
+  copy_self()
   umount_fs()
   log.info('Stage 0 successfully completed. Reboot into the new system'
       ' and continue with stage 1 (`./configure.py --stage 1`). '
       'This script and its configuration are already copied '
-      'to the target `/root`.')
+      'to the target `/root/play-{}`.'.format(cnf['init']['release']))
   return 0
 
 def run(args):
@@ -1201,7 +1202,7 @@ def run(args):
       bind_umount(do_raise=False)
       umount_fs(do_raise=False)
     else:
-      stage0(args)
+      stage0()
   else:
     raise RuntimeError('Unknown stage: {}'.format(args.stage))
   return 0
