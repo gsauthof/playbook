@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # 2017, Georg Sauthoff <mail@gms.tf>
-
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 import argparse
 import configparser
@@ -52,8 +52,40 @@ def setup_file_logging(filename):
 def mk_arg_parser():
   p = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description='Setup a Fedora system',
-        epilog='...')
+        description='Install and setup a Fedora system from scratch',
+        epilog='''This program provisions a Fedora system as
+specified in the configuration file (cf. --config).
+The provisioning works in 2 stages. Stage 0 and stage 1.
+
+Stage 0 has to be executed inside an existing Fedora environment,
+i.e. either a Fedora based rescue system or a Fedora workstation
+that has the disks of another system attached.
+
+Stage 0 does the basic bootstrapping and after it's finished
+one has to reboot into that new minimal system and
+continue with stage 1 that finished the provisioning.
+
+Examples:
+
+Run stage 0 (requires a config and the password):
+
+    # cp system-sample.cnf system.cnf
+    # vim system.cnf pw
+    # ./configure.py --stage 0
+
+Run stage 1 (also requires a package configuration):
+
+    # echo Reboot into new system created by stage 0 ...
+    # cat package.list
+    # cat unpackage.list
+    # ./configure.py --stage 1
+
+In case something goes wrong in stage 0 such that there
+are some stale mounts left, one can explicitly remove them:
+
+    # ./configure.py --stage 0 --umount
+
+2018, Georg Sauthoff <mail@gms.tf>, GPLv3+''')
   p.add_argument('--config', '-c', metavar='FILENAME', default='system.cnf',
       help='.ini style config file (default: system.cnf)')
   p.add_argument('--state', metavar='FILENAME', default='cnf.state',
@@ -1118,6 +1150,10 @@ def stage0(args):
   bind_umount()
   copy_self(args)
   umount_fs()
+  log.info('Stage 0 successfully completed. Reboot into the new system'
+      ' and continue with stage 1 (`./configure.py --stage 1`). '
+      'This script and its configuration are already copied '
+      'to the target `/root`.')
   return 0
 
 def run(args):
