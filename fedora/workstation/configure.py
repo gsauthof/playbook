@@ -795,6 +795,7 @@ def get_password_interactively():
     if pw2 != pw:
       log.error("Passwords don't match")
       pw = None
+    break
   if not pw:
     raise RuntimeError("Obtaining password interactively, failed")
   return pw
