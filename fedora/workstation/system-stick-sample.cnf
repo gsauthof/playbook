@@ -1,0 +1,22 @@
+[self]
+download-dir = .
+
+[init]
+device = /dev/vdb
+cryptsetup = true
+# set to false when installing to removable media
+# the fallback yields UEFI bootmanager updates
+uefi-fallback = false
+# Set `password-file = -` if you prefer an interactive prompt
+password-file = -
+release = 27
+authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
+
+[target]
+git-name = Joe User
+git-mail = juser@example.org
+hostname = hostb.example.org
+user = juser
+init-user = true
+locale = LANG=en_US.UTF-8
+timezone = Europe/Berlin

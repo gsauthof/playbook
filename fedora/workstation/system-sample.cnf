@@ -7,6 +7,9 @@ old-var = /mnt/old-root/var
 device = /dev/vdb
 #mirror = /dev/vdc
 cryptsetup = false
+# set to false when installing to removable media
+# the fallback yields UEFI bootmanager updates
+uefi-fallback = true
 # Set `password-file = -` if you prefer an interactive prompt
 password-file = pw
 release = 27

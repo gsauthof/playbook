@@ -120,7 +120,8 @@ def read_config(filename):
           'timezone': 'Europe/Berlin'
         },
         'init': {
-          'cryptsetup': 'true'
+          'cryptsetup': 'true',
+          'uefi-fallback': 'true'
         }
       })
   c.read(filename)
@@ -957,6 +958,19 @@ def install_base():
   dnf_installroot('custom-environment', group=True)
   dnf_installroot(['grub2-pc', 'grub2-efi-x64', 'shim-x64', 'efibootmgr',
       'cryptsetup', 'btrfs-progs', 'mdadm', 'git', 'zsh'])
+  # remove fallback for installs that shouldn't touch the UEFI bootmanager
+  # think: installs to removable media
+  # cf. https://unix.stackexchange.com/a/429588/1131
+  if cnf['init']['uefi-fallback'] == 'false':
+    boot_dir = '/mnt/new-root/boot/efi/EFI/BOOT/'
+    for filename in [ 'fallback.efi', 'fbx64.efi' ]:
+      os.rename('{}/{}'.format(boot_dir, filename),
+                '{}/{}.bak'.format(boot_dir, filename))
+    for filename in glob.glob('/mnt/new-root/boot/efi/EFI/fedora/grub*'):
+      shutil.copy(filename, boot_dir)
+    shutil.copy('/mnt/new-root/boot/efi/EFI/fedora/MokManager.efi', boot_dir)
+
+
 
 @execute_once
 def mk_crypttab():
