@@ -1136,11 +1136,17 @@ def run(args):
     raise RuntimeError('Unknown stage: {}'.format(args.stage))
   return 0
 
+def check_user():
+  if os.getuid() != 0:
+    log.error('You have to run this script as root user ...')
+    sys.exit(1)
+
 def imain(*a):
   global args
   args = parse_args(*a)
   if args.log:
     setup_file_logging(args.log)
+  check_user()
   log.info(('Started at {:' + log_date_format + '}')
       .format(datetime.datetime.now()))
   if args.clean and os.path.exists(args.state):
