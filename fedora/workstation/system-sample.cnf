@@ -4,11 +4,12 @@ old-etc = /mnt/old-root/etc
 old-var = /mnt/old-root/var
 
 [init]
-device=/dev/vdb
-#mirror=/dev/vdc
+device = /dev/vdb
+#mirror = /dev/vdc
 cryptsetup = false
-password-file=pw
-release=26
+# Set `password-file = -` if you prefer an interactive prompt
+password-file = pw
+release = 27
 authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
 
 [target]

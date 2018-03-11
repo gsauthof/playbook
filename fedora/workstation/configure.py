@@ -7,6 +7,7 @@ import argparse
 import configparser
 import datetime
 import functools
+import getpass
 import glob
 import hashlib
 import json
@@ -783,9 +784,27 @@ type={}
     check_output(['sfdisk', dev],
         input=inp)
 
+def get_password_interactively():
+  for i in range(3):
+    pw = getpass.getpass(stream=sys.stderr)
+    if not pw:
+      log.error("An empty password isn't allowed")
+      continue
+    pw2 = getpass.getpass(stream=sys.stderr, prompt='Verify password:')
+    if pw2 != pw:
+      log.error("Passwords don't match")
+      pw = None
+  if not pw:
+    raise RuntimeError("Obtaining password interactively, failed")
+  return pw
 
+@functools.lru_cache(1)
 def get_password():
-  with open(cnf['init']['password-file']) as f:
+  filename = cnf['init']['password-file']
+  if filename == '-':
+    return get_password_interactively()
+
+  with open(filename) as f:
     pw = f.read().splitlines()[0].strip()
     return pw
 
