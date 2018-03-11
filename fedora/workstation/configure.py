@@ -770,7 +770,7 @@ def create_partitions():
   linux_fs_type   = '0FC63DAF-8483-4772-8E79-3D69D8477DE4'
   linux_raid_type = 'A19D880F-05FC-4D3B-A006-743F0F84911E'
   boot_type       = linux_fs_type
-  if len(dev) > 1:
+  if len(devs) > 1:
     esp_type  = linux_raid_type
     boot_type = linux_raid_type
   inp = '''label: gpt
