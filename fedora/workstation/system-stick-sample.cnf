@@ -13,6 +13,7 @@ release = 27
 authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
 
 [target]
+package-list = package-media.list
 git-name = Joe User
 git-mail = juser@example.org
 hostname = hostb.example.org
