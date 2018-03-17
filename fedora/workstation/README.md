@@ -92,6 +92,25 @@ Stage 1:
     7530.4 INF  Running disable_avahi
        [..]
 
+## Quick Start
+
+1. Boot an existing Fedora system/image where the target disks
+   are attached. Either on bare metal or inside Qemu.
+2. Checkout this repository.
+3. Create a `system.cnf` (based on one of the examples)
+4. Create a `pw` file that contains the password for the target.
+5. Create a `package.list` that contains a selection of packages.
+   See also this directory for examples.
+6. Create a `unpackage.list` for deinstalling unwanted packages
+   from the base system (cf. this directory).
+6. Change to the root user.
+7. Execute: `./configure --stage 0`
+8. Boot into the new system
+9. Execute: `./configure --stage 1` in `/root/play-$release`
+   directory.
+
+See also: `./configure.py --help`
+
 ## Notes
 
 The configure Python program reads some configuration from
