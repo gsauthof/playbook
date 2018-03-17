@@ -117,11 +117,14 @@ def read_config(filename):
           'restore-postgres': 'false',
           'setup-pamu2f': 'false',
           'setup-nfsd': 'false',
-          'timezone': 'Europe/Berlin'
+          'timezone': 'Europe/Berlin',
+          'package-list': 'package.list',
+          'unpackage-list': 'unpackage.list'
         },
         'init': {
           'cryptsetup': 'true',
-          'uefi-fallback': 'true'
+          'uefi-fallback': 'true',
+          'password-file': 'pw'
         }
       })
   c.read(filename)
@@ -131,6 +134,16 @@ def read_config(filename):
   for dev in [ 'device', 'mirror' ]:
     if dev in c['init']:
       c['init'][dev] = os.path.realpath(c['init'][dev])
+  pwf = c['init']['password-file']
+  if args.stage == 0 and pwf != '-' and not os.path.exists(pwf):
+    log.error("Password file '{}' doesn't exist. "
+        "Create one or set init.password-file to another file "
+        "or to - for an interactive prompt.".format(pwf))
+    sys.exit(1)
+  if not os.path.exists(c['target']['package-list']):
+    log.error("Package selection file '{}' doesn't exist "
+        "(cf. target.package-list key).".format(c['target']['package-list']))
+    sys.exit(1)
   return c
 
 
@@ -544,7 +557,7 @@ def clone_utility():
 
 @execute_once
 def install_packages():
-  with open('package.list') as f:
+  with open(cnf['target']['package-list']) as f:
     pkgs = f.read().splitlines()
     log.info('Installing {} packages ...'.format(pkgs.__len__()))
     dnf_install(pkgs)
@@ -558,7 +571,7 @@ def install_packages():
 #     https://bugzilla.redhat.com/show_bug.cgi?id=1271872
 @execute_once
 def remove_packages():
-  filename = 'unpackage.list'
+  filename = cnf['target']['unpackage-list']
   if not os.path.exists(filename):
     raise SkipThis()
   with open(filename) as f:
@@ -1158,7 +1171,7 @@ def copy_self():
   os.makedirs(dst, exist_ok=True)
   for fn in [ __file__, args.config, args.state ]:
     shutil.copy(fn, dst)
-  for fn in [ 'package.list', 'unpackage.list' ]:
+  for fn in [ cnf['target']['package-list'], cnf['target']['unpackage-list'] ]:
     if os.path.exists(fn):
       shutil.copy(fn, dst)
 
