@@ -10,6 +10,10 @@ cryptsetup = false
 # set to false when installing to removable media
 # the fallback yields UEFI bootmanager updates
 uefi-fallback = true
+# set to false when installing to removable media
+# with the hostonly option dracut excludes some kernel modules
+# => smaller initramfs, but less portable to different hardware
+hostonly = true
 # Set `password-file = -` if you prefer an interactive prompt
 password-file = pw
 release = 27

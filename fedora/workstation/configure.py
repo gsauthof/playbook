@@ -124,6 +124,7 @@ def read_config(filename):
         'init': {
           'cryptsetup': 'true',
           'uefi-fallback': 'true',
+          'hostonly': 'true',
           'password-file': 'pw'
         }
       })
@@ -380,8 +381,9 @@ def mk_etc_mirror():
 @execute_once
 def commit_core_files():
   files = ['fstab', 'default/grub', 'modprobe.d/bochs.conf']
-  if os.path.exists('/etc/' + 'crypttab'):
-    files.append('crypttab')
+  for fn in [ 'crypttab', 'dracut.conf.d/01-removable.conf' ]:
+    if os.path.exists('/etc/' + fn):
+      files.append(fn)
   commit_etc(files, 'add core etc files')
 
 # cf. https://unix.stackexchange.com/a/40857/1131
@@ -986,6 +988,15 @@ def install_base():
     shutil.copy('/mnt/new-root/boot/efi/EFI/fedora/MokManager.efi', boot_dir)
 
 
+@execute_once
+def set_dracut():
+  if cnf['init']['hostonly'] == 'true':
+    raise SkipThis()
+  with open('/mnt/new-root/etc/dracut.conf.d/01-removable.conf', 'w') as f:
+    print('''# include all kernel modules
+hostonly="no"
+# thus, we don't need an extra rescue entry
+dracut_rescue_image="no"''', file=f)
 
 @execute_once
 def mk_crypttab():
@@ -1187,6 +1198,7 @@ def stage0():
   mk_crypttab()
   mk_fstab()
   mk_grub_defaults()
+  set_dracut()
   refresh_chroot()
   install_inside_chroot()
   install_grub()
