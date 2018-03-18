@@ -36,6 +36,9 @@ Bulk install (or reinstall/upgrade) all extensions:
     $  cut -f1 -d, extension.csv | xargs utility/gs-ext.py --install
     $  cut -f1 -d, extension.csv | xargs utility/gs-ext.py --enable
 
+Note that `--install` still needs a restart of GNOME Shell (i.e.
+logout/login with Wayland).
+
 ## More Extensions
 
 See also the official [GNOME Shell extension repository][2].
@@ -71,11 +74,6 @@ Display date in the top bar:
 
     gsettings set org.gnome.desktop.interface clock-show-date true
 
-Better [selection behavior in the terminal][3]:
-
-    pid=$(dconf read /org/gnome/terminal/legacy/profiles:/default | tr -d "'")
-    dconf write /org/gnome/terminal/legacy/profiles:/:$pid/word-char-exceptions '@ms "-=&#:/.?@+~_%;"'
-
 Disable blinking cursor:
 
     gsettings set org.gnome.desktop.interface cursor-blink false
@@ -91,6 +89,15 @@ Add logout button (only works on older GNOME Shell versions):
 For e.g. GNOME Shell 3.24 there is the [Log Out Button][5]
 extension.
 
+Better [selection behavior in the terminal][3]:
+
+    puuid=$(gsettings get org.gnome.Terminal.ProfilesList default | tr -d "'")
+    gsettings set \
+      org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$puuid/ \
+        word-char-exceptions '@ms "-=&#:/.?@+~_%;"'
+
+See also `setup.sh` in this directory for applying the above and
+other nice settings in bulk.
 
 [gs]: https://en.wikipedia.org/wiki/GNOME_Shell
 [1]: https://github.com/gsauthof/utility
