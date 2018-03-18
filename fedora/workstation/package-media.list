@@ -2,6 +2,7 @@
 chrony
 ddrescue
 dstat
+gnome-tweak-tool
 gxine
 hdparm
 iwl5000-firmware
@@ -17,6 +18,8 @@ nmap
 ntpdate
 pavucontrol
 psmisc
+python3-requests
+qt5-qttools
 rsync
 screen
 smartmontools
