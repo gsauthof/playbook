@@ -838,7 +838,7 @@ def get_password():
 def mk_raid1(name, part_no, trailing_superblock=False):
   boot_dev = '/dev/md/new-{}'.format(name)
   u = str(uuid.uuid4())
-  md_dev = [ x + str(part_no) for x in devs ]
+  md_dev = [ nth_part(x, part_no) for x in devs ]
   check_output(['wipefs', '--all'] + md_dev)
   superblock_fmt = [ '--metadata=1.0' ] if trailing_superblock else []
   check_output(['mdadm', '--create', boot_dev, '--run', '--level=1',
@@ -846,13 +846,30 @@ def mk_raid1(name, part_no, trailing_superblock=False):
   state['stage0']['{}-raid1-uuid'.format(name)] = u
   return boot_dev
 
+# partitions for devices that end in a number separate
+# device name and partition number with a 'p'
+# Examples: nvme0n1 -> nvme0n1p1
+#           sda     -> sda1
+# cf. https://www.tldp.org/HOWTO/Partition-Mass-Storage-Definitions-Naming-HOWTO/x160.html
+def nth_part(dev, part_no):
+  if dev[-1] >= '0' and dev[-1] <= '9':
+    return '{}p{}'.format(dev, part_no)
+  else:
+    return '{}{}'.format(dev, part_no)
+
+def test_nth_part():
+  assert nth_part('/dev/sda', 3) == '/dev/sda3'
+  assert nth_part('/dev/sda', '2') == '/dev/sda2'
+  assert nth_part('/dev/mmcblk0', 1) == '/dev/mmcblk0p1'
+  assert nth_part('/dev/nvme0n1', 4) == '/dev/nvme0n1p4'
+
 @execute_once
 def mk_fs():
   global state
   devs = get_devices()
   if len(devs) == 1:
-    boot_efi_dev = devs[0] +'2'
-    boot_dev     = devs[0] +'3'
+    boot_efi_dev = nth_part(devs[0], '2')
+    boot_dev     = nth_part(devs[0], '3')
   else:
     boot_efi_dev = mk_raid1('boot-efi', 2, True)
     boot_dev     = mk_raid1('boot', 3)
@@ -870,15 +887,15 @@ def mk_fs():
     state['stage0']['luks-uuid'] = []
     for i, dev in enumerate(devs):
       u = str(uuid.uuid4())
-      check_output(['cryptsetup', 'luksFormat', dev + '4',
+      check_output(['cryptsetup', 'luksFormat', nth_part(dev, 4),
         '--key-file', '-', '--uuid', u], input=pw, redact_input=True)
       state['stage0']['luks-uuid'].append(u)
       d = 'new-root-{}'.format(i)
-      check_output(['cryptsetup', 'luksOpen', dev + '4', d,
+      check_output(['cryptsetup', 'luksOpen', nth_part(dev, 4), d,
         '--key-file', '-'], input=pw, redact_input=True)
       root_dev.append('/dev/mapper/'+d)
   else:
-    root_dev = [ dev + '4' for dev in devs ]
+    root_dev = [ nth_part(dev, 4) for dev in devs ]
   u = str(uuid.uuid4())
   flags = [ '--data', 'raid1' ] if 'mirror' in cnf['init'] else []
   check_output(['wipefs', '--all'] + root_dev)
