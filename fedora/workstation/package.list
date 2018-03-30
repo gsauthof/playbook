@@ -93,10 +93,12 @@ fbreader
 fbreader-qt
 fdupes
 fedora-release
+fedora-workstation-backgrounds
 feh
 ffmpeg
 file-devel
 fio
+firefox
 flex
 flex-devel
 flex-doc
@@ -126,8 +128,11 @@ git-cvs
 git-email
 gitk
 glibc-devel
+gnome-shell-extension-alternate-tab
 gnome-shell-extension-drive-menu
+gnome-shell-extension-suspend-button
 gnome-shell-extension-topicons-plus
+gnome-terminal
 gnome-tweak-tool
 gnucash
 gnumeric
@@ -138,8 +143,8 @@ google-droid-sans-mono-fonts
 google-droid-serif-fonts
 gperf
 graphviz
-grub2
-grub2-efi
+grub2-efi-x64
+grub2-pc
 gsl-devel
 gstreamer-ffmpeg
 gtk3-devel
@@ -167,6 +172,7 @@ iperf3
 ipv6calc
 isomaster
 ispc
+iwl7260-firmware
 iwyu
 java-1.8.0-openjdk
 jpilot
@@ -419,6 +425,7 @@ screen
 scrot
 setools-console
 sgabios
+shim-x64
 simple-mtpfs
 sipcalc
 sloccount
@@ -458,6 +465,7 @@ texlive-texdoc-bin
 texmaker
 tftp-server
 tidy
+tilix
 tlp
 tmux
 tor

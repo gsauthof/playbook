@@ -1003,6 +1003,7 @@ def install_base():
   # the custom-environment and minimal-environment groups seem to be identical
   dnf_installroot('custom-environment', group=True)
   dnf_installroot(['grub2-pc', 'grub2-efi-x64', 'shim-x64', 'efibootmgr',
+      'efivar',
       'cryptsetup', 'btrfs-progs', 'mdadm', 'git', 'zsh'])
   # remove fallback for installs that shouldn't touch the UEFI bootmanager
   # think: installs to removable media
