@@ -6,6 +6,7 @@
 import argparse
 import configparser
 import datetime
+from distutils.version import LooseVersion
 import functools
 import getpass
 import glob
@@ -630,13 +631,22 @@ def restore_postfix():
   check_output(['systemctl', 'restart', 'postfix.service'])
   check_output(['systemctl', 'enable', 'postfix.service'])
 
+def old_pg_version():
+  with open('/var/lib/pgsql/data/PG_VERSION') as f:
+    return LooseVersion(f.read().strip())
+
+def pg_version():
+  v = check_output(['rpm', '-q', '--qf', '%{VERSION}', 'postgresql']).stdout.strip()
+  return LooseVersion('.'.join(v.split('.')[0:2]))
+
 @execute_once
 def restore_postgres():
   if cnf['target']['restore-postgres'] != 'true':
     raise SkipThis()
   old_var = cnf['self']['old-var']
   check_output(['rsync', '-a', old_var + '/lib/pgsql/data', '/var/lib/pgsql'])
-  check_output(['postgresql-setup', '--upgrade'])
+  if old_pg_version() < pg_version():
+    check_output(['postgresql-setup', '--upgrade'])
 
 @execute_once
 def restore_etc():
