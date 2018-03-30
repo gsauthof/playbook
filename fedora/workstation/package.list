@@ -84,6 +84,7 @@ dwarves
 easy-rsa
 edac-utils
 efibootmgr
+efivar
 elinks
 enscript
 ettercap
@@ -219,6 +220,7 @@ libvirt
 libxml++-devel
 libxml2-devel
 libzstd-devel
+links
 liquibase
 livna-release
 llvm
@@ -353,6 +355,7 @@ python3-nltk
 python3-passlib
 python3-plumbum
 python3-psutil
+python3-pydbus
 python3-pygments-markdown-lexer
 python3-pymongo
 python3-pytest
