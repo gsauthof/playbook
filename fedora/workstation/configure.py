@@ -542,6 +542,8 @@ def set_dotfiles():
           sudo=sudo)
       check_output(['git', 'submodule', 'update', '--init' ], cwd=work_dir)
     check_output(['./install.sh'], cwd=work_dir, sudo=sudo)
+    if 'old-root' in cnf['self']:
+      shutil.copy(cnf['self']['old-root'] + '/.cache/zsh_history', '/root/.cache')
 
 @execute_once
 def clone_utility():

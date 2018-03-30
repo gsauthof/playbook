@@ -2,6 +2,8 @@
 download-dir = .
 old-etc = /mnt/old-root/etc
 old-var = /mnt/old-root/var
+# restores an old zsh_history if present
+# old-root = /mnt/old-root/root
 
 [init]
 device = /dev/vdb
