@@ -7,6 +7,7 @@ adobe-source-sans-pro-fonts
 aiccu
 aircrack-ng
 alex
+alsa-utils
 android-tools
 anka-coder-condensed-fonts
 anka-coder-narrow-fonts
@@ -24,6 +25,7 @@ autoconf-archive
 autoconf213
 autossh
 batik-css
+bind-utils
 binwalk
 bison
 bison-devel
@@ -67,6 +69,7 @@ cvs-doc
 cvsgraph
 cvsps
 cwiid-utils
+cyrus-sasl-plain
 dar
 dash
 ddrescue
@@ -88,6 +91,7 @@ efivar
 elinks
 enscript
 ettercap
+evince
 exif
 fbreader
 fbreader-qt
@@ -147,6 +151,7 @@ grub2-efi-x64
 grub2-pc
 gsl-devel
 gstreamer-ffmpeg
+gstreamer1-plugins-ugly-free
 gtk3-devel
 gtkterm
 hamster-time-tracker
@@ -340,6 +345,7 @@ procmail
 protobuf-c-devel
 proxychains-ng
 psi
+pulseaudio-utils
 pv
 pykickstart
 python-eyed3
@@ -347,7 +353,6 @@ python-firewall
 python-lldb
 python-qrcode
 python-xdot
-python2-tornado
 python3-aiohttp
 python3-bcrypt
 python3-configargparse
