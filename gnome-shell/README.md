@@ -55,6 +55,12 @@ shell icons. The only reliable option to see the tray icons at
 all is to keep the bottom-left tray icon bar expanded after
 interactively expanding it (it's minimized, by default).
 
+With Fedora 27 (GNOME shell 3.26) the bottom-left tray icon bar
+[isn't available anymore][6]. The Top Icons Plus extension doesn't
+crash GNOME shell anymore. But (as of 2018-04) it's unmaintained
+and contains a bug where the space of icons of closed programs
+isn't freed. It's packaged in the Fedora repository, though.
+
 ## Other Settings
 
 Extensions aren't the only way to customize GNOME Shell.
@@ -105,3 +111,4 @@ other nice settings in bulk.
 [3]: https://unix.stackexchange.com/q/290544/1131
 [4]: https://en.wikipedia.org/wiki/Compose_key
 [5]: https://gitlab.com/paddatrapper/log-out-button-gnome-extension
+[6]: https://blogs.gnome.org/aday/2017/08/31/status-icons-and-gnome/

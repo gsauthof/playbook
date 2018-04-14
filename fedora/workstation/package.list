@@ -134,6 +134,7 @@ gitk
 glibc-devel
 gnome-shell-extension-alternate-tab
 gnome-shell-extension-drive-menu
+gnome-shell-extension-refresh-wifi
 gnome-shell-extension-suspend-button
 gnome-shell-extension-topicons-plus
 gnome-terminal
