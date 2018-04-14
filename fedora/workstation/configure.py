@@ -1028,11 +1028,21 @@ hostonly="no"
 # thus, we don't need an extra rescue entry
 dracut_rescue_image="no"''', file=f)
 
+# We enable the discard option such that it's possible to use
+# fstrim on a filesystem residing on a crypted device.
+# (dracut automatically includes the crypttab)
+# Note that it isn't recommended to enable the discard filesystem
+# mount option, as well. Instead, a weekly fstrim job makes sense.
+# Security implications: Comparable to a newly created luks device where
+# the FS was created without filling the device with random garbage, before.
+# Meaning: no serious implications with the current luks defaults.
+# Also note that the fstrim.timer job is disabled, by default
+# (as of Fedora 27).
 @execute_once
 def mk_crypttab():
   if cnf['init']['cryptsetup'] != 'true':
     raise SkipThis()
-  luks_conf = 'luks-{0} UUID={0} none'
+  luks_conf = 'luks-{0} UUID={0} none discard'
   crypttab = '/mnt/new-root/etc/crypttab'
   with open(crypttab, 'w') as f:
     for uuid in state['stage0']['luks-uuid']:
