@@ -87,8 +87,16 @@ uBlock Origin has the following advantages:
   are available)
 - some additional useful configuration options
 - it seems to use less resources (RAM/CPU)
+- Better defaults, works against more anti-ad-blocker blockers,
+  out of the box
 
-
+For rewriting Google search result links, the [Search Link
+Fix][slf] addon isn't that bad. But it doesn't work with Firefox
+on Android. Instead, it explicitly supports the Yandex search
+machine. On comparison that this, the [Don't track me
+Google][dtmg] addon works fine with Firefox on Android and in
+addition also supports rewriting the HTTP referrer when following
+a search result link (can be disabled in the preferences).
 
 
 [1]: https://github.com/gsauthof/utility#firefox-addons
@@ -115,3 +123,5 @@ uBlock Origin has the following advantages:
 [abp]: https://addons.mozilla.org/en-US/firefox/addon/adblock-plus/
 [vv]: https://github.com/ueokande/vim-vixen
 [tri]: https://github.com/cmcaine/tridactyl
+[slf]: https://github.com/palant/searchlinkfix
+[dtmg]: https://github.com/Rob--W/dont-track-me-google
