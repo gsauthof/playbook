@@ -3,6 +3,8 @@ clang
 coreutils
 curl
 diffutils
+dnsutils
+elinks
 file
 findutils
 gdb
@@ -11,9 +13,11 @@ gnupg2
 grep
 htop
 less
+libc++
 libutil-dev
 linux-man-pages
 ltrace
+lynx
 man
 mathomatic
 mosh
@@ -28,8 +32,10 @@ rsync
 screen
 socat
 strace
+termux-api
 timewarrior
 tmux
+tracepath
 vim
 wget
 zsh
