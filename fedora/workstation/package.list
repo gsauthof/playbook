@@ -4,7 +4,6 @@ ShellCheck
 Thunar
 adobe-source-code-pro-fonts
 adobe-source-sans-pro-fonts
-aiccu
 aircrack-ng
 alex
 alsa-utils
@@ -143,6 +142,8 @@ gnucash
 gnumeric
 gocr
 golang
+golang-github-edsrzf-mmap-go-devel
+golang-github-golang-sys-devel
 google-droid-sans-fonts
 google-droid-sans-mono-fonts
 google-droid-serif-fonts
@@ -152,6 +153,7 @@ grub2-efi-x64
 grub2-pc
 gsl-devel
 gstreamer-ffmpeg
+gstreamer1-plugins-bad-freeworld
 gstreamer1-plugins-ugly-free
 gtk3-devel
 gtkterm
@@ -354,6 +356,7 @@ python-firewall
 python-lldb
 python-qrcode
 python-xdot
+python3-PyPDF2
 python3-aiohttp
 python3-bcrypt
 python3-configargparse
@@ -365,6 +368,8 @@ python3-ipython
 python3-lockfile
 python3-nltk
 python3-passlib
+python3-pdfrw
+python3-pillow-devel
 python3-plumbum
 python3-psutil
 python3-pydbus
@@ -420,6 +425,7 @@ rlwrap
 rootsh
 rpmdevtools
 rpmfusion-free-release
+rpmlint
 rtmpdump
 ruby-devel
 rust
@@ -476,6 +482,7 @@ tlp
 tmux
 tor
 trac
+traceroute
 trafficserver
 trang
 transmission-qt
@@ -531,6 +538,8 @@ xorg-x11-apps
 xorg-x11-server-Xnest
 xorg-x11-server-Xvfb
 xorg-x11-twm
+xorg-x11-utils
+xpdf
 xsane
 xsane-gimp
 xterm
