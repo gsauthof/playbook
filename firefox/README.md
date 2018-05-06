@@ -93,10 +93,15 @@ uBlock Origin has the following advantages:
 For rewriting Google search result links, the [Search Link
 Fix][slf] addon isn't that bad. But it doesn't work with Firefox
 on Android. Instead, it explicitly supports the Yandex search
-machine. On comparison that this, the [Don't track me
-Google][dtmg] addon works fine with Firefox on Android and in
-addition also supports rewriting the HTTP referrer when following
+machine. In comparison to this, the [Don't track me
+Google][dtmg] addon works fine with Firefox on Android and
+additionally supports rewriting the HTTP referrer when following
 a search result link (can be disabled in the preferences).
+
+## Theme
+
+Firefox comes with 3 default themes (Dark, Default and Light)
+where the Dark one looks decent enough.
 
 
 [1]: https://github.com/gsauthof/utility#firefox-addons
