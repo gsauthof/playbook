@@ -1255,6 +1255,8 @@ def stage0():
   bind_umount()
   copy_self()
   umount_fs()
+  run_output(['load_policy', '-i'])
+  run_output(['setenforce', '1'])
   log.info('Stage 0 successfully completed. Reboot into the new system'
       ' and continue with stage 1 (`./configure.py --stage 1`). '
       'This script and its configuration are already copied '
