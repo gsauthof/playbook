@@ -5,7 +5,6 @@ cryptsetup
 ddrescue
 dmidecode
 dosfstools
-dstat
 edac-utils
 efibootmgr
 gdisk
@@ -37,6 +36,7 @@ nmap
 ntpdate
 patch
 pciutils
+pcp-system-tools
 psmisc
 python3-tracer
 rsync

@@ -1011,11 +1011,15 @@ def install_base():
   if cnf['init']['uefi-fallback'] == 'false':
     boot_dir = '/mnt/new-root/boot/efi/EFI/BOOT/'
     for filename in [ 'fallback.efi', 'fbx64.efi' ]:
-      os.rename('{}/{}'.format(boot_dir, filename),
-                '{}/{}.bak'.format(boot_dir, filename))
+        src = '{}/{}'.format(boot_dir, filename)
+        if os.path.exists(src):
+            os.rename(src, '{}/{}.bak'.format(boot_dir, filename))
     for filename in glob.glob('/mnt/new-root/boot/efi/EFI/fedora/grub*'):
       shutil.copy(filename, boot_dir)
-    shutil.copy('/mnt/new-root/boot/efi/EFI/fedora/MokManager.efi', boot_dir)
+    for filename in ('/mnt/new-root/boot/efi/EFI/fedora/' + x
+            for x in ('mmx64.efi', 'MokManager.efi') ):
+        if os.path.exists(filename):
+            shutil.copy(filename, boot_dir)
 
 
 @execute_once

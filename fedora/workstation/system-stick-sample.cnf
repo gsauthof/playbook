@@ -11,11 +11,11 @@ uefi-fallback = false
 hostonly = false
 # Set `password-file = -` if you prefer an interactive prompt
 password-file = -
-release = 27
+release = 29
 authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
 
 [target]
-package-list = package-media.list
+package-list = package-stick.list
 git-name = Joe User
 git-mail = juser@example.org
 hostname = hostb.example.org
