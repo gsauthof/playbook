@@ -410,17 +410,18 @@ def add_rpmfusion():
   commit_etc(glob.glob('/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion*')
            + glob.glob('/etc/yum.repos.d/rpmfusion*'), 'add rpmfusion repo' )
 
+# livna is dead long live rpmfusion free tainted
+# cf. https://rpmfusion.org/FAQ#Free_Tainted
+# https://rpmfusion.org/FAQ#How_can_I_install_libdvdcss.3F
+# Background: on a Fedora 27 system, at some point a `dnf update` resulted in the
+# removal of the livna-release package and install of the rpmfusion-free-release-tainted
+# package (i.e. livna files under /etc/yum/repos.d/ gone, free tainted repo
+# files installed there)>
 @execute_once
 def add_livna():
-  d = cnf['self']['download-dir']
-  rpm_name = d  + '/livna-release.rpm'
-  rpm_hash = '18d08b96bc0d6912ba2e957a33ff5c50d7f8f3bae710f5186f3ebc0c78458e13'
-  if not os.path.exists(rpm_name):
-    download('http://rpm.livna.org/livna-release.rpm', rpm_name)
-  check_file_hash(rpm_name, rpm_hash)
-  dnf_install(rpm_name)
-  commit_etc(['pki/rpm-gpg/RPM-GPG-KEY-livna', 'yum.repos.d/livna.repo'],
-      'add livna repo')
+  dnf_install('rpmfusion-free-release-tainted')
+  commit_etc(glob.glob('/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion*')
+           + glob.glob('/etc/yum.repos.d/rpmfusion*'), 'add rpmfusion free tainted repo' )
 
 @execute_once
 def set_host():
