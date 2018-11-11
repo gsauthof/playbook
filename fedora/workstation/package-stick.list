@@ -37,6 +37,7 @@ ntpdate
 patch
 pciutils
 pcp-system-tools
+powertop
 psmisc
 python3-tracer
 rsync
