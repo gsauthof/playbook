@@ -397,10 +397,12 @@ def add_rpmfusion():
   if not os.path.exists(key_name):
     download('https://rpmfusion.org/keys?action=AttachFile&do=get&target='
         + 'RPM-GPG-KEY-rpmfusion-free-fedora-{}'.format(release), key_name)
-  r = check_output(['gpg2', '--with-fingerprint', key_name])
-  if r.stdout.splitlines()[1]\
-      .endswith('E4EE E113 33C9 3091 8D8E  638D 20C7 C9D6 9690 E4AF'):
-      raise RuntimeError('gpg fingerprint mismatch for {}'.format(key_name))
+  r = check_output(['gpg2', '--show-keys', '--with-fingerprint', key_name])
+  fingerprint = r.stdout.splitlines()[1].strip()
+  trusted_fingerprint = 'BD12 7385 C312 090F F2F3  5FA1 1191 A7C4 42F1 9ED0'
+  if fingerprint != trusted_fingerprint:
+      raise RuntimeError('gpg fingerprint mismatch for {}: {} != trusted: {}'
+              .format(key_name, fingerprint, trusted_fingerprint))
   check_output(['rpm', '--import', key_name])
   if not os.path.exists(rpm_name):
     download('https://download1.rpmfusion.org/free/fedora/'
