@@ -15,6 +15,7 @@ release = 29
 authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
 
 [target]
+rpmfusion-fingerprint = BD12 7385 C312 090F F2F3  5FA1 1191 A7C4 42F1 9ED0
 package-list = package-stick.list
 git-name = Joe User
 git-mail = juser@example.org

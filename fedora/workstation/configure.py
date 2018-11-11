@@ -310,15 +310,16 @@ def dnf_install(pkgs, **ys):
   pkgs = pkgs if isinstance(pkgs, list) else [ pkgs ]
   check_output(['dnf', '-y', 'install'] + pkgs, **ys)
 
-def dnf_installroot(pkgs, group=False):
+def dnf_installroot(pkgs, group=False, exclude=None):
   pkgs = pkgs if isinstance(pkgs, list) else [ pkgs ]
   if group:
     cmd = [ 'group', 'install' ]
   else:
     cmd = [ 'install' ]
   release = cnf['init']['release']
+  xs = [ '--exclude='+x for x in exclude ] if exclude else []
   check_output(['dnf', '-y', '--installroot=/mnt/new-root',
-    '--releasever={}'.format(release)] + cmd + pkgs)
+    '--releasever={}'.format(release)] + xs + cmd + pkgs)
 
 def commit_etc(filenames, msg):
   mirror = cnf['target']['etc-mirror']
@@ -400,6 +401,8 @@ def add_rpmfusion():
   r = check_output(['gpg2', '--show-keys', '--with-fingerprint', key_name])
   fingerprint = r.stdout.splitlines()[1].strip()
   trusted_fingerprint = 'BD12 7385 C312 090F F2F3  5FA1 1191 A7C4 42F1 9ED0'
+  if 'rpmfusion-fingerprint' in cnf['target']:
+      trusted_fingerprint = cnf['target']['rpmfusion-fingerprint']
   if fingerprint != trusted_fingerprint:
       raise RuntimeError('gpg fingerprint mismatch for {}: {} != trusted: {}'
               .format(key_name, fingerprint, trusted_fingerprint))
@@ -814,6 +817,9 @@ type={}
       check_output(['sfdisk', '--delete', dev])
     check_output(['sfdisk', dev],
         input=inp)
+  # this is necessary when dev=/dev/loop0
+  # otherwise /dev/loop0p1... don't show up
+  check_output(['partx', '-av', dev])
 
 def get_password_interactively():
   for i in range(3):
@@ -995,19 +1001,42 @@ def bind_umount(do_raise=True):
   for point in [ 'dev', 'proc', 'sys' ]:
     check_output(['umount', '/mnt/new-root/'+point], do_raise=do_raise)
 
+# cf. kernel-install(8)
+# also possible to put these files under .install/
+# $ 100 question then is: what is the working directory when the scripts
+# run from dnf --installroot ...?
+def disable_initramfs_scripts():
+    # disable initramfs generation by kernel-core, we generate it later
+    os.makedirs('/mnt/new-root/etc/kernel/install.d', exist_ok=True)
+    for x in ('20-grub.install', '50-dracut.install', '51-dracut-rescue.install'):
+        check_output(['ln', '-sf', '/dev/null', '/mnt/new-root/etc/kernel/install.d/'+x])
+
+def enable_initramfs_scripts():
+    for x in ('20-grub.install', '50-dracut.install', '51-dracut-rescue.install'):
+        os.unlink('/mnt/new-root/etc/kernel/install.d/'+x)
 
 # dnf -y --installroot=/mnt/new-root --releasever=27 install system-release
 # dnf -y --installroot=/mnt/new-root --releasever=27 group install custom-environment
 # dnf -y --installroot=/mnt/new-root --releasever=27 install grub2-pc grub2-efi-x64 shim-x64 efibootmgr cryptsetup btrfs-progs mdadm git zsh
 
+# xterm-resize provides resize which is useful for
+# adjusting the geometry over serial lines
+
 @execute_once
 def install_base():
   dnf_installroot('system-release')
+  # not really worth it as it just saves as ~ 15 seconds and we don't want to
+  # interfere with packages like grub2-common which currently (as of 2018)
+  # places some zero byte files under /etc/kernel/install.d/
+  #disable_initramfs_scripts()
   # the custom-environment and minimal-environment groups seem to be identical
-  dnf_installroot('custom-environment', group=True)
-  dnf_installroot(['grub2-pc', 'grub2-efi-x64', 'shim-x64', 'efibootmgr',
-      'efivar',
-      'cryptsetup', 'btrfs-progs', 'mdadm', 'git', 'zsh'])
+  dnf_installroot('custom-environment', group=True, exclude=['plymouth'])
+  dnf_installroot(['btrfs-progs', 'cryptsetup', 'efibootmgr', 'efivar',
+      'git', 'grub2-efi-x64', 'grub2-pc', 'kernel', 'mdadm', 'shim-x64',
+      'xterm-resize', 'zsh'
+      ])
+  #enable_initramfs_scripts()
+
   # remove fallback for installs that shouldn't touch the UEFI bootmanager
   # think: installs to removable media
   # cf. https://unix.stackexchange.com/a/429588/1131
@@ -1073,6 +1102,17 @@ UUID={2}   /home      btrfs    subvol=home,x-systemd.device-timeout=0,noatime   
 
 # Even without real serial hardware available - configuring it just in case
 # makes sense as fallback when running inside qemu.
+# The order of console= arguments used to make a difference, i.e.
+# the dracut emergency shell just being displayed on the last specified console.
+# With Fedora 29 this doesn't seem to be the case anymore.
+#
+# The rd.shell parameter instructs dracut to drop into an emergency shell
+# in case of - well - an emergency - like when it can't find its root device.
+# By default, the boot just stops
+#
+# Plymouth is disabled because it sometimes interferes with password
+# prompting or gets in the way in emergency situations.
+#
 # The bochs_drm is disabled for a better user experience inside a
 # text-mode qemu (cf. https://unix.stackexchange.com/a/347751/1131).
 @execute_once
@@ -1086,7 +1126,7 @@ GRUB_DISTRIBUTOR=Fedora
 GRUB_DEFAULT=saved
 GRUB_DISABLE_SUBMENU=true
 GRUB_TERMINAL_OUTPUT=console
-GRUB_CMDLINE_LINUX="{}quiet console=tty0 console=ttyS0,115200"
+GRUB_CMDLINE_LINUX="{}quiet console=tty0 console=ttyS0,115200 rd.shell plymouth.enable=0"
 GRUB_DISABLE_RECOVERY=true'''
   grub_default = '/mnt/new-root/etc/default/grub'
   with open(grub_default, 'w') as f:
@@ -1111,8 +1151,17 @@ def refresh_chroot():
 # exit
 
 @execute_once
-def install_inside_chroot():
-  dnf_install('kernel', chroot=True)
+def generate_initramfs():
+    # so, installing custom-environment installs the kernel-core package,
+    # but not the 'kernel' package and thus also no kernel-modules-*
+    # Only the kernel-core package regenerates initramfs images in its
+    # post-install scripts (via `dracut -f`).
+    # Thus, that automatic initramfs generation is too early, because we
+    # install other packages and change some config files later that affect
+    # initramfs generation.
+    # This is the reason why we disable automatic initramfs generation earlier
+    # and explicitly generate it now.
+    check_output(['dracut', '-v', '-f', '--regenerate-all'], chroot=True)
 
 
 # chown /mnt/new-root
@@ -1247,7 +1296,7 @@ def stage0():
   mk_grub_defaults()
   set_dracut()
   refresh_chroot()
-  install_inside_chroot()
+  generate_initramfs()
   install_grub()
   create_user()
   set_authorized_keys()
