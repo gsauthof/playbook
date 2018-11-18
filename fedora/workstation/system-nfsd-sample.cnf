@@ -1,0 +1,34 @@
+[self]
+download-dir = .
+old-etc = /mnt/old/etc
+#old-var = /mnt/old/root/var
+# restores an old zsh_history if present
+old-root = /mnt/old/root
+
+[init]
+device=/dev/disk/by-id/ata-TOSHIBA_1234
+mirror=/dev/disk/by-id/ata-INTEL_1234
+cryptsetup = false
+password-file=pw
+release=29
+authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
+
+[target]
+rpmfusion-fingerprint = BD12 7385 C312 090F F2F3  5FA1 1191 A7C4 42F1 9ED0
+package-list = package-nfsd.list
+git-name = Joe User
+git-mail = juser@example.org
+hostname = hostb.example.org
+user = juser
+init-user = true
+locale = LANG=en_US.UTF-8
+timezone = Europe/Berlin
+enable-services = 
+restore-postfix = false
+restore-postgres = false
+setup-pamu2f = false
+setup-nfsd = true
+mount-points = /mnt/main
+    /mnt/backup
+custom-etc-files = exports.d/main.exports
+    modprobe.d/intel_qat.conf
