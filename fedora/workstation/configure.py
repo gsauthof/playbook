@@ -860,6 +860,7 @@ def get_password():
 # umount /mnt/new-root
 
 def mk_raid1(name, part_no, trailing_superblock=False):
+  devs = get_devices()
   boot_dev = '/dev/md/new-{}'.format(name)
   u = str(uuid.uuid4())
   md_dev = [ nth_part(x, part_no) for x in devs ]
