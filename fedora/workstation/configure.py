@@ -815,11 +815,14 @@ type={}
   for dev in devs:
     if has_partitions(dev):
       check_output(['sfdisk', '--delete', dev])
+    # if this fails with:
+    # blockdev: ioctl error on BLKRRPART: Device or resource busy
+    # cf. https://serverfault.com/a/940531/63769
     check_output(['sfdisk', dev],
         input=inp)
-  # this is necessary when dev=/dev/loop0
-  # otherwise /dev/loop0p1... don't show up
-  check_output(['partx', '-av', dev])
+    # this is necessary when dev=/dev/loop0
+    # otherwise /dev/loop0p1... don't show up
+    check_output(['partx', '-uv', dev])
 
 def get_password_interactively():
   for i in range(3):
