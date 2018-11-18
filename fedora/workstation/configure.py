@@ -741,6 +741,15 @@ SATA_LINKPWR_ON_BAT=max_performance'''
   commit_etc(tlp, 'be conservative about SATA link-power settings ...')
 
 @execute_once
+def mk_mount_points():
+    if 'mount-points' not in cnf['target']:
+        raise SkipThis()
+    ms = cnf['target']['mount-points'].split()
+    for m in ms:
+        log.info('Creating mount point: {}'.format(m))
+        os.makedirs(m, exist_ok=True)
+
+@execute_once
 def set_nfsd():
   if cnf['target']['setup-nfsd'] != 'true':
     raise SkipThis()
@@ -772,6 +781,7 @@ def stage1():
   restore_etc()
   enable_services()
   set_pam_u2f()
+  mk_mount_points()
   set_nfsd()
   return 0
 
