@@ -1,11 +1,17 @@
 @gnome-desktop
+chromium
 chrony
+colorhug-client-flash
 ddrescue
-dstat
+ffmpeg
+firefox
 gnome-tweak-tool
+gstreamer-plugins-bad
+gstreamer-plugins-good
+gstreamer-plugins-ugly
 gxine
 hdparm
-iwl5000-firmware
+iwl*-firmware
 libdvdcss
 lsof
 memtester
@@ -17,6 +23,7 @@ nfs-utils
 nmap
 ntpdate
 pavucontrol
+pcp-system-tools
 psmisc
 python3-requests
 qt5-qttools
@@ -29,6 +36,8 @@ strace
 tcpdump
 vim-enhanced
 vlc
+wodim
 xine-ui
 youtube-dl
+zsh
 zsnes
