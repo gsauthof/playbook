@@ -1,9 +1,9 @@
 [self]
 download-dir = .
-old-etc = /mnt/old-root/etc
-old-var = /mnt/old-root/var
+old-etc = /mnt/old/etc
+old-var = /mnt/old/var
 # restores an old zsh_history if present
-# old-root = /mnt/old-root/root
+# old-root = /mnt/old/root
 
 [init]
 device = /dev/vdb
@@ -22,7 +22,7 @@ release = 29
 authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
 
 [target]
-# rpmfusion-fingerprint = BD12 7385 C312 090F F2F3  5FA1 1191 A7C4 42F1 9ED0
+rpmfusion-fingerprint = BD12 7385 C312 090F F2F3  5FA1 1191 A7C4 42F1 9ED0
 # package-list = package.list
 # unpackage-list = unpackage.list
 git-name = Joe User
