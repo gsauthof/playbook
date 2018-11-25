@@ -1046,8 +1046,8 @@ def install_base():
   # the custom-environment and minimal-environment groups seem to be identical
   dnf_installroot('custom-environment', group=True, exclude=['plymouth'])
   dnf_installroot(['btrfs-progs', 'cryptsetup', 'efibootmgr', 'efivar',
-      'git', 'grub2-efi-x64', 'grub2-pc', 'kernel', 'mdadm', 'shim-x64',
-      'xterm-resize', 'zsh'
+      'git', 'grub2-efi-x64', 'grub2-pc', 'kernel', 'mdadm', 'rsync',
+      'shim-x64', 'xterm-resize', 'zsh'
       ])
   #enable_initramfs_scripts()
 

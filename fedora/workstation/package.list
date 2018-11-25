@@ -14,7 +14,7 @@ ant
 antiword
 apache-commons-net
 apache-commons-net-javadoc
-ardour2
+ardour5
 arduino
 asn1c
 aspell-de
@@ -84,7 +84,6 @@ dovecot
 doxygen
 dpkg
 dsniff
-dstat
 dwarves
 easy-rsa
 edac-utils
@@ -135,6 +134,7 @@ git-cvs
 git-email
 gitk
 glibc-devel
+glibc-utils
 gnome-shell-extension-alternate-tab
 gnome-shell-extension-drive-menu
 gnome-shell-extension-refresh-wifi
@@ -211,6 +211,7 @@ libcap-devel
 libcgroup-devel
 libcgroup-tools
 libcurl-devel
+libcxx
 libdhash-devel
 libdvdcss
 libevent-devel
@@ -238,6 +239,7 @@ libxml2-devel
 libzstd-devel
 links
 liquibase
+lldb
 llvm
 lm_sensors
 lshw
@@ -280,6 +282,7 @@ mingw64-boost
 mingw64-filesystem
 mingw64-gcc
 mingw64-gcc-c++
+mingw64-gdb
 mingw64-libxml2
 mingw64-qt5-qtbase-devel
 minicom
@@ -300,6 +303,12 @@ murmur
 mutt
 nawk
 nbd
+nbdkit
+nbdkit-basic-plugins
+nbdkit-plugin-curl
+nbdkit-plugin-gzip
+nbdkit-plugin-tar
+nbdkit-plugin-xz
 ncdu
 ndisc6
 nemiver
@@ -330,6 +339,7 @@ patch
 patchelf
 pavucontrol
 pax
+pcp-system-tools
 pcsc-tools
 pdf-stapler
 perf
@@ -354,8 +364,6 @@ pulseaudio-utils
 pv
 pykickstart
 python-eyed3
-python-firewall
-python-lldb
 python-qrcode
 python-xdot
 python3-Cython
@@ -367,6 +375,7 @@ python3-bcrypt
 python3-configargparse
 python3-dateutil
 python3-devel
+python3-dnf-plugin-show-leaves
 python3-dns
 python3-flask
 python3-gssapi
@@ -428,11 +437,13 @@ quassel
 quearcode
 qutebrowser
 ragel
+rclone
 rcs
 re2c
 readline-devel
 recoverjpeg
 rekonq
+restic
 ripmime
 rlwrap
 rootsh
@@ -476,6 +487,7 @@ tcpick
 terminator
 tesseract-langpack-deu
 tesseract-osd
+testdisk
 texlive-babel-german
 texlive-babel-german-doc
 texlive-biblatex
@@ -540,7 +552,6 @@ warmux
 whois
 wine
 wine-docs
-wireshark-qt
 wmctrl
 wodim
 wol
@@ -552,6 +563,7 @@ xine-ui
 xls2csv
 xmlcopyeditor
 xmlstarlet
+xonsh
 xorg-x11-apps
 xorg-x11-server-Xnest
 xorg-x11-server-Xvfb
