@@ -720,7 +720,8 @@ auth requisite pam_u2f.so authfile=/etc/u2f_map interactive
   commit_etc(filenames, 'enable u2f auth')
   # work around SELinux policy bug, cf.
   # https://bugzilla.redhat.com/show_bug.cgi?id=1377451
-  check_output(['semanage', 'permissive', '-a', 'local_login_t'])
+  # fixed, not necessary anymore on Fedora 29
+  # check_output(['semanage', 'permissive', '-a', 'local_login_t'])
 
 @execute_once
 def set_tlp():
