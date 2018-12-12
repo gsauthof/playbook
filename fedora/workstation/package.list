@@ -3,6 +3,7 @@ ShellCheck
 Thunar
 adobe-source-code-pro-fonts
 adobe-source-sans-pro-fonts
+argyllcms
 aircrack-ng
 alex
 alsa-utils
@@ -32,6 +33,7 @@ bonnie++
 boost-devel
 boost-doc
 boost-examples
+bpftrace
 bsdiff
 btrfs-progs
 cabal-install
@@ -95,7 +97,6 @@ ettercap
 evince
 exif
 fbreader
-fbreader-qt
 fdupes
 fedora-release
 fedora-review
@@ -135,6 +136,7 @@ git-email
 gitk
 glibc-devel
 glibc-utils
+gnome-color-manager
 gnome-shell-extension-alternate-tab
 gnome-shell-extension-drive-menu
 gnome-shell-extension-refresh-wifi
@@ -211,7 +213,7 @@ libcap-devel
 libcgroup-devel
 libcgroup-tools
 libcurl-devel
-libcxx
+libcxx-devel
 libdhash-devel
 libdvdcss
 libevent-devel
@@ -305,10 +307,10 @@ nawk
 nbd
 nbdkit
 nbdkit-basic-plugins
-nbdkit-plugin-curl
-nbdkit-plugin-gzip
-nbdkit-plugin-tar
-nbdkit-plugin-xz
+nbdkit-curl-plugin
+nbdkit-gzip-plugin
+nbdkit-tar-plugin
+nbdkit-xz-plugin
 ncdu
 ndisc6
 nemiver
@@ -342,6 +344,7 @@ pax
 pcp-system-tools
 pcsc-tools
 pdf-stapler
+pdfposter
 perf
 pgpdump
 picocom
@@ -363,8 +366,6 @@ psi
 pulseaudio-utils
 pv
 pykickstart
-python-eyed3
-python-qrcode
 python-xdot
 python3-Cython
 python3-PyPDF2
@@ -377,8 +378,10 @@ python3-dateutil
 python3-devel
 python3-dnf-plugin-show-leaves
 python3-dns
+python3-eyed3
 python3-flask
 python3-gssapi
+python3-idle
 python3-img2pdf
 python3-ipython
 python3-libnacl
@@ -396,6 +399,7 @@ python3-pymongo
 python3-pytest
 python3-pytest-cov
 python3-pytest-xdist
+python3-qrcode
 python3-simplejson
 python3-sqlalchemy
 python3-tools
@@ -451,6 +455,7 @@ rpmdevtools
 rpmfusion-free-release
 rpmfusion-free-release-tainted
 rpmlint
+rsync
 rtmpdump
 ruby-devel
 rust
@@ -519,6 +524,7 @@ transmission-qt
 transmission-remote-gtk
 tsocks
 tweak
+twine
 u2f-host
 u2f-server
 udftools
@@ -573,6 +579,7 @@ xpdf
 xsane
 xsane-gimp
 xterm
+xterm-resize
 youtube-dl
 yubikey-personalization-gui
 zathura-plugins-all
