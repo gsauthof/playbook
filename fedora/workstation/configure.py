@@ -793,6 +793,10 @@ def has_partitions(dev):
       return True
   return False
 
+def get_partitions(dev):
+  r = check_output(['sfdisk', '--quiet', '--list', '--output', 'device', dev])
+  return r.stdout.splitlines()[1:]
+
 def get_devices():
   devs = [ cnf['init']['device'] ]
   if 'mirror' in cnf['init']:
@@ -824,8 +828,7 @@ size=1GiB, type={}
 type={}
 '''.format(bios_boot_type, esp_type, boot_type, linux_fs_type)
   for dev in devs:
-    if has_partitions(dev):
-      check_output(['sfdisk', '--delete', dev])
+    check_output(['wipefs', '--all'] + get_partitions(dev) + [dev])
     # if this fails with:
     # blockdev: ioctl error on BLKRRPART: Device or resource busy
     # cf. https://serverfault.com/a/940531/63769
@@ -834,6 +837,7 @@ type={}
     # this is necessary when dev=/dev/loop0
     # otherwise /dev/loop0p1... don't show up
     check_output(['partx', '-uv', dev])
+    check_output(['wipefs', '--all'] + get_partitions(dev))
 
 def get_password_interactively():
   for i in range(3):
@@ -875,7 +879,6 @@ def mk_raid1(name, part_no, trailing_superblock=False):
   boot_dev = '/dev/md/new-{}'.format(name)
   u = str(uuid.uuid4())
   md_dev = [ nth_part(x, part_no) for x in devs ]
-  check_output(['wipefs', '--all'] + md_dev)
   superblock_fmt = [ '--metadata=1.0' ] if trailing_superblock else []
   check_output(['mdadm', '--create', boot_dev, '--run', '--level=1',
       '--uuid', u, '--raid-devices=2' ] + superblock_fmt + md_dev )
@@ -934,7 +937,6 @@ def mk_fs():
     root_dev = [ nth_part(dev, 4) for dev in devs ]
   u = str(uuid.uuid4())
   flags = [ '--data', 'raid1' ] if 'mirror' in cnf['init'] else []
-  check_output(['wipefs', '--all'] + root_dev)
   check_output(['mkfs.btrfs', '--uuid', u ] + flags + root_dev)
   state['stage0']['fs-uuid']['root'] = u
   os.makedirs('/mnt/new-root', exist_ok=True)
