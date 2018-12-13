@@ -271,10 +271,9 @@ def check_output(cmd, do_raise=True, *xs, **ys):
         'Command exited with: {}\nCall: {}\n    Stdout: {}\n    Stderr: {}'
         .format(r.returncode, call, r.stdout, r.stderr)
         + ('    Stdin: {}'.format(ys['input']) if 'input' in ys else '') )
+    log.error(m)
     if do_raise:
       raise RuntimeError(m)
-    else:
-      log.error(m)
   return r
 
 def test_check_output():
