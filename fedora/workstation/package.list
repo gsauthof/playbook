@@ -135,6 +135,7 @@ git-cvs
 git-email
 gitk
 glibc-devel
+glibc-devel.i686
 glibc-utils
 gnome-color-manager
 gnome-shell-extension-alternate-tab
