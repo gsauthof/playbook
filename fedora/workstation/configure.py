@@ -947,6 +947,10 @@ def mk_fs():
   if cnf['init']['cryptsetup'] == 'true':
     for i, dev in enumerate(devs):
       check_output(['cryptsetup', 'luksClose', 'new-root-{}'.format(i)])
+  # such that /dev/disk/by-uuid is updated:
+  # (e.g. when cryptsetup device is on a loopback device)
+  for dev in devs:
+    check_output(['partx', '-uv', dev])
 
 
 # mount -o noatime,subvol=root /dev/sdb3 /mnt/new-root
