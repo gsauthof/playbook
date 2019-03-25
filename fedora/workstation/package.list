@@ -29,6 +29,7 @@ bind-utils
 binwalk
 bison
 bison-devel
+boltdb
 bonnie++
 boost-devel
 boost-doc
@@ -77,6 +78,7 @@ cyrus-sasl-plain
 dar
 dash
 ddrescue
+delve
 dialog
 dibbler-client
 dietlibc-devel
@@ -86,6 +88,7 @@ dovecot
 doxygen
 dpkg
 dsniff
+dump
 dwarves
 easy-rsa
 edac-utils
@@ -147,8 +150,10 @@ gnome-terminal
 gnucash
 gnumeric
 golang
+golang-github-coreos-bbolt-devel
 golang-github-edsrzf-mmap-go-devel
 golang-github-golang-sys-devel
+golang-golangorg-text-devel
 google-droid-sans-fonts
 google-droid-sans-mono-fonts
 google-droid-serif-fonts
@@ -163,9 +168,11 @@ gstreamer1-plugins-ugly-free
 gtk3-devel
 gtkterm
 happy
+haveged
 hdparm
 hedgewars
 hping3
+hplip-gui
 htop
 httpry
 hugs98
@@ -198,6 +205,7 @@ kdiff3-qt
 kicad
 krita
 ksh
+ktouch
 lame
 langpacks-en
 latexmk
@@ -205,16 +213,21 @@ lcov
 ldns
 leptonica-devel
 lftp
+libaacs-utils
 libacl-devel
 libasan
 libasan-static
 libattr-devel
+libbdplus
+libbluray-utils
 libbsd-devel
 libcap-devel
 libcgroup-devel
 libcgroup-tools
 libcurl-devel
+libcxx
 libcxx-devel
+libdb-devel
 libdhash-devel
 libdvdcss
 libevent-devel
@@ -373,6 +386,7 @@ python3-PyPDF2
 python3-afl
 python3-aiohttp
 python3-asyncssh
+python3-autopep8
 python3-bcrypt
 python3-configargparse
 python3-dateutil
@@ -452,6 +466,7 @@ restic
 ripmime
 rlwrap
 rootsh
+rpkg
 rpmdevtools
 rpmfusion-free-release
 rpmfusion-free-release-tainted
@@ -459,6 +474,7 @@ rpmlint
 rsync
 rtmpdump
 ruby-devel
+rubygem-mustache
 rust
 rust-gdb
 rust-lldb
@@ -487,7 +503,10 @@ stfl-devel
 strace
 subversion
 syslinux-tftpboot
+sysstat
+system-config-printer
 systemd-devel
+tcpdump
 tcpflow
 tcpick
 terminator
@@ -507,7 +526,6 @@ texlive-lastpage
 texlive-pgfgantt
 texlive-pgfgantt-doc
 texlive-texdoc
-texlive-texdoc-bin
 texmaker
 tftp-server
 tidy
@@ -546,8 +564,6 @@ vagrant-libvirt
 valgrind
 vim-X11
 vim-enhanced
-vim-latex
-vim-latex-doc
 virt-install
 virt-manager
 virt-viewer
@@ -559,12 +575,14 @@ warmux
 whois
 wine
 wine-docs
+wireshark
 wmctrl
 wodim
 wol
 xerces-c-devel
 xerces-c-doc
 xfce4-terminal
+xfsdump
 xfwm4
 xine-ui
 xls2csv
