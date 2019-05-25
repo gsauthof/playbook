@@ -11,6 +11,8 @@
   I currently have no need for it
 - func.sh - shell functions for interacting with the device
 - termux-package.list - good default package selection for Termux
+- pip-package.list - useful Python packages that aren't available in
+  the Termux repository
 
 
 ## Preliminaries
@@ -84,22 +86,28 @@ a matter of setting up ssh. For example:
 
 Inside termux:
 
-    $ mkdir .ssh
-    $ cat > .ssh/authorized_keys # copy and paste a pub key
-    $ sshd                       # listens on 8022, any username goes
+    $ termux-setup-storage
+    $ pkg install openssh
+    $ mkdir -p .ssh
+    $ chmod 700 .ssh
+    $ cat >> .ssh/authorized_keys    # copy and paste a pub key
+    $ chmod 600 .ssh/authorized_keys
+    $ sshd                           # listens on 8022, any username goes
+    $ # Aquire Wakelock in Termux Android notification
 
-On a workstation:
+On a workstation (pkg is a wrapper around apt, there is also apt-get):
 
-    $ < termux-package.list ssh android.example.org xargs apt install
+    $ < termux-package.list ssh android.example.org xargs pkg install
+    $ < pip-package.list ssh android.example.org xargs pip install --user
 
 Some initial setup (inside termux):
 
     git clone https://github.com/gsauthof/utility.git
     git clone https://github.com/gsauthof/user-config.git config
     cd config/
+    git submodule update --init
     bash install.sh
     cd ..
-    pip install ipython
 
 [termux]: https://github.com/termux
 [ssh]: https://termux.com/ssh.html
