@@ -103,6 +103,24 @@ a search result link (can be disabled in the preferences).
 Firefox comes with 3 default themes (Dark, Default and Light)
 where the Dark one looks decent enough.
 
+## Bookmarked Keyword Searches
+
+The file `bookmarks.html` contains some useful [keyword
+searches][ks]. It can be imported from the bookmark editor
+(`Ctrl+Shift+O`, 'Import and Backup' and then 'Import Bookmarks
+from HTML ...'). A keyword search can be invoked by entering
+something like the following in the location bar:
+
+    g firefox
+    msgid 12595@star.cs.vu.nl
+
+The Google keyword search (`g`) has two features:
+
+- the search isn't redirected to a language specific Google page
+- the results page contains up to 100 results
+
+See also these [blog comments][19] for a discussion of Google
+search settings.
 
 [1]: https://github.com/gsauthof/utility#firefox-addons
 [2]: https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/
@@ -130,3 +148,5 @@ where the Dark one looks decent enough.
 [tri]: https://github.com/cmcaine/tridactyl
 [slf]: https://github.com/palant/searchlinkfix
 [dtmg]: https://github.com/Rob--W/dont-track-me-google
+[ks]: http://kb.mozillazine.org/Using_keyword_searches
+[19]: https://utcc.utoronto.ca/~cks/space/blog/web/GoogleSearchSettings?showcomments
