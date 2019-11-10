@@ -5,8 +5,10 @@ cryptsetup
 ddrescue
 dmidecode
 dosfstools
+dracut-network
 edac-utils
 efibootmgr
+efivar
 gdisk
 git
 grub2-efi-x64
@@ -51,4 +53,5 @@ tcpdump
 usbutils
 vim-enhanced
 xfsprogs
+xterm-resize
 zsh
