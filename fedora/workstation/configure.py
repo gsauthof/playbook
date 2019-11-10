@@ -1267,7 +1267,7 @@ def print_sshd_fingerprints():
 
 def fix_selinux_context():
   check_output(['load_policy', '-i'], chroot=True)
-  es = [ '/proc', '/dev', '/sys' ]
+  es = [ '/dev', '/home', '/proc', '/sys', '/var' ]
   excluded = functools.reduce(operator.add, [ [ '-e', e] for e in es ], [])
   r = check_output(['restorecon', '-rv', ] + excluded + [ '/' ], chroot=True)
   log.info('Relabeled {} files'.format(count_relabel(r.stdout)))
