@@ -11,11 +11,11 @@ uefi-fallback = false
 hostonly = false
 # Set `password-file = -` if you prefer an interactive prompt
 password-file = -
-release = 29
+release = 31
 authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
 
 [target]
-rpmfusion-fingerprint = BD12 7385 C312 090F F2F3  5FA1 1191 A7C4 42F1 9ED0
+rpmfusion-fingerprint = 59A7 FE07 F664 C1B2 7687  C5D2 6DEE F051 C481 937A
 package-list = package-stick.list
 git-name = Joe User
 git-mail = juser@example.org
