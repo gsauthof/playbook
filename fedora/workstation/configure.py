@@ -1147,7 +1147,8 @@ GRUB_DEFAULT=saved
 GRUB_DISABLE_SUBMENU=true
 GRUB_TERMINAL_OUTPUT=console
 GRUB_CMDLINE_LINUX="{}quiet console=tty0 console=ttyS0,115200 rd.shell plymouth.enable=0"
-GRUB_DISABLE_RECOVERY=true'''
+GRUB_DISABLE_RECOVERY=true
+GRUB_DISABLE_OS_PROBER=true'''
   grub_default = '/mnt/new-root/etc/default/grub'
   with open(grub_default, 'w') as f:
     luks = ''
