@@ -163,8 +163,9 @@ graphviz
 grub2-efi-x64
 grub2-pc
 gsl-devel
-gstreamer-ffmpeg
+gstreamer1-plugins-bad-free
 gstreamer1-plugins-bad-freeworld
+gstreamer1-plugins-ugly
 gstreamer1-plugins-ugly-free
 gtk3-devel
 gtkterm
@@ -238,6 +239,7 @@ libjpeg-turbo-utils
 liblsan
 liblsan-static
 libmtp-examples
+libpst
 librecad
 libreoffice
 librsvg2-tools
@@ -542,7 +544,6 @@ tftp-server
 tidy
 tilix
 timew
-tlp
 tmux
 tor
 traceroute
@@ -560,10 +561,12 @@ u2f-server
 udftools
 umbrello
 unar
+undbx
 unifont
 unifont-fonts
 unifont-viewer
 units
+unoconv
 unpaper
 uthash-devel
 util-linux-user

@@ -42,6 +42,8 @@ pcp-system-tools
 powertop
 psmisc
 python3-tracer
+rclone
+restic
 rsync
 screen
 shim-x64
