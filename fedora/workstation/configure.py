@@ -118,6 +118,7 @@ def read_config(filename):
           'restore-postgres': 'false',
           'setup-pamu2f': 'false',
           'setup-nfsd': 'false',
+          'setup-networkd': 'false',
           'timezone': 'Europe/Berlin',
           'package-list': 'package.list',
           'unpackage-list': 'unpackage.list'
@@ -444,7 +445,7 @@ def set_host():
   commit_etc(['hostname', 'hosts'], 'set hostname')
 
 
-# we ony care about stable IPv6 addresses, i.e.:
+# we only care about stable IPv6 addresses, i.e.:
 # IPV6_ADDR_GEN_MODE=eui64
 # (we would get the other keys by default, too)
 default_eth_nm_conf = '''HWADDR={}
@@ -483,6 +484,8 @@ def default_eth():
 # cf. https://unix.stackexchange.com/q/331129/1131
 @execute_once
 def set_ipv6():
+  if cnf['target']['setup-networkd'] == 'true':
+    raise SkipThis()
   eth, mac = default_eth()
   filename = '/etc/sysconfig/network-scripts/ifcfg-{}'.format(eth)
   if os.path.exists(filename):
@@ -490,6 +493,28 @@ def set_ipv6():
   with open(filename, 'w') as f:
     f.write(default_eth_nm_conf.format(mac, eth, uuid.uuid4()))
   commit_etc([filename], 'use eui-64 derived ipv6 address')
+
+# with networkd, eui64 should be the default
+@execute_once
+def set_networkd():
+    if cnf['target']['setup-networkd'] != 'true':
+        raise SkipThis()
+    t = '''# Generic networkd configuration
+[Match]
+Name=en*
+
+[Network]
+DHCP=ipv4'''
+    filename = '/etc/systemd/network/20-wired.network'
+    if os.path.exists(filename):
+        commit_etc(filename, 'record existing networkd config')
+    with open('/etc/systemd/network/20-wired.network', 'w') as f:
+        f.write(t)
+    commit_etc(filename, 'add generic networkd config')
+    check_output(['systemctl', 'enable', 'systemd-networkd'])
+    if os.path.exists('/etc/systemd/system/multi-user.target.wants/NetworkManager.service'):
+        check_output(['systemctl', 'disable', 'NetworkManager'])
+        check_output(['systemctl', 'mask', 'NetworkManager'])
 
 @execute_once
 def set_ssh():
@@ -765,6 +790,7 @@ def stage1():
   add_livna()
   set_host()
   set_ipv6()
+  set_networkd()
   set_locale()
   set_timezone()
   set_ssh()

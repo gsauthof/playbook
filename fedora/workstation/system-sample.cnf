@@ -37,6 +37,7 @@ restore-postfix = true
 restore-postgres = true
 setup-pamu2f = true
 setup-nfsd = false
+setup-networkd = false
 #mount-points = /mnt/main
 #    /mnt/backup
 custom-etc-files = NetworkManager/conf.d/00-unmanaged
