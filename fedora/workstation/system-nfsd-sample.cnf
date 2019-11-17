@@ -10,12 +10,13 @@ device=/dev/disk/by-id/ata-TOSHIBA_1234
 mirror=/dev/disk/by-id/ata-INTEL_1234
 cryptsetup = false
 password-file=pw
-release=29
+release = 31
 authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
 
 [target]
-rpmfusion-fingerprint = BD12 7385 C312 090F F2F3  5FA1 1191 A7C4 42F1 9ED0
+rpmfusion-fingerprint = 59A7 FE07 F664 C1B2 7687  C5D2 6DEE F051 C481 937A
 package-list = package-nfsd.list
+unpackage-list = unpackage-nfsd.list
 git-name = Joe User
 git-mail = juser@example.org
 hostname = hostb.example.org
@@ -23,12 +24,15 @@ user = juser
 init-user = true
 locale = LANG=en_US.UTF-8
 timezone = Europe/Berlin
-enable-services = 
+enable-services = tuned.service
 restore-postfix = false
 restore-postgres = false
 setup-pamu2f = false
 setup-nfsd = true
+setup-networkd = true
 mount-points = /mnt/main
     /mnt/backup
+    /mnt/tmp
+    /mnt/old
 custom-etc-files = exports.d/main.exports
     modprobe.d/intel_qat.conf
