@@ -100,6 +100,10 @@ are some stale mounts left, one can explicitly remove them:
       help='just mount everything')
   p.add_argument('--umount', action='store_true',
       help='just umount everything')
+  p.add_argument('--chroot', action='store_true',
+          help='Execute stage1 in a chroot')
+  p.add_argument('--fast', action='store_true',
+          help='Execute only the first quick steps of stage 1')
   return p
 
 def parse_args(*a):
@@ -173,10 +177,9 @@ def load_state(args):
   if not os.path.exists(filename):
     return
   with open(filename, 'r') as f:
-    d = json.load(f)
+    state = json.load(f)
     key = 'stage{}'.format(args.stage)
-    if key in d:
-      state[key] = d[key]
+    if key in state:
       if 'done_set' in state[key]:
         done_set = set(state[key]['done_set'])
 
@@ -185,7 +188,7 @@ def store_state(args):
   global state
   log.debug('Storing state as {}'.format(filename))
   with open(filename, 'w') as f:
-    state['stage{}'.format(args.stage)]['done_set'] = list(done_set.__iter__()) 
+    state['stage{}'.format(args.stage)]['done_set'] = list(done_set)
     json.dump(state, f)
 
 def mark_done(slug):
@@ -428,6 +431,12 @@ def add_livna():
   commit_etc(glob.glob('/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion*')
            + glob.glob('/etc/yum.repos.d/rpmfusion*'), 'add rpmfusion free tainted repo' )
 
+# cf. https://unix.stackexchange.com/q/14345/1131
+def is_chroot():
+    a = os.stat('/')
+    b = os.stat('/proc/1/root/.')
+    return a.st_dev != b.st_dev or a.st_ino != b.st_ino
+
 @execute_once
 def set_host():
   hostname = cnf['target']['hostname']
@@ -435,7 +444,11 @@ def set_host():
   if os.path.exists('/etc/hostname'):
     ls.append('hostname')
   commit_etc(ls, 'add hosts')
-  check_output(['hostnamectl', 'set-hostname', hostname])
+  if is_chroot():
+      with open('/etc/hostname', 'w') as f:
+          f.write('{}\n'.format(hostname))
+  else:
+      check_output(['hostnamectl', 'set-hostname', hostname])
   def f(line):
     if line.startswith('127.0.0.1') or line.startswith('::1'):
       if (' ' + hostname) not in line:
@@ -701,12 +714,15 @@ def enable_services():
 @execute_once
 def set_locale():
   locale = cnf['target']['locale']
-  def f():
-    names = [ 'locale.conf', 'vconsole.conf']
-    return [ i for i in names if os.path.exists('/etc/'+i) ] 
-  commit_etc(f(), 'add locale conf')
-  check_output(['localectl', 'set-locale', locale])
-  commit_etc(f(), 'update locale')
+  names = [ 'locale.conf', 'vconsole.conf']
+  fs = [ i for i in names if os.path.exists('/etc/'+i) ]
+  commit_etc(fs, 'add locale conf')
+  if is_chroot():
+      with open('/etc/locale.conf', 'w') as f:
+          f.write('{}\n'.format(locale))
+  else:
+      check_output(['localectl', 'set-locale', locale])
+  commit_etc(fs, 'update locale')
 
 @execute_once
 def set_timezone():
@@ -783,7 +799,7 @@ def set_nfsd():
   check_output(['systemctl', 'enable', 'nfs-server'])
   check_output(['systemctl', 'start', 'nfs-server'])
 
-def stage1():
+def stage1(fast):
   mk_etc_mirror()
   commit_core_files()
   add_rpmfusion()
@@ -795,6 +811,8 @@ def stage1():
   set_timezone()
   set_ssh()
   disable_bufferbloat()
+  if fast:
+      return
   set_shell()
   set_dotfiles()
   clone_utility()
@@ -809,7 +827,7 @@ def stage1():
   set_pam_u2f()
   mk_mount_points()
   set_nfsd()
-  return 0
+  return
 
 def has_partitions(dev):
   r = check_output(['sfdisk', '--list', dev])
@@ -1368,12 +1386,9 @@ def stage0():
       ' and continue with stage 1 (`./configure.py --stage 1`). '
       'This script and its configuration are already copied '
       'to the target `/root/play-{}`.'.format(cnf['init']['release']))
-  return 0
 
 def run(args):
-  if args.stage == 1:
-    stage1()
-  elif args.stage == 0:
+  if args.stage == 0:
     if args.mount:
       mount_fs()
       bind_mount()
@@ -1382,6 +1397,26 @@ def run(args):
       umount_fs(do_raise=False)
     else:
       stage0()
+  elif args.stage == 1:
+      if args.chroot:
+          run_output(['setenforce', '0'])
+          mount_fs()
+          bind_mount()
+          os.chroot('/mnt/new-root')
+          os.chdir('/root/play-{}'.format(cnf['init']['release']))
+          run_output(['load_policy', '-i'])
+          load_state(args)
+      stage1(args.fast)
+      if args.chroot:
+          os.mkdir('/root/play-{}/del23'.format(cnf['init']['release']))
+          os.chroot('/root/play-{}/del23'.format(cnf['init']['release']))
+          os.chdir('../../../..')
+          os.chroot('.')
+          os.rmdir('/mnt/new-root/root/play-{}/del23'.format(cnf['init']['release']))
+          bind_umount(do_raise=False)
+          umount_fs(do_raise=False)
+          run_output(['load_policy', '-i'])
+          run_output(['setenforce', '1'])
   else:
     raise RuntimeError('Unknown stage: {}'.format(args.stage))
   return 0
