@@ -317,7 +317,7 @@ def dnf_installroot(pkgs, group=False, exclude=None):
   else:
     cmd = [ 'install' ]
   release = cnf['init']['release']
-  xs = [ '--exclude='+x for x in exclude ] if exclude else []
+  xs = [ '--exclude=' + ','.join(exclude) ] if exclude else []
   check_output(['dnf', '-y', '--installroot=/mnt/new-root',
     '--releasever={}'.format(release)] + xs + cmd + pkgs)
 
@@ -1068,6 +1068,14 @@ def enable_initramfs_scripts():
 # xterm-resize provides resize which is useful for
 # adjusting the geometry over serial lines
 
+
+def unpackages():
+    filename = cnf['target']['unpackage-list']
+    if not os.path.exists(filename):
+        raise []
+    with open(filename) as f:
+        return f.read().splitlines()
+
 @execute_once
 def install_base():
   dnf_installroot('system-release')
@@ -1076,7 +1084,7 @@ def install_base():
   # places some zero byte files under /etc/kernel/install.d/
   #disable_initramfs_scripts()
   # the custom-environment and minimal-environment groups seem to be identical
-  dnf_installroot('custom-environment', group=True, exclude=['plymouth'])
+  dnf_installroot('custom-environment', group=True, exclude=['plymouth'] + unpackages())
   dnf_installroot(['btrfs-progs', 'cryptsetup', 'efibootmgr', 'efivar',
       'git', 'grub2-efi-x64', 'grub2-pc', 'kernel', 'mdadm', 'rsync',
       'shim-x64', 'xterm-resize', 'zsh'
