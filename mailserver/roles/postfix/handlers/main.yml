@@ -1,0 +1,45 @@
+---
+
+
+## Notes:
+#
+# - import_tasks doesn't work with loop
+# - include_tasks works with loop but one can't notify included headers
+# - one can't directly use Jinja %{ for %} loops in handler yml files
+#
+# => we have to repeat postmap command here for each mapped file
+#
+# cf. https://docs.ansible.com/ansible/devel/user_guide/playbooks_reuse.html#re-using-tasks-as-handlers
+
+
+- name: map aliases
+  command: postalias /etc/aliases
+
+- name: map sender_login
+  command: postmap /etc/postfix/sender_login
+
+- name: map smtpd_client_access
+  command: postmap /etc/postfix/smtpd_client_access
+
+- name: map smtpd_helo_access
+  command: postmap /etc/postfix/smtpd_helo_access
+
+- name: map transport
+  command: postmap /etc/postfix/transport
+
+- name: map virtual
+  command: postmap /etc/postfix/virtual
+
+- name: map virtual_mailbox
+  command: postmap /etc/postfix/virtual_mailbox
+
+
+- name: enable postfix
+  systemd:
+      enabled: yes
+      name: postfix
+
+- name: reload postfix
+  systemd:
+      state: reloaded
+      name: postfix

@@ -8,6 +8,10 @@ approaches deal with partitioning and typical post-installation
 tasks. Some include advanced configuration choices like Btrfs
 RAID-1 and encrypted root setup.
 
+There are also application specific setups (e.g. for Firefox and
+Gnome-Shell), an Ansible playbook for setting up a bunch of
+mail servers and more.
+
 2017, Georg Sauthoff <mail@gms.tf>
 
 ## Content
@@ -48,6 +52,11 @@ RAID-1 and encrypted root setup.
   browsing and the remaining ones are just indispensable.
 
 - `gnome-shell` - a selection of useful [GNOME Shell][gs] extensions
+
+- `mailserver` - Ansible Playbook for installing a set of mail servers
+
+- `vpn` - quickly deploy/tear-down a VPN 'in the cloud' using
+  Vagrant and some custom scripts
 
 See also the README.md files in the subdirectories.
 

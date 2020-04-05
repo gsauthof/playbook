@@ -1,0 +1,9 @@
+# referenced by main.cf, smtpd_client_restrictions
+
+# for example, whitelist ip-address-ranges where the reverse DNS records
+# are missing/broken, we otherwise would reject because of reject_unknown_client_hostname
+#
+# 203.0.113.0/24 OK
+# 2001:DB8:ca:fe::/64 OK
+    
+{{ smtpd_client_access }}

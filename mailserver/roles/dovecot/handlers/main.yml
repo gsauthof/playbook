@@ -1,0 +1,14 @@
+---
+
+
+- name: enable dovecot
+  systemd:
+      enabled: yes
+      name: dovecot
+
+- name: reload dovecot
+  systemd:
+      state: reloaded
+      name: dovecot
+
+

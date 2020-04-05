@@ -1,0 +1,168 @@
+---
+
+
+- name: install postfix
+  package:
+      name: postfix
+      state: latest
+  notify:
+      - enable postfix
+      - reload postfix
+  tags: [ pkg, postfix ]
+
+- name: install additional packages
+  package:
+      name:
+          - selinux-policy-doc
+      state: latest
+  tags: [ pkg, postfix ]
+
+- name: create main config
+  template:
+      src: "{{ item }}.j2"
+      dest: "/etc/postfix/{{ item }}"
+      owner: root
+      group: root
+      mode: '644'
+  notify: reload postfix
+  loop:
+      - main.cf
+      - master.cf
+  tags: [ conf, postfix ]
+
+# We have to repeat ourselves here because although ansible supports
+# to templatize a handler name (as in `notify: "map {{ item }}"` all
+# handlers are notified if any item changed
+# cf. https://github.com/ansible/ansible/issues/22579
+
+# - name: create postfix mappings
+#   template:
+#       src: '{{ item }}.j2'
+#       dest: '/etc/postfix/{{ item }}'
+#       owner: root
+#       group: root
+#       mode: '644'
+#   notify: "map {{ item }}"
+#   loop:
+#       - sender_login
+#       - smtpd_client_access
+#       - smtpd_helo_access
+#       - transport
+#       - virtual
+#       - virtual_mailbox
+#   tags: conf
+
+- name: create sender_login
+  template:
+      src: 'sender_login.j2'
+      dest: '/etc/postfix/sender_login'
+      owner: root
+      group: root
+      mode: '644'
+  notify: "map sender_login"
+  tags: [ conf, postfix ]
+
+- name: create smtpd_client_access
+  template:
+      src: 'smtpd_client_access.j2'
+      dest: '/etc/postfix/smtpd_client_access'
+      owner: root
+      group: root
+      mode: '644'
+  notify: "map smtpd_client_access"
+  tags: [ conf, postfix ]
+
+- name: create smtpd_helo_access
+  template:
+      src: 'smtpd_helo_access.j2'
+      dest: '/etc/postfix/smtpd_helo_access'
+      owner: root
+      group: root
+      mode: '644'
+  notify: "map smtpd_helo_access"
+  tags: [ conf, postfix ]
+
+- name: create transport
+  template:
+      src: 'transport.j2'
+      dest: '/etc/postfix/transport'
+      owner: root
+      group: root
+      mode: '644'
+  notify: "map transport"
+  tags: [ conf, postfix ]
+
+- name: create virtual
+  template:
+      src: 'virtual.j2'
+      dest: '/etc/postfix/virtual'
+      owner: root
+      group: root
+      mode: '644'
+  notify: "map virtual"
+  tags: [ conf, postfix ]
+
+- name: create virtual_mailbox
+  template:
+      src: 'virtual_mailbox.j2'
+      dest: '/etc/postfix/virtual_mailbox'
+      owner: root
+      group: root
+      mode: '644'
+  notify: "map virtual_mailbox"
+  tags: [ conf, postfix ]
+
+- name: create aliases
+  template:
+      src: aliases.j2
+      dest: /etc/aliases
+      owner: root
+      group: root
+      mode: '644'
+  notify: map aliases
+  tags: [ conf, postfix ]
+
+- name: create virtual_re
+  template:
+      src: virtual_re.j2
+      dest: /etc/postfix/virtual_re
+      owner: root
+      group: root
+      mode: '644'
+  tags: [ conf, postfix ]
+
+- name: generate TLS dh parameter set
+  command:
+      cmd: openssl dhparam -out /etc/postfix/dh2048.pem 2048
+      creates: /etc/postfix/dh2048.pem
+  tags: [ conf, postfix ]
+  notify: reload postfix
+
+
+- name: remove unused default config files
+  file:
+      dest: "/etc/postfix/{{ item }}"
+      state: absent
+  loop:
+      - access
+      - canonical
+      - generic
+      - relocated
+  tags: [ conf, postfix ]
+
+# cf. https://manpath.be/c7/8/postfix_local_selinux#L60
+- name: allow local mail spooling
+  seboolean:
+      name: allow_postfix_local_write_mail_spool
+      state: yes
+      persistent: yes
+  tags: [ conf, selinux, postfix ]
+
+- name: enable smtp port in firewall
+  firewalld:
+      service: smtp
+      state: enabled
+      permanent: yes
+  tags: [ conf, firewall, postfix ]
+
+

@@ -1,0 +1,6 @@
+# referenced by main.cf, smtpd_helo_restrictions (via check_helo_access)
+
+# to whitelist bogus helo names that we would reject because of e.g.
+# reject_invalid_helo_hostname
+
+{{ smtpd_helo_access }}

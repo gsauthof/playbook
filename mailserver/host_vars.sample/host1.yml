@@ -1,0 +1,35 @@
+---
+
+# optional - specify if your host has multiple network interface
+# and you don't want Postfix to listen an all of them
+inet_interfaces:
+    - localhost
+    - "203.0.113.23"
+    - "[2001:DB8:fac:17::23]"
+
+# i.e. without the subdomain the MTA is perhaps running on!
+mta_domain: example.org
+
+# optional - if not specified /etc/hostname is used
+# myhostname = mail.example.org
+
+# optional - specify if the host has multiple static public internet addresses
+# i.e. specify then the ones used in the SPF records
+smtp_bind_address: 203.0.113.23
+smtp_bind_address6: 2001:DB8:fac:17::23
+
+# /etc/postfix/virtual body
+virtual: |
+    # XXX redundant to virtual_re, remove
+    postmeister@example.org postmaster
+
+
+# address to redirect all aliases to a virtual mailbox
+mda_address: mail@example.net
+
+# optional - specify if your host has multiple network interface
+# and you don't want Dovecot to listen an all of them
+imapd_listen:
+    - "203.0.113.23"
+    - "2001:DB8:fac:17::23"
+

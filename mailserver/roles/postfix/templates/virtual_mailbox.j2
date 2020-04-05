@@ -1,0 +1,40 @@
+# referenced by main.cf, virtual_mailbox_maps
+
+
+# RFC 2142 addresses
+# ('MAILBOX NAMES FOR COMMON SERVICES, ROLES AND FUNCTIONS')
+# http://tools.ietf.org/html/rfc2142
+#
+# info
+# marketing
+# sales
+# support
+# abuse
+# noc
+# security
+# postmaster
+# hostmaster
+# usenet
+# news
+# webmaster
+# www
+# uucp
+# ftp
+#
+# cf. virtual_re for those addresses
+
+
+# entries that route to {{ mta_domain }}/ are commented out because
+# those addresses aren't virtual and thus are managed in /etc/aliases
+
+
+# Note that the right-hand-side of each entry is only used by
+# the virtual(8) delivery agent. If it ends in a / it signifies
+# maildir delivery. See also the virtual_mailbox_maps description
+# in postconf(5).
+
+
+{% set xs = virtual_mailbox.splitlines() %}
+{% for x in xs %}
+    {%- if x.endswith(mta_domain + '/') %}#{% endif %}{{ x }}
+{% endfor %}

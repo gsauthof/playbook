@@ -1,0 +1,102 @@
+---
+
+# unfortunately, gather_facts/setup doesn't gather a list of enabled repositories,
+# thus we can't just depend on a fact
+- name: check maildrop copr
+  shell:
+      cmd: |
+          dnf -C repolist enabled -v  | grep '^Repo-id' | awk '$3 == "copr:copr.fedorainfracloud.org:gsauthof:epel" {print "enabled"}'
+      warn: no
+  check_mode: no
+  changed_when: false
+  register: maildrop_copr
+  when:
+      - ansible_distribution in ('CentOS', 'RedHat', 'Red Hat Enterprise Linux')
+  tags: [pkg, maildrop]
+
+# we need maildrop >= 3, as of 2020, CentOS 7 EPEL doesn't have it
+- name: enable maildrop copr
+  command:
+      cmd: dnf -y copr enable gsauthof/epel
+      #creates: /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:gsauthof:epel.repo
+      warn: no
+  when:
+      - ansible_distribution in ('CentOS', 'RedHat', 'Red Hat Enterprise Linux')
+      - maildrop_copr.stdout == ''
+  tags: [pkg, maildrop]
+
+- name: install maildrop
+  package:
+      name:
+          - maildrop
+      state: latest
+  tags: [pkg, maildrop]
+
+# Alternative way to enable a Copr repo - doesn't abstract away implementation
+# details how Copr .repo files are built.
+#
+#- name: enable copr
+#  yum_repository:
+#      name: "copr:copr.fedorainfracloud.org:{{ item[0] }}:{{ item[1] }}"
+#      file: "_copr:copr.fedorainfracloud.org:{{ item[0] }}:{{ item[1] }}"
+#      description: "{{ item[2] }}"
+#      baseurl: "{{ copr_url }}/results/{{ item[0] }}/{{ item[1] }}/epel-{{ ansible_distribution_major_version }}-$basearch/"
+#      gpgkey: "{{ copr_url }}/results/{{ item[0] }}/{{ item[1] }}/pubkey.gpg"
+#      gpgcheck: yes
+#      enabled: yes
+#      skip_if_unavailable: yes
+#  when:
+#      - ansible_distribution in ('CentOS', 'RedHat', 'Red Hat Enterprise Linux')
+#  vars:
+#      copr_url: https://copr-be.cloud.fedoraproject.org
+#      #copr_url: https://download.copr.fedorainfracloud.org
+#  loop:
+#      - [gsauthof, epel, "Copr repo for epel owned by gsauthof"]
+#  tags: pkg
+
+- name: get maildrop version
+  shell: maildrop -v  | head -n 1 | cut -d ' ' -f2
+  register: maildrop_version
+  check_mode: no
+  changed_when: false
+  tags: [pkg, maildrop]
+
+- name: check maildrop version
+  assert:
+      that:
+          - maildrop_version.stdout is version('3', '>=')
+      msg: 'We need Maildrop >= 3 for the :H expression option'
+  tags: [pkg, maildrop]
+
+- name: create maildirectories
+  file:
+      path: "/home/{{ mda_user }}/{{ item }}"
+      state: directory
+      owner: "{{ mda_user }}"
+      group: "{{ mda_user }}"
+      mode: '0700'
+  tags: [conf, maildrop]
+  loop:
+      - md
+      - md/copy
+      - md/copy/cur
+      - md/copy/new
+      - md/copy/tmp
+      - md/spamfilter
+      - md/spamfilter/cur
+      - md/spamfilter/new
+      - md/spamfilter/tmp
+      - "{{ inbox_dir }}"
+      - "{{ inbox_dir }}/cur"
+      - "{{ inbox_dir }}/new"
+      - "{{ inbox_dir }}/tmp"
+
+- name: copy mailfilter
+  template:
+      src: mailfilter.j2
+      dest: "/home/{{ mda_user }}/.mailfilter"
+      owner: "{{ mda_user }}"
+      group: "{{ mda_user }}"
+      mode: '0600'
+  tags: [conf, maildrop]
+

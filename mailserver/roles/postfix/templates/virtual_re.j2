@@ -1,0 +1,36 @@
+# referenced by main.cf, virtual_alias_maps
+# 
+# see also: virtual
+
+# RFC 2142 addresses
+# ('MAILBOX NAMES FOR COMMON SERVICES, ROLES AND FUNCTIONS')
+# http://tools.ietf.org/html/rfc2142
+#
+# info
+# marketing
+# sales
+# support
+# abuse
+# noc
+# security
+# postmaster
+# hostmaster
+# usenet
+# news
+# webmaster
+# www
+# uucp
+# ftp
+
+
+# without specifiying the virtual domain also outgoing relayed mails e.g. to support@manitu.de are matched and locally delivered ...
+
+/^(info|marketing|sales|support|abuse|noc|security|postmaster|hostmaster|usenet|news|webmaster|www|uucp|ftp)@({% for d in virtual_mailbox_domains %}
+{% if not d.endswith(mta_domain) %}
+    {{- d.replace('.', '\\.') }}
+    {{- '|' if not loop.last else '' -}}
+{% endif %}
+{% endfor %})/ {{ mda_user }}
+
+
+# The {{ mda_user }} destination is expanded to a local user, i.e. to {{ mda_user }}@{{ myhostname|d(ansible_fqdn) }}

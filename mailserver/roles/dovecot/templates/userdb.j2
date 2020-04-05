@@ -1,0 +1,5 @@
+{% if user_hashes is defined %}
+{% for x in user_hashes %}
+{{ x }}:{{ mda_uid }}:{{ mda_gid|d(mda_uid) }}::/home/{{ mda_user }}::user={{ mda_user }}
+{% endfor %}
+{% endif %}

@@ -1,0 +1,12 @@
+# referenced by main.cf, virtual_alias_maps
+# 
+# see also: virtual_re
+#
+# Example:
+#
+# # Alias virtual address to the local postmaster, i.e. to postmaster@{{ myhostname|d(ansible_fqdn) }}
+# fubar@example.net  postmaster
+
+{% if virtual is defined %}
+{{ virtual }}
+{% endif %}

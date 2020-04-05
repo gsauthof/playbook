@@ -1,0 +1,6 @@
+# define email aliases for your domains:
+
+juser@example.org example.org/
+firstname.lastname@example.org example.org/
+
+fubar@example.net example.net/

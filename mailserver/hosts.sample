@@ -1,0 +1,7 @@
+[mailserver]
+# Since Ansible uses ssh to connect to remote hosts just enter the names you
+# use with ssh.
+# Make sure that you directly ssh to root or the user has password-less sudo
+# configured.
+host1
+host2

@@ -1,0 +1,20 @@
+# Authentication for passwd-file users. Included from 10-auth.conf.
+#
+# passwd-like file with specified location.
+# <doc/wiki/AuthDatabase.PasswdFile.txt>
+
+passdb {
+  driver = passwd-file
+  args = scheme=ssha256 username_format=%u /etc/dovecot/passwd
+}
+
+userdb {
+  driver = passwd-file
+  args = username_format=%u /etc/dovecot/userdb
+
+  # Default fields that can be overridden by passwd-file
+  #default_fields = quota_rule=*:storage=1G
+
+  # Override fields from passwd-file
+  #override_fields = home=/home/virtual/%u
+}

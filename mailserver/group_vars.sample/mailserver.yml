@@ -1,0 +1,60 @@
+---
+
+# variables common for all hosts
+
+
+mda_user: juser
+mda_uid: 1000
+
+# list is filtered by hostname
+virtual_mailbox_domains:
+    - example.org
+    - example.net
+
+virtual_mailbox: "{{ lookup('file', 'group_vars/virtual_mailbox') }}"
+
+# some additional local-only aliases
+extra_aliases: |
+    # technical account
+    monitor: juser
+
+sender_login: |
+    juser@example.org    joe
+    @example.net         joe,jane
+
+
+# whitelist misconfigured peers
+smtpd_client_access: |
+    # important client
+    2001:DB8:cafe:23::/64 OK
+
+smtpd_helo_access: |
+    # another important client
+    rtfm.example.com OK
+
+# final MDA destination - relative to the $HOME
+# inbox_dir = maildir
+
+
+# additional maildrop mailfilter rules
+local_mailfilter: |
+    if (/^List-Id: .*<devel\.lists\.example\.org>/:H)
+    {
+      to md/devel
+    }
+
+# used to create mda_user entries in /etc/dovecot/{userdb,passwd},
+# also used by Postfix via SASL (i.e. socket to Dovecot)
+#
+# only add first 2 fields here (cf. roles/dovecot/templates/{userdb,passwd}.j2
+#
+# generate entries with:
+#
+#     doveadm pw -u juser -s SHA512-CRYPT
+#
+user_hashes:
+    # juser:{SHA512-CRYPT}xyz123
+    - "juser:{SHA512-CRYPT}$6$v90XZaZzqYesb1ht$HgvedJnZ11r.iwWAB5Du3eY1uT4hCMRdKNW/E7IwMODFHkNMZuQ887YmawuMwBdaRNFghxoTl0CncXlhbUJJ10"
+    - "jane:{SHA512-CRYPT}$6$P3CNkQyRZo4DHpAm$Awr61X.YlKnKcOaupUWmg3Wom3leIZlp9QGMjp6hCDZqIbrQoUm9O.grqGaS6ZuFHZckgSHv6BUQrfOsxvoLV/"
+
+

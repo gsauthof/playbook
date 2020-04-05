@@ -1,0 +1,6 @@
+---
+- hosts: mailserver
+  roles:
+      - maildrop
+      - postfix
+      - dovecot

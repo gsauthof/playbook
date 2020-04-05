@@ -1,0 +1,69 @@
+---
+
+- name: install dovecot
+  package:
+      name: dovecot
+      state: latest
+  notify:
+      - enable dovecot
+      - reload dovecot
+  tags: [pkg, dovecot]
+
+- name: copy main dovecot config
+  template:
+      src: dovecot.conf.j2
+      dest: /etc/dovecot/dovecot.conf
+      owner: root
+      group: root
+      mode: '0644'
+  notify: reload dovecot
+  tags: [conf, dovecot]
+
+- name: copy user db
+  template:
+      src: "{{ item }}.j2"
+      dest: "/etc/dovecot/{{ item }}"
+      owner: root
+      group: dovecot
+      mode: '0640'
+  notify: reload dovecot
+  loop:
+      - passwd
+      - userdb
+  tags: [conf, dovecot]
+
+- name: copy conf.d files
+  copy:
+      src: "{{ item }}"
+      dest: "/etc/dovecot/conf.d/{{ item }}"
+      owner: root
+      group: root
+      mode: '0644'
+  notify: reload dovecot
+  loop:
+      - 10-auth.conf
+      - 10-logging.conf
+      - 10-master.conf
+      - auth-passwdfile.conf.ext
+  tags: [conf, dovecot]
+
+- name: copy conf.d templates
+  template:
+      src: "{{ item }}.j2"
+      dest: "/etc/dovecot/conf.d/{{ item }}"
+      owner: root
+      group: root
+      mode: '0644'
+  notify: reload dovecot
+  loop:
+      - 10-mail.conf
+      - 10-ssl.conf
+  tags: [conf, dovecot]
+
+- name: enable imaps port in firewall
+  firewalld:
+      service: imaps
+      state: enabled
+      permanent: yes
+  tags: [ conf, firewall, dovecot ]
+

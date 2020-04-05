@@ -1,0 +1,9 @@
+---
+
+# cf. host1.yml for more verbose comments
+
+mta_domain: example.net
+
+# address to redirect all aliases to a virtual mailbox
+mda_address: mail@example.org
+

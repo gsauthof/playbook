@@ -1,0 +1,8 @@
+# referenced by the transport_maps key in main.cf
+# more flexible than the virtual_transport setting
+
+{% for d in virtual_mailbox_domains %}
+    {%- if not d.endswith(mta_domain) %}
+        {{- d }} {{ mda_user }}_maildrop:
+{% endif %}
+{% endfor %}

@@ -1,0 +1,34 @@
+# maildrop MDA configuration
+#
+# to be stored as $HOME/.mailfilter
+# permissions are important, must be 600
+# also, mustn't be a symlink (i.e. copy or hardlink)
+#
+# a basic model of the maildrop pattern matching
+# (with header-only matching, the default):
+#
+# - each pattern is matched against the complete header, line by line,
+#   captures are taking from the first matching line
+# - by default, headers in mime-attachments are matched, as well
+# - a to-statement delivers the message and terminates the mailfilter
+#   program
+#
+# cf. http://www.courier-mta.org/maildrop/maildropfilter.html
+
+cc md/copy
+
+
+{% if use_gonzo|d(True) %}
+xfilter "/usr/local/bin/gonzofilter -pass"
+
+# opening brace must be on the next line ...
+# :H -> only match in the message header (and not in the attachment headers)
+if (/^X-gonzo: spam/:H)
+{
+  to md/spamfilter
+}
+{% endif %}
+
+{{ local_mailfilter|d('') }}
+
+to {{ inbox_dir|d('maildir') }}
