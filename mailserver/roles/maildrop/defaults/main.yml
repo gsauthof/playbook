@@ -1,4 +1,11 @@
 ---
 
+# i.e. relative to $HOME of the MDA user
 inbox_dir: maildir
+
+# extra mail directories to clean, i.e. retain mail for X days
+extra_md_clean: []
+
+# extra name server for dnsbl check
+extra_ns:
 

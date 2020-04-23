@@ -100,3 +100,42 @@
       mode: '0600'
   tags: [conf, maildrop]
 
+- name: cron job - remove old mail
+  cron:
+        name: "clean_mail_{{ item.1.name }}"
+        minute: "{{ item.0 * 5 % 60 }}"
+        hour: "19"
+        job: "find ~/md/{{ item.1.name }} -maxdepth 2 -type f -mtime +{{ item.1.days }} -print0 | xargs -0 -r rm"
+        user: "{{ mda_user }}"
+  with_indexed_items:
+      - { name: copy,       days:  60 }
+      - { name: spamfilter, days: 720 }
+      - { name: spam,       days: 720 }
+      - "{{ extra_md_clean }}"
+  tags: [cron, maildrop]
+
+- name: cron job - train spam
+  cron:
+        name: train_spam
+        minute: "0"
+        hour: "18"
+        # calls gonzofilter which eats all mail under ~/maildir/.Spam/ which
+        # were moved there by an IMAP client
+        # cf. https://github.com/gsauthof/utility
+        job: $HOME/local/bin/train-spam.sh
+        user: "{{ mda_user }}"
+  tags: [cron, maildrop]
+
+- name: cron job - check dnsbl
+  cron:
+        name: check_dnsbl
+        minute: "30"
+        hour: "7"
+        # cf. https://github.com/gsauthof/utility
+        job: "$HOME/program/utility/check-dnsbl.py {{ ns_flag }} {{ other_host }}"
+        user: "{{ mda_user }}"
+  vars:
+    - ns_flag: "{% if extra_ns %}--ns {{ extra_ns }}{% endif %}"
+    - other_host: "{{ hostvars[(hostvars.keys() | list)[((hostvars | length) + (hostvars.keys() | list).index(inventory_hostname) - 1) % (hostvars | length)]].mta_domain }}"
+  tags: [cron, maildrop]
+
