@@ -82,6 +82,14 @@
       - md/copy/cur
       - md/copy/new
       - md/copy/tmp
+      - md/ham
+      - md/ham/cur
+      - md/ham/new
+      - md/ham/tmp
+      - md/spam
+      - md/spam/cur
+      - md/spam/new
+      - md/spam/tmp
       - md/spamfilter
       - md/spamfilter/cur
       - md/spamfilter/new
