@@ -28,6 +28,8 @@ mail servers and more.
   suitable for system administration tasks (think: repairing a
   broken system, rescuing data, initiating installations,
   diagnosing network issues, ...). Uses [`virt-builder`][virt].
+  See also `fedora/workstation` for an alternative way to
+  generate a rescue stick.
 
 - `fedora/btrfs-raid1-server` - [Kickstart][ks] configuration suitable
   for server usage. Root filesystem is created as Btrfs RAID1.
@@ -35,9 +37,14 @@ mail servers and more.
   contains a non-trivial post-section for applying some
   useful defaults.
 
+- `fedora/initramfs` - a script to install a minimal Fedora
+  into an initramfs archive for rescue purposes via kexec.
+
 - `fedora/workstation` - a good default package selection
   for a development workstation (~500 packages) and a
   Python script that bootstraps a customized Fedora from scratch.
+  Can also be used to create a rescue stick. Resulting systems
+  are portable between UEFI and MBR boot systems.
 
 - `fedora/vagrant-vbox` - a good starting point for quickly
   getting a Fedora Workstation instance up and running with
