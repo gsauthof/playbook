@@ -1320,6 +1320,9 @@ def print_sshd_fingerprints():
 # umount /mnt/new-root/mnt/tmp
 
 def fix_selinux_context():
+  if cnf['init']['selinux'] == 'false':
+      return
+      #raise SkipThis()
   check_output(['load_policy', '-i'], chroot=True)
   es = [ '/dev', '/home', '/proc', '/sys' ]
   excluded = functools.reduce(operator.add, [ [ '-e', e] for e in es ], [])
@@ -1359,6 +1362,8 @@ def copy_self():
 
 @execute_once
 def disable_selinux():
+  if cnf['init']['selinux'] == 'true':
+      raise SkipThis()
   secfg = '/mnt/new-root/etc/selinux/config'
   commit_etc(secfg, 'add selinux config')
   def f(line):
@@ -1376,8 +1381,7 @@ def stage0():
   mount_fs()
   bind_mount()
   install_base()
-  if not args.selinux:
-      disable_selinux()
+  disable_selinux()
   mk_crypttab()
   mk_fstab()
   mk_grub_defaults()
@@ -1390,8 +1394,7 @@ def stage0():
   set_user_password()
   mk_host_keys()
   print_sshd_fingerprints()
-  if cnf['init']['selinux'] == 'true':
-      fix_selinux_context()
+  fix_selinux_context()
   bind_umount()
   copy_self()
   umount_fs()
