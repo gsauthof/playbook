@@ -88,6 +88,7 @@ def parse_args(*a):
 minimal_pkgs = [
     'btrfs-progs',
     'cryptsetup',
+    'dosfstools',
     'e2fsprogs',
     'fstransform',
     'git-core',
@@ -99,6 +100,7 @@ minimal_pkgs = [
     'openssh-clients',
     'openssh-server',
     'systemd',
+    'tmux',
     'vim-minimal',
     'which',
     'xfsprogs',
@@ -320,6 +322,38 @@ def mk_unpriv_cpio(destdir, compress, initramfs, l=6):
             raise RuntimeError(f'gen_init_cpio failed: {p.returncode}')
 
 
+mini_dotfiles = {
+        '.vimrc': '''set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set pastetoggle=<F12>
+set nomodeline
+set ruler
+set laststatus=2
+set wildmenu
+set autoread
+set autoindent
+set smarttab
+set shiftwidth=4
+set expandtab
+''',
+        '.bashrc': '''export LESS=FRi
+export SYSTEMD_LESS=FRXMKi
+''',
+        '.bash_profile': '''. ~/.bashrc
+''',
+        '.inputrc': '''set editing-mode vi
+set blink-matching-paren on
+''',
+}
+
+def write_mini_dotfiles(destdir):
+    for k, v in mini_dotfiles.items():
+        with open(f'{destdir}/root/{k}', 'w') as f:
+            f.write(v)
+
+
 def main():
     args = parse_args()
     if args.print_pkgs:
@@ -346,6 +380,8 @@ def main():
     enable_resolved(args.destdir)
     enable_init(args.destdir)
     set_password(args.destdir, args.password, args.salt)
+    write_mini_dotfiles(args.destdir)
+
     mk_cpio(args.destdir, args.compress, args.initramfs, ex_paths, l=args.level)
     cp_kernel(args.destdir, args.vmlinuz)
 
