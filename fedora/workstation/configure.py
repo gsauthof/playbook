@@ -514,7 +514,7 @@ def set_networkd():
         raise SkipThis()
     t = '''# Generic networkd configuration
 [Match]
-Name=en*
+Name=e*
 
 [Network]
 DHCP=ipv4'''
@@ -525,6 +525,7 @@ DHCP=ipv4'''
         f.write(t)
     commit_etc(filename, 'add generic networkd config')
     check_output(['systemctl', 'enable', 'systemd-networkd'])
+    check_output(['systemctl', 'enable', 'systemd-resolved'])
     if os.path.exists('/etc/systemd/system/multi-user.target.wants/NetworkManager.service'):
         check_output(['systemctl', 'disable', 'NetworkManager'])
         check_output(['systemctl', 'mask', 'NetworkManager'])
