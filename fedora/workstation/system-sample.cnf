@@ -21,6 +21,10 @@ password-file = pw
 release = 31
 authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
 
+# Enable/disable SELinux (default: enabled)
+# selinux = true
+
+
 [target]
 rpmfusion-fingerprint = 59A7 FE07 F664 C1B2 7687  C5D2 6DEE F051 C481 937A
 # package-list = package.list

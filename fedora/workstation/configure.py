@@ -131,7 +131,8 @@ def read_config(filename):
           'cryptsetup': 'true',
           'uefi-fallback': 'true',
           'hostonly': 'true',
-          'password-file': 'pw'
+          'password-file': 'pw',
+          'selinux': 'true',
         }
       })
   c.read(filename)
@@ -1356,14 +1357,27 @@ def copy_self():
     if os.path.exists(fn):
       shutil.copy(fn, dst)
 
+@execute_once
+def disable_selinux():
+  secfg = '/mnt/new-root/etc/selinux/config'
+  commit_etc(secfg, 'add selinux config')
+  def f(line):
+      if line.startswith('SELINUX='):
+          return 'SELINUX=disabled'
+  line_edit(secfg, f)
+  commit_etc(secfg, 'disable selinux')
+
 
 def stage0():
-  run_output(['setenforce', '0'])
+  if cnf['init']['selinux'] == 'true':
+      run_output(['setenforce', '0'])
   create_partitions()
   mk_fs()
   mount_fs()
   bind_mount()
   install_base()
+  if not args.selinux:
+      disable_selinux()
   mk_crypttab()
   mk_fstab()
   mk_grub_defaults()
@@ -1376,12 +1390,14 @@ def stage0():
   set_user_password()
   mk_host_keys()
   print_sshd_fingerprints()
-  fix_selinux_context()
+  if cnf['init']['selinux'] == 'true':
+      fix_selinux_context()
   bind_umount()
   copy_self()
   umount_fs()
-  run_output(['load_policy', '-i'])
-  run_output(['setenforce', '1'])
+  if cnf['init']['selinux'] == 'true':
+      run_output(['load_policy', '-i'])
+      run_output(['setenforce', '1'])
   log.info('Stage 0 successfully completed. Reboot into the new system'
       ' and continue with stage 1 (`./configure.py --stage 1`). '
       'This script and its configuration are already copied '
@@ -1399,12 +1415,14 @@ def run(args):
       stage0()
   elif args.stage == 1:
       if args.chroot:
-          run_output(['setenforce', '0'])
+          if cnf['init']['selinux'] == 'true':
+              run_output(['setenforce', '0'])
           mount_fs()
           bind_mount()
           os.chroot('/mnt/new-root')
           os.chdir('/root/play-{}'.format(cnf['init']['release']))
-          run_output(['load_policy', '-i'])
+          if cnf['init']['selinux'] == 'true':
+              run_output(['load_policy', '-i'])
           load_state(args)
       stage1(args.fast)
       if args.chroot:
@@ -1415,8 +1433,9 @@ def run(args):
           os.rmdir('/mnt/new-root/root/play-{}/del23'.format(cnf['init']['release']))
           bind_umount(do_raise=False)
           umount_fs(do_raise=False)
-          run_output(['load_policy', '-i'])
-          run_output(['setenforce', '1'])
+          if cnf['init']['selinux'] == 'true':
+              run_output(['load_policy', '-i'])
+              run_output(['setenforce', '1'])
   else:
     raise RuntimeError('Unknown stage: {}'.format(args.stage))
   return 0
