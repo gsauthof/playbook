@@ -1364,12 +1364,10 @@ def disable_selinux():
   if cnf['init']['selinux'] == 'true':
       raise SkipThis()
   secfg = '/mnt/new-root/etc/selinux/config'
-  commit_etc(secfg, 'add selinux config')
   def f(line):
       if line.startswith('SELINUX='):
           return 'SELINUX=disabled'
   line_edit(secfg, f)
-  commit_etc(secfg, 'disable selinux')
 
 
 def stage0():
