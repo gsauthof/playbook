@@ -84,7 +84,7 @@ Alternatively, one can add some files to a work directory and use
 `mkrescuenet.py` for just the image creation:
 
 ```
-$ ./mkrescuenet.py --make --d config-32 -o site-load.cpio.xz
+# ./mkrescuenet.py --make --d config-32 -o site-load.cpio.xz
 ```
 
 
@@ -100,7 +100,7 @@ The `mkrescuenet.py` implements some measures to keep the size
 down, e.g. a small minimal set of packages, documentation isn't
 installed, locales and timezones are deleted etc.
 
-But it still includes Python, lots of firmware, kernel modules
+But it still includes many utilities, lots of firmware, kernel modules
 and other useful stuff such that it's as big as it is.
 
 After all, it's a trade-off.
