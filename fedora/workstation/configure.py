@@ -38,8 +38,7 @@ class Relative_Formatter(logging.Formatter):
     return super(Relative_Formatter, self).format(rec)
 
 def setup_logging():
-  logging.basicConfig(format=log_format, datefmt=log_date_format,
-      level=logging.DEBUG)
+  logging.basicConfig(level=logging.DEBUG)
   logging.getLogger().handlers[0].setFormatter(
       Relative_Formatter(log_format, log_date_format, style='{'))
 
