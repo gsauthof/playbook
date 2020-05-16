@@ -87,11 +87,10 @@ def parse_args(*a):
 
 minimal_pkgs = [
     'btrfs-progs',
-    # adds about 70 M ...
-    'cloud-init', # supports DigitalOcean, Amazon, Azure, etc. - NOT Linode
     'cryptsetup',
     'e2fsprogs',
     'fstransform',
+    'git-core',
     'glibc-minimal-langpack',
     'iproute',
     'kernel-modules',

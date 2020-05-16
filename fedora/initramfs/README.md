@@ -18,12 +18,13 @@ rescue system can be as simple as:
     # kexec -e
 
 The image contains a standard DHCP configuration for all network
-interfaces, includes [cloud-init][5] and starts an OpenSSH server for
+interfaces and starts an OpenSSH server for
 remote access. The `site-keys.cpio.xz` archive contains
 site-specific files which are merged into the root filesystem
-such as authorized SSH keys, host keys and additional network
-configuration. [Kexec][2] allows booting a new kernel from a
-running Linux system.
+such as authorized SSH keys, host keys and additional
+network configuration.
+[Kexec][2] allows booting a new kernel from a running Linux
+system.
 
 2020, Georg Sauthoff <mail@gms.tf>
 
@@ -150,9 +151,6 @@ Without that option the root account is locked, meaning that
 remote ssh root access is possible while console root login in the
 datacenter is not.
 
-Part of default package selection is [cloud-init][5] which may or
-may not be appropriate for your environment.
-
 The rescue system has SELinux disabled because its default
 package selection misses the `selinux-policy` package. Having
 SELinux enabled may help when rescuing an SELinux enabled system,
@@ -186,5 +184,4 @@ fix the guest console with `resize && reset`.
 [2]: https://en.wikipedia.org/wiki/Kexec
 [3]: https://en.wikipedia.org/wiki/Initial_ramdisk
 [4]: https://en.wikipedia.org/wiki/Intelligent_Platform_Management_Interface#Baseboard_management_controller
-[5]: https://cloudinit.readthedocs.io/en/latest/
 
