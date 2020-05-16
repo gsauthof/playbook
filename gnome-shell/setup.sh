@@ -36,3 +36,13 @@ if [ "$puuid" ]; then
     ttermset use-theme-colors                false
 fi
 
+systemctl --user mask evolution-calendar-factory.service evolution-source-registry.service evolution-addressbook-factory.service
+
+if [ -f /etc/xdg/autostart/org.gnome.Evolution-alarm-notify.desktop ]; then
+{
+    cat /etc/xdg/autostart/org.gnome.Evolution-alarm-notify.desktop
+    echo X-GNOME-Autostart-enabled=false
+    echo Hiden=true
+} > ~/.config/autostart/org.gnome.Evolution-alarm-notify.desktop
+
+
