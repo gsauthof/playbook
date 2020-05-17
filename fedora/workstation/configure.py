@@ -21,6 +21,7 @@ import subprocess
 import sys
 import tempfile
 import uuid
+import time
 
 
 log = logging.getLogger(__name__)
@@ -1013,9 +1014,14 @@ def mount_fs():
   if cnf['init']['cryptsetup'] == 'true':
     pw = get_password()
     for i, uuid in enumerate(state['stage0']['luks-uuid']):
-      check_output(['cryptsetup', 'luksOpen',
-        '/dev/disk/by-uuid/'+uuid, 'new-root-{}'.format(i),
-        '--key-file', '-'], input=pw, redact_input=True)
+        d = '/dev/disk/by-uuid/' + uuid
+        # kernel/udev may take some time to create the uuid device link
+        for k in range(10):
+            if os.path.exists(d):
+                break
+            time.sleep(0.2 * (k+1))
+        check_output(['cryptsetup', 'luksOpen', d, 'new-root-{}'.format(i),
+            '--key-file', '-'], input=pw, redact_input=True)
   os.makedirs('/mnt/new-root', exist_ok=True)
   check_output(['mount', '-o', 'noatime,subvol=root',
     'UUID='+state['stage0']['fs-uuid']['root'], '/mnt/new-root'])
