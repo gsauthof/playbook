@@ -208,6 +208,13 @@ def enable_resolved(destdir):
     create_links((target, f'{destdir}/{link_name}')
             for target, link_name in links)
 
+def disable_repos(destdir):
+    repos = [ 'fedora-cisco-openh264.repo', 'fedora-modular.repo',
+              'fedora-updates-modular.repo' ]
+    repos = [ destdir + '/etc/yum.repos.d/' + x for x in repos ]
+    repos = [ x for x in repos if os.path.exists(x) ]
+    subprocess.check_call(['sed', '-i', 's/^enabled=1/enabled=0/'] + repos)
+
 def enable_init(destdir):
     create_link('/usr/lib/systemd/systemd', destdir + '/init')
 
@@ -378,6 +385,7 @@ def main():
     config_selinux(args.destdir, args.selinux)
     enable_networkd(args.destdir)
     enable_resolved(args.destdir)
+    disable_repos(args.destdir)
     enable_init(args.destdir)
     set_password(args.destdir, args.password, args.salt)
     write_mini_dotfiles(args.destdir)
