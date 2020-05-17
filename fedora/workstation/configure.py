@@ -1290,6 +1290,8 @@ def has_user(user):
 
 @execute_once
 def create_user():
+  if 'user' not in cnf['target']:
+      raise SkipThis()
   user = cnf['target']['user']
   if has_user(user):
     log.info('Not creating user {} because it is already present'.format(user))
@@ -1300,7 +1302,9 @@ def create_user():
 @execute_once
 def set_user_password():
   pw = get_password()
-  users = [ 'root', cnf['target']['user'] ]
+  users = [ 'root' ]
+  if 'user' in cnf['target']:
+      users.append(cnf['target']['user'])
   inp = ''.join([ '{}:{}\n'.format(user, pw) for user in users ])
   check_output(['chpasswd'], input=inp, chroot=True, redact_input=True)
 
