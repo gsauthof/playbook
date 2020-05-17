@@ -1020,6 +1020,7 @@ def mount_fs():
             if os.path.exists(d):
                 break
             time.sleep(0.2 * (k+1))
+        time.sleep(1)
         check_output(['cryptsetup', 'luksOpen', d, 'new-root-{}'.format(i),
             '--key-file', '-'], input=pw, redact_input=True)
   os.makedirs('/mnt/new-root', exist_ok=True)
