@@ -1,0 +1,274 @@
+---
+
+
+# requires: export DO_API_TOKEN=...
+
+
+# Demonstrate how mkrescuenet.py artifacts can be used to re-install
+# a Digital Ocean droplet with a Btrfs root filesystem on top of a
+# LUKS encrypted device.
+
+# SPDX-FileCopyrightText: © 2020 Georg Sauthoff <mail@gms.tf>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+
+- name: deploy droplet
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+      ssh_key_name: dell12-2020
+
+  tags: droplet
+
+  tasks:
+      - name: create password
+        shell:
+            cmd: pwhatch > work/pw
+            creates: work/pw
+      # there is also an openssh_keypair ansible module
+      - name: create ssh host keys
+        command:
+            cmd: ssh-keygen -t ed25519 -N '' -C '' -f work/{{ item }}
+            creates: work/{{ item }}
+        loop:
+            - early_ssh_host_ed25519_key
+            - ssh_host_ed25519_key
+      - name: fetch digital ocean ssh key ids
+        digital_ocean_sshkey_info:
+        register: do_keys
+      - name: filter digital ocean ssh key id
+        set_fact:
+            do_key_id: "{{ item.id }}"
+        loop: "{{ do_keys.data | json_query(q)}}"
+        vars:
+            q: "[?name=='{{ ssh_key_name }}']"
+      - name: create droplet
+        digital_ocean_droplet:
+            state: present
+            ipv6: yes
+            name: f32-initramfs-test
+            region: fra1
+            image: fedora-32-x64
+            size: s-1vcpu-2gb
+            ssh_keys: [ '{{ do_key_id }}' ]
+            tags: [ fedora, f32, test ]
+            # we want this to be idempotent:
+            unique_name: yes
+            # digital uses cloud-init and user_data allows to add config for it
+            # the cloud-init cloud-config is yaml but the DO API types this as string
+            # thus we pass it as multi-line string. The first line must be #cloud-config.
+            #
+            # note that the metadata is still readable by any local user after
+            # the installation via a link-local address:
+            # https://developers.digitalocean.com/documentation/metadata/#user-data
+            user_data: |
+                #cloud-config
+                ssh_keys:
+                    ssh_deletekeys: true
+                    ssh_genkeytypes: ['ed25519']
+                    ed25519_private: |
+                        {{ lookup('file', 'work/early_ssh_host_ed25519_key') | indent(8) }}
+                    ed25519_public: {{ lookup('file', 'work/early_ssh_host_ed25519_key.pub') }}
+            wait_timeout: 120
+        register: droplet
+      - name: add droplet host
+        add_host:
+            name: "{{ droplet.data.ip_address }}"
+            groups: do
+
+      - name: wait for droplet
+        wait_for:
+            host: "{{ droplet.data.ip_address }}"
+            port: 22
+
+      - name: get hosts public host key
+        shell:
+            cmd: "ssh-keyscan -t ed25519 {{ droplet.data.ip_address }}"
+        register: pub_host_key
+
+      - name: add droplet to known hosts
+        known_hosts:
+            state: present
+            name: "{{ droplet.data.ip_address }}"
+            key: "{{ droplet.data.ip_address }} {{ lookup('file', 'work/early_ssh_host_ed25519_key.pub') }}"
+        when: "lookup('file', 'work/early_ssh_host_ed25519_key.pub') in pub_host_key.stdout"
+      - name: set facts for later plays
+        set_fact:
+            droplet: "{{ droplet }}"
+            ssh_key_name: "{{ ssh_key_name }}"
+
+
+# we do this such that getting access to the droplets user-data doesn't
+# reveal its private host key ...
+- name: install ssh host key
+  hosts: do
+  remote_user: root
+  tags: hostkey
+
+  tasks:
+      - name: copy real ssh host key
+        copy:
+            src: "work/{{ item.name }}"
+            dest: "/etc/ssh/{{ item.name }}"
+            mode: "{{ item.mode }}"
+            owner: root
+            group: root
+        loop:
+            - { name: ssh_host_ed25519_key, mode: "0600" }
+            - { name: ssh_host_ed25519_key.pub, mode: "0644" }
+      - name: add real ssh host key to known hosts
+        known_hosts:
+            state: present
+            name: "{{ hostvars['localhost']['droplet'].data.ip_address }}"
+            key: "{{ hostvars['localhost']['droplet'].data.ip_address }} {{ lookup('file', 'work/ssh_host_ed25519_key.pub') }}"
+        delegate_to: localhost
+
+
+- name: kexec rescue system
+  hosts: do
+  remote_user: root
+
+  tasks:
+      - name: download rescue initramfs
+        get_url:
+            url: "https://georg.so/pub/{{ item }}"
+            dest: "/root/{{ item }}"
+        loop:
+          - f32.cpio.xz
+          - f32.vmlinuz
+        tags: kexec
+      - name: install kexec
+        package:
+            name: kexec-tools
+            state: latest
+        tags: kexec
+      - name: create kexec shutdown script
+        copy:
+            content: |
+                #!/bin/bash
+                 
+                sync
+                systemd-run --on-active=3 --timer-property=AccuracySec=100ms kexec -e
+            dest: /root/shutdown
+            mode: '0755'
+        tags: kexec
+      - name: create sideload network config
+        template:
+            src: 20-wired.network.j2
+            dest: /root/20-wired.network
+            owner: root
+            group: root
+            mode: '0644'
+        tags: kexec
+      - name: create side load
+        shell:
+            cmd: |
+                set -ex
+                rm -rf /root/sideload
+                mkdir /root/sideload
+                cd /root/sideload
+                mkdir -p etc/systemd/network
+                cp /root/20-wired.network etc/systemd/network
+                mkdir -p root/.ssh
+                chmod 700 root root/.ssh
+                cp -p /root/.ssh/authorized_keys root/.ssh
+                mkdir etc/ssh
+                cp -p /etc/ssh/ssh_host_ed25519_key* etc/ssh
+                find -print0 | cpio --null -o -H newc | xz --check=crc32 > /root/sideload.cpio.xz
+            creates: /root/sideload.cpio.xz
+        tags: kexec
+      - name: add sideload
+        shell:
+            chdir: /root
+            cmd: cat f32.cpio.xz sideload.cpio.xz > f32-rescue.cpio.xz
+            creates: /root/f32-rescue.cpio.xz
+        tags: kexec
+      - name: load new kernel
+        command:
+            chdir: /root
+            cmd: kexec -l f32.vmlinuz --initrd=f32-rescue.cpio.xz --command-line='console=ttyS0,115200'
+        tags: kexec
+      - name: kexec into rescue system
+        reboot:
+            search_paths: [ '/root' ]
+            reboot_timeout: 20
+        tags: kexec
+
+      - name: bootstrap python
+        raw: test -e /usr/bin/python || microdnf --setopt=tsflags=nodocs install python dnf && microdnf clean all
+        tags: kexec
+
+- name: install via rescue system
+  hosts: do
+  remote_user: root
+  vars:
+      ssh_key_name: "{{ hostvars['localhost']['ssh_key_name'] }}"
+
+  tasks:
+      # already part of the bootstrap
+      #- name: install dnf
+      #  command: microdnf install dnf
+      #  tags: rescue
+      #- name: install python
+      #  package:
+      #      name: python
+      #      state: latest
+      #  tags: rescue
+
+      - name: clone playbook
+        git:
+            repo: https://github.com/gsauthof/playbook
+            dest: /root/playbook
+            depth: 1
+        tags: rescue
+      - name: copy new system config
+        template:
+            src: system.cnf.j2
+            dest: /root/playbook/fedora/workstation/system.cnf
+        tags: rescue
+      - name: copy password
+        copy:
+            src: work/pw
+            dest: /root/playbook/fedora/workstation/pw
+        tags: rescue
+      - name: install crypted Fedora
+        command:
+            chdir: /root/playbook/fedora/workstation
+            cmd: ./configure.py --stage 0 --log c.log
+        tags: rescue
+      - name: install dracut-sshd
+        shell:
+            chdir: /root/playbook/fedora/workstation
+            cmd: |
+                set -ex
+                ./configure.py --stage 0 --log c.log --mount
+
+                cp -p /etc/ssh/ssh_host_ed25519_key* /mnt/new-root/etc/ssh
+
+                cp -p /etc/systemd/network/20-wired.network /mnt/new-root/etc/systemd/network
+
+                cat <<'EOF' | chroot /mnt/new-root /bin/bash
+                dnf -y install dracut-network
+                cd /root
+                git clone --depth 1 https://github.com/gsauthof/dracut-sshd.git
+                cd dracut-sshd
+                cp -r 46sshd /usr/lib/dracut/modules.d
+
+                systemctl enable systemd-networkd
+                systemctl enable systemd-resolved
+                systemctl disable NetworkManager || true
+                systemctl mask NetworkManager || true
+                dnf -y remove NetworkManager || true
+
+                dracut -f -v
+                EOF
+                ./configure.py --stage 0 --log c.log --umount
+        tags: dracut
+      - name: reboot after dracut
+        reboot:
+            test_command: uname
+            reboot_timeout: 20
+        tags: dracut-boot
+
+

@@ -1,0 +1,17 @@
+[Match]
+MACAddress={{ ansible_eth0.macaddress }}
+
+[Network]
+Address={{ (ansible_eth0.ipv4.address + '/' + ansible_eth0.ipv4.netmask) | ipaddr('host/prefix') }}
+{% for x in ansible_eth0.ipv4_secondaries %}
+Address={{ (x.address + '/' + x.netmask) | ipaddr('host/prefix') }}
+{% endfor %}
+{% for x in ansible_eth0.ipv6 %}
+{% if not x.address.startswith('fe80') %}
+Address={{ x.address  }}/{{ x.prefix }}
+{% endif %}
+{% endfor %}
+Gateway={{ ansible_default_ipv4.gateway }}
+{% for x in ansible_dns.nameservers %}
+DNS={{ x }}
+{% endfor %}
