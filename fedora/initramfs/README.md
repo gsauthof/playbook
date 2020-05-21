@@ -28,6 +28,15 @@ system.
 
 2020, Georg Sauthoff <mail@gms.tf>
 
+## TOC
+
+- [Use Cases](#use-cases)
+- [Image Creation](#image-creation)
+- [Space Considerations](#space-considerations)
+- [Boot Methods](#boot-methods)
+- [Security](#security)
+- [Testing](#testing)
+
 ## Use Cases
 
 Being able to boot into such a rescue system allows to e.g.:
@@ -178,6 +187,11 @@ The serial console settings allow to interact with the guest
 system from the same terminal. After login, it's recommended to
 fix the guest console with `resize && reset`.
 
+This repository also contains an example Ansible playbook (in
+subdirectory `ansible`) that deploys a fresh DigitalOcean virtual
+machine (a.k.a. 'Droplet') and then uses a mkrescuenet generated
+initramfs image to re-install Fedora on an encrypted LUKS device
+and using Btrfs as root filesystem.
 
 
 [1]: https://unix.stackexchange.com/a/584275/1131
