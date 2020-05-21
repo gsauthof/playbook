@@ -17,6 +17,16 @@ holidays or something like that.
 
 2017, Georg Sauthoff <mail@gms.tf>
 
+## TOC
+
+- [Getting Started](#getting-started)
+- [Creating Certificates](#creating-certificates)
+- [Android Client](#android-client)
+- [DNS](#dns)
+- [Discussion](#discussion)
+- [Security](#security)
+- [Files](#files)
+
 ## Getting Started
 
 After copying the necessary certificates and keys to `etc/openvpn` it's just:
@@ -149,6 +159,23 @@ addresses and thus expects 2 separate GET requests. The script
 just does HTTPS for obvious security reasons and authentication
 happens via basic auth.
 
+## Security
+
+In hindsight of 2020, choosing Vagrant for deploying a
+DigitalOcean droplet wasn't the best idea. Vagrant in combination
+with the DigitalOcean plugin is opaque when it comes to security.
+As far as I can see [it simply disables strict SSH host key
+checking during deployment][vgdo289] and thus this makes one
+prone to [man-in-the-middle attacks][mitm].
+
+A better alternative is to use Ansible where strict SSH host key
+checking is always enabled by default and where one can manage
+SSH host key deployment ([example][irfex]).
+
+Also as of 2020, there is a better alternative to [OpenVPN][ovpn]
+available: [WireGuard][wg]
+
+
 ## Files
 
 - `dns-sample.json` - example of a `dns.json` config file that
@@ -181,3 +208,8 @@ happens via basic auth.
 [tf]: https://torrentfreak.com/netflix-vpn-blockade-backlash-doesnt-hurt-us-190416/
 [android-con]: https://play.google.com/store/apps/details?id=net.openvpn.openvpn
 [android-open]: https://play.google.com/store/apps/details?id=de.blinkt.openvpn
+
+[mitm]: https://en.wikipedia.org/wiki/Man-in-the-middle_attack
+[wg]: https://en.wikipedia.org/wiki/WireGuard
+[vgdo289]: https://github.com/devopsgroup-io/vagrant-digitalocean/issues/289
+[irfex]: https://github.com/gsauthof/playbook/blob/37e573b3e2710d8ad85c17352d734ba5c71d3424/fedora/initramfs/ansible/digital-ocean.yml#L15-L125
