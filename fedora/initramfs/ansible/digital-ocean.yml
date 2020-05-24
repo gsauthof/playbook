@@ -263,7 +263,7 @@
                 systemctl mask NetworkManager || true
                 dnf -y remove NetworkManager || true
 
-                dracut -f -v
+                dracut -f -v --regenerate-all
                 EOF
                 ./configure.py --stage 0 --log c.log --umount
         tags: dracut
