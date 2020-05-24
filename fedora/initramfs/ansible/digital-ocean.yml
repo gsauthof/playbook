@@ -253,7 +253,9 @@
                 cd /root
                 git clone --depth 1 https://github.com/gsauthof/dracut-sshd.git
                 cd dracut-sshd
-                cp -r 46sshd /usr/lib/dracut/modules.d
+
+                cp -r 46sshd                   /usr/lib/dracut/modules.d
+                cp    example/90-networkd.conf /etc/dracut.conf.d
 
                 systemctl enable systemd-networkd
                 systemctl enable systemd-resolved
