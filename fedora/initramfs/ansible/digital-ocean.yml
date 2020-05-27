@@ -22,6 +22,11 @@
   tags: droplet
 
   tasks:
+      - name: create work directory
+        file:
+            path: work
+            mode: '0700'
+            state: directory
       - name: create password
         shell:
             cmd: pwhatch > work/pw
