@@ -1,11 +1,11 @@
 ---
 
 
-# requires: export DO_API_TOKEN=...
+# DigitalOcean play requires: export DO_API_TOKEN=...
 
 
 # Demonstrate how mkrescuenet.py artifacts can be used to re-install
-# a Digital Ocean droplet with a Btrfs root filesystem on top of a
+# a VM (e.g. a Digital Ocean droplet) with a Btrfs root filesystem on top of a
 # LUKS encrypted device.
 
 # SPDX-FileCopyrightText: © 2020 Georg Sauthoff <mail@gms.tf>
