@@ -4,6 +4,9 @@
 #
 # Tested on Fedora 32, should work on other distributions, too.
 #
+# See also:
+# https://github.com/gsauthof/playbook/tree/master/fedora/initramfs/ansible
+#
 # 2020-08-01, Georg Sauthoff <mail@gms.tf>
 
 # <UDF name="host_key" label="private SSH host key, base64 encoded"  example="output of < path/to/key base64" />
