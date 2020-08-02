@@ -3,7 +3,7 @@ MACAddress={{ ansible_eth0.macaddress }}
 
 [Network]
 Address={{ (ansible_eth0.ipv4.address + '/' + ansible_eth0.ipv4.netmask) | ipaddr('host/prefix') }}
-{% for x in ansible_eth0.ipv4_secondaries %}
+{% for x in ansible_eth0.ipv4_secondaries | d([]) %}
 Address={{ (x.address + '/' + x.netmask) | ipaddr('host/prefix') }}
 {% endfor %}
 {% for x in ansible_eth0.ipv6 %}

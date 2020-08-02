@@ -1,6 +1,11 @@
 [init]
 selinux = false
-device = /dev/vda
+# i.e. vda or sda
+{% if ansible_facts.devices.keys() | length == 1 %}
+device = /dev/{{ ansible_facts.devices.keys() | first }}
+{% else %}
+device = /dev/NOTFOUND
+{% endif %}
 cryptsetup = true
 password-file = pw
 release = 32

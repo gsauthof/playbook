@@ -109,7 +109,11 @@
 - name: install ssh host key
   hosts: do
   remote_user: root
+  gather_facts: false
   tags: hostkey
+  vars:
+      # i.e. the alternative is used when the first play is skipped
+      known_host: "{{ hostvars['localhost']['droplet'].data.ip_address | d(inventory_hostname) }}"
 
   tasks:
       - name: copy real ssh host key
@@ -125,8 +129,8 @@
       - name: add real ssh host key to known hosts
         known_hosts:
             state: present
-            name: "{{ hostvars['localhost']['droplet'].data.ip_address }}"
-            key: "{{ hostvars['localhost']['droplet'].data.ip_address }} {{ lookup('file', 'work/ssh_host_ed25519_key.pub') }}"
+            name: "{{ known_host }}"
+            key: "{{ known_host }} {{ lookup('file', 'work/ssh_host_ed25519_key.pub') }}"
         delegate_to: localhost
 
 
