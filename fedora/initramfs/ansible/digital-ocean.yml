@@ -12,14 +12,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 
-- name: deploy droplet
+- name: create keys
   hosts: localhost
   connection: local
   gather_facts: false
-  vars:
-      ssh_key_name: dell12-2020
-
-  tags: droplet
+  tags: keys_play
 
   tasks:
       - name: create work directory
@@ -39,6 +36,17 @@
         loop:
             - early_ssh_host_ed25519_key
             - ssh_host_ed25519_key
+
+
+- name: deploy droplet
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+      ssh_key_name: dell12-2020
+  tags: droplet_play
+
+  tasks:
       - name: fetch digital ocean ssh key ids
         digital_ocean_sshkey_info:
         register: do_keys
@@ -110,7 +118,7 @@
   hosts: do
   remote_user: root
   gather_facts: false
-  tags: hostkey
+  tags: hostkey_play
   vars:
       # i.e. the alternative is used when the first play is skipped
       known_host: "{{ hostvars['localhost']['droplet'].data.ip_address | d(inventory_hostname) }}"
@@ -137,6 +145,7 @@
 - name: kexec rescue system
   hosts: do
   remote_user: root
+  tags: kexec_play
 
   tasks:
       - name: download rescue initramfs
@@ -211,6 +220,7 @@
 - name: install via rescue system
   hosts: do
   remote_user: root
+  tags: rescue_play
   vars:
       ssh_key_name: "{{ hostvars['localhost']['ssh_key_name'] }}"
 
