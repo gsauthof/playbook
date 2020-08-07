@@ -10,35 +10,33 @@
 #
 # 2020, Georg Sauthoff <mail@gms.tf>
 
-set -x
+set -ex
 
-linode=foohost
+linode=${linode:-foohost}
+ssh_key=${ssh_key:-~/.ssh/dell12-2020-ed25519.pub}
 
-# WARNING: this exposes the root password when executing below command on a
-# multi-user host
-# unfortunately, currently linode-cli doesn't support a more secure non-interactive way
-# cf. 'Secure non-interactive ways for specifying the root password'
-# https://github.com/linode/linode-cli/issues/200
 
 # stackscript 660652 -> gsauthof/ssh-host-key
+
+export LINODE_CLI_ROOT_PASS="$(cat work/pw)"
 
 linode-cli linodes create   \
     --type g6-standard-1    \
     --region eu-central     \
     --image linode/fedora32 \
-    --authorized_keys "$(cat ~/.ssh/dell12_2017_ed25519.pub)" \
+    --authorized_keys "$(cat "$ssh_key")" \
     --booted true           \
     --label "$linode"       \
     --tags mail             \
     --tags web              \
     --stackscript_id 660652 \
-    --stackscript_data '{ "host_key": "'"$(< work/early_ssh_host_ed25519_key | base64 -w0)"'", "host_key_pub": "'"$(< work/early_ssh_host_ed25519_key.pub | base64 -w0)"'" }' \
-    --root_pass "$(cat work/pw)" \
+    --stackscript_data '{ "host_key": "'"$(< work/early_ssh_host_ed25519_key base64 -w0)"'", "host_key_pub": "'"$(< work/early_ssh_host_ed25519_key.pub base64 -w0)"'" }' \
+    --root_pass \
     --swap_size 0
 
 
 linode_id=$(linode-cli linodes list --label "$linode" --text --no-headers --format id)
-config_id=$(inode-cli linodes configs-list "$linode" --text --no-headers --format id)
+config_id=$(linode-cli linodes configs-list "$linode_id" --text --no-headers --format id)
 
 
 # make sure that we use our own Grub located in the MBR of the local disk
