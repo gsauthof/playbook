@@ -291,7 +291,7 @@
             test_command: uname
             # 20s is fine for DigitalOcean
             # Linode appears to need more time, at least sometimes
-            reboot_timeout: 30
+            reboot_timeout: 120
         tags: dracut-boot
 
 
