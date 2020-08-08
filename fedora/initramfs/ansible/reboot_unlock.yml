@@ -1,0 +1,15 @@
+---
+
+- name: reboot unlock
+  hosts: all
+  # note that become=yes doesn't work with reboot into early
+  # user space because there is no sudo!
+  #become: no
+  gather_facts: no
+
+  tasks:
+      - name: reboot
+        import_tasks: reboot_unlock_tasks.yml
+        vars:
+            timeout: 60
+

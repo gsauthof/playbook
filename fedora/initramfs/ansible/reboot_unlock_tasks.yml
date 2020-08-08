@@ -1,0 +1,7 @@
+---
+
+- name: reboot
+  reboot:
+      test_command: uname
+      reboot_timeout: 120
+- import_tasks: unlock_tasks.yml

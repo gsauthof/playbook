@@ -1,0 +1,24 @@
+---
+
+# workaround until raw module gets a stdin parameter
+# cf. https://github.com/ansible/ansible/issues/34556
+- name: unlock
+  command:
+      cmd: "ssh -l root {{ inventory_hostname }} systemd-tty-ask-password-agent"
+      stdin: "{{ lookup('file', 'work/pw') }}"
+  delegate_to: localhost
+# without delay we run into a situation where the next task module
+# is started to be copied into early userspace, then the connection
+# fails, and in late userspace the previously created
+# /root/.ansible/tmp/123 directory isn't found and ansible
+# can't recover from that and instead retries ssh connects for some
+# time
+- name: wait for sshd
+  wait_for:
+      port: 22
+      host: '{{ inventory_hostname }}'
+      search_regex: OpenSSH
+      delay: 15
+      timeout: "{{ timeout | d(60) }}"
+  delegate_to: localhost
+
