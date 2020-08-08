@@ -1,0 +1,53 @@
+---
+
+- name: enable SELinux
+  hosts: all
+  # note that become=yes doesn't work with reboot into early
+  # user space because there is no sudo!
+  #become: no
+  gather_facts: no
+
+  tasks:
+      - name: enable selinux permissively
+        template:
+            src: selinux_config.j2
+            dest: /etc/selinux/config
+            owner: root
+            group: root
+            mode: '0644'
+        vars:
+            sestatus: permissive
+        register: permissive
+      - name: create autorelabel marker
+        copy:
+            content: ""
+            dest: /.autorelabel
+            owner: root
+            group: root
+            mode: '0644'
+        when: permissive.changed
+      - name: reboot for permissive
+        import_tasks: reboot_unlock_tasks.yml
+        vars:
+            timeout: 240
+        when: permissive.changed
+
+
+      - name: unlock after relabling
+        import_tasks: unlock_tasks.yml
+        when: permissive.changed
+
+
+      - name: enable selinux enforcing
+        template:
+            src: selinux_config.j2
+            dest: /etc/selinux/config
+            owner: root
+            group: root
+            mode: '0644'
+        vars:
+            sestatus: enforcing
+        register: enforcing
+      - name: reboot for enforcing
+        import_tasks: reboot_unlock_tasks.yml
+        when: enforcing.changed
