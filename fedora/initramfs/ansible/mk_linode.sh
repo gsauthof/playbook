@@ -14,11 +14,16 @@ set -ex
 
 linode=${linode:-foohost}
 ssh_key=${ssh_key:-~/.ssh/dell12-2020-ed25519.pub}
+pw_file=work/linode-preliminary-pw
+
+
+if [ ! -e "$pw_file" ]; then
+    pwhatch > "$pw_file"
+fi
+export LINODE_CLI_ROOT_PASS="$(cat "$pw_file")"
 
 
 # stackscript 660652 -> gsauthof/ssh-host-key
-
-export LINODE_CLI_ROOT_PASS="$(cat work/pw)"
 
 linode-cli linodes create   \
     --type g6-standard-1    \
