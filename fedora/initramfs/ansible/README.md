@@ -24,8 +24,8 @@ Getting started with Linode:
 
     echo 'Upload ssh-host-key-stackscript.sh to your Linode StackScripts'
     echo 'or just use gsauthof/ssh-host-key (id: 660652)'
-    echo 'adjust ./mk_linode.sh'
-    ./mk_linode.sh
+    echo 'adjust ./mk-linode.sh'
+    ./mk-linode.sh
     echo 'continue with previous example'
 
 OCD usage (replace the host key one more time ...):
