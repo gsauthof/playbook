@@ -37,3 +37,28 @@ OCD usage (replace the host key one more time ...):
     ansible-playbook kexec-boot-install.yml --tags keys_play,hostkey_play -i hosts
     ssh root@203.0.113.23 dracut -f
 
+
+## Troubleshooting
+
+By default, and for good reason, the initramfs image has the root
+account locked - i.e. only public-key authentication is possible.
+For debugging purposes a login on the console might be useful. In
+such cases the root account can be unlocked via an additional
+sideload.
+
+For example, by adding something like this to the `create
+sideload` task:
+
+    mkdir etc/rc.d
+    echo -e '#!/bin/bash\necho root:some-newly-gen-pw | chpasswd' > etc/rc.d/rc.local
+    chmod 755 etc/rc.d/rc.local
+
+
+## Tested VM Providers
+
+Some notable VM providers where this playbook was tested:
+
+- DigitalOcean
+- Hetzner
+- Linode
+

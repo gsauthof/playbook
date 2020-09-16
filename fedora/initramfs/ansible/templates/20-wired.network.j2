@@ -2,7 +2,12 @@
 MACAddress={{ ansible_eth0.macaddress }}
 
 [Network]
+{# work around https://github.com/ansible-collections/ansible.netcommon/issues/138 #}
+{% if ansible_eth0.ipv4.netmask == '255.255.255.255' %}
+Address={{ ansible_eth0.ipv4.address + '/32' }}
+{% else %}
 Address={{ (ansible_eth0.ipv4.address + '/' + ansible_eth0.ipv4.netmask) | ipaddr('host/prefix') }}
+{% endif %}
 {% for x in ansible_eth0.ipv4_secondaries | d([]) %}
 Address={{ (x.address + '/' + x.netmask) | ipaddr('host/prefix') }}
 {% endfor %}
@@ -11,7 +16,22 @@ Address={{ (x.address + '/' + x.netmask) | ipaddr('host/prefix') }}
 Address={{ x.address  }}/{{ x.prefix }}
 {% endif %}
 {% endfor %}
+
+{# Gateway is part of the local network - standard case #}
+{% if (ansible_default_ipv4.gateway | ipaddr(ansible_default_ipv4.address + '/' + ansible_default_ipv4.netmask))  %}
 Gateway={{ ansible_default_ipv4.gateway }}
+{% endif %}
+{% if ansible_default_ipv6.gateway is defined %}
+Gateway={{ ansible_default_ipv6.gateway }}
+{% endif %}
+
 {% for x in ansible_dns.nameservers %}
 DNS={{ x }}
 {% endfor %}
+
+{# Gateway isn't part of the local network #}
+{% if not (ansible_default_ipv4.gateway | ipaddr(ansible_default_ipv4.address + '/' + ansible_default_ipv4.netmask))  %}
+[Route]
+Gateway={{ ansible_default_ipv4.gateway }}
+GatewayOnLink=true
+{% endif %}

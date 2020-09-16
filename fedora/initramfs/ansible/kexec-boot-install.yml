@@ -178,8 +178,8 @@
             owner: root
             group: root
             mode: '0644'
-        tags: kexec
-      - name: create side load
+        tags: [kexec, networkd]
+      - name: create sideload
         shell:
             cmd: |
                 set -ex
