@@ -534,13 +534,25 @@ DHCP=ipv4'''
 @execute_once
 def set_ssh():
   filename = '/etc/ssh/sshd_config'
-  commit_etc([filename], 'add ssh/sshd_config')
-  def f(line):
-    if line.startswith('PasswordAuthentication yes'):
-      return 'PasswordAuthentication no'
-    return line
-  line_edit(filename, f)
-  commit_etc([filename], 'disable sshd password auth')
+  commit_etc(filename, 'add ssh/sshd_config')
+
+  if os.path.exists('/etc/ssh/sshd_config.d'):
+      lfn = '/etc/ssh/sshd_config.d/00-local.conf'
+      with open(lfn) as f:
+          f.write('''# > For each keyword, the first obtained value will be used.
+#
+# cf. sshd_config(5)
+
+PasswordAuthentication no''')
+          commit_etc(lfn, 'disable sshd password auth')
+  else:
+      def f(line):
+        if line.startswith('PasswordAuthentication yes'):
+          return 'PasswordAuthentication no'
+        return line
+      line_edit(filename, f)
+      commit_etc(filename, 'disable sshd password auth')
+
   # with Fedora 26 minimal custom-environment/minimal-environment
   # sshd is installed/enabled by default - just to be sure ...
   check_output(['systemctl', 'start', 'sshd.service'])
