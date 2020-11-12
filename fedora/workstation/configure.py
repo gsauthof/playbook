@@ -125,7 +125,8 @@ def read_config(filename):
           'setup-networkd': 'false',
           'timezone': 'Europe/Berlin',
           'package-list': 'package.list',
-          'unpackage-list': 'unpackage.list'
+          'unpackage-list': 'unpackage.list',
+          'rpmfusion-year': datetime.date.today().year,
         },
         'init': {
           'cryptsetup': 'true',
@@ -308,7 +309,8 @@ def test_check_output_ok():
   assert r.stderr == '42\n'
 
 def download(url, filename):
-  check_output(['curl', '-f', '-L', '-o', filename, url])
+  check_output(['curl', '--fail', '--silent', '--show-error', '-L',
+      '--proto-redir', '=https', '-o', filename, url])
 
 def dnf_install(pkgs, **ys):
   pkgs = pkgs if isinstance(pkgs, list) else [ pkgs ]
@@ -397,11 +399,12 @@ def commit_core_files():
 def add_rpmfusion():
   d = cnf['self']['download-dir']
   release = cnf['target']['release']
+  key_year = cnf['target']['rpmfusion-year']
   rpm_name = d  + '/rpmfusion-free-release-{}.noarch.rpm'.format(release)
-  key_name = d + '/RPM-GPG-KEY-rpmfusion-free-fedora-{}'.format(release)
+  key_name = d + '/RPM-GPG-KEY-rpmfusion-free-fedora-{}'.format(key_year)
   if not os.path.exists(key_name):
     download('https://rpmfusion.org/keys?action=AttachFile&do=get&target='
-        + 'RPM-GPG-KEY-rpmfusion-free-fedora-{}'.format(release), key_name)
+        + 'RPM-GPG-KEY-rpmfusion-free-fedora-{}'.format(key_year), key_name)
   r = check_output(['gpg2', '--show-keys', '--with-fingerprint', key_name])
   fingerprint = r.stdout.splitlines()[1].strip()
   trusted_fingerprint = 'BD12 7385 C312 090F F2F3  5FA1 1191 A7C4 42F1 9ED0'
