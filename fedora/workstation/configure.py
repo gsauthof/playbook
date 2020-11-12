@@ -1243,7 +1243,7 @@ def refresh_chroot():
     # /run/systemd/resolve/stub-resolv.conf since Fedora 33
     # for now we want to continue to run resolved in non-stub mode
     fn = '/mnt/new-root/etc/resolv.conf'
-    if os.path.exists(fn):
+    if os.path.islink(fn):
         os.unlink(fn)
     shutil.copy('/etc/resolv.conf', '/mnt/new-root/etc/')
 
