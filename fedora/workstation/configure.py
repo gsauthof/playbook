@@ -1239,7 +1239,13 @@ GRUB_DISABLE_OS_PROBER=true'''
 # cp /etc/resolv.conf /mnt/new-root/etc
 
 def refresh_chroot():
-  shutil.copy('/etc/resolv.conf', '/mnt/new-root/etc/')
+    # with systemd resolved this is a symlink to
+    # /run/systemd/resolve/stub-resolv.conf since Fedora 33
+    # for now we want to continue to run resolved in non-stub mode
+    fn = '/mnt/new-root/etc/resolv.conf'
+    if os.path.exists(fn):
+        os.unlink(fn)
+    shutil.copy('/etc/resolv.conf', '/mnt/new-root/etc/')
 
 
 # chroot /mnt/new-root
