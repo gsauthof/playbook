@@ -538,7 +538,7 @@ def set_ssh():
 
   if os.path.exists('/etc/ssh/sshd_config.d'):
       lfn = '/etc/ssh/sshd_config.d/00-local.conf'
-      with open(lfn) as f:
+      with open(lfn, 'w') as f:
           f.write('''# > For each keyword, the first obtained value will be used.
 #
 # cf. sshd_config(5)
