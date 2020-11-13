@@ -37,6 +37,7 @@ smartmontools
 socat
 sqlite
 strace
+tar
 tcpdump
 vim-enhanced
 vlc

@@ -1,9 +1,9 @@
 [self]
 download-dir = .
-old-etc = /mnt/old/etc
+#old-etc = /mnt/old/etc
 #old-var = /mnt/old/var
 # restores an old zsh_history if present
-old-root = /mnt/old/root
+#old-root = /mnt/old/root
 
 [init]
 device = /dev/sda
@@ -14,13 +14,15 @@ cryptsetup = true
 uefi-fallback = true
 # Set `password-file = -` if you prefer an interactive prompt
 password-file = -
-release = 31
+release = 33
 authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
 
 [target]
-rpmfusion-fingerprint = 59A7 FE07 F664 C1B2 7687  C5D2 6DEE F051 C481 937A
+release = 33
+rpmfusion-year = 2020
+rpmfusion-fingerprint = E9A4 91A3 DE24 7814 E7E0  67EA E06F 8ECD D651 FF2E
 package-list = package-media.list
-# unpackage-list = unpackage.list
+unpackage-list = unpackage-media.list
 git-name = Joe User
 git-mail = juser@example.org
 hostname = hostb.example.org
@@ -33,6 +35,7 @@ restore-postfix = false
 restore-postgres = false
 setup-pamu2f = false
 setup-nfsd = false
+setup-networkd = true
 mount-points = /mnt/main
     /mnt/backup
     /mnt/cdrom
