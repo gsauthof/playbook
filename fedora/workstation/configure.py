@@ -130,6 +130,7 @@ def read_config(filename):
         },
         'init': {
           'cryptsetup': 'true',
+          'boot-btrfs': 'true',
           'uefi-fallback': 'true',
           'hostonly': 'true',
           'password-file': 'pw',
@@ -872,6 +873,7 @@ def get_devices():
 # https://en.wikipedia.org/wiki/EFI_system_partition
 @execute_once
 def create_partitions():
+  boot_btrfs = cnf['init']['boot-btrfs']
   devs = get_devices()
   bios_boot_type  = '21686148-6449-6E6F-744E-656564454649'
   esp_type        = 'C12A7328-F81F-11D2-BA4B-00A0C93EC93B'
@@ -880,7 +882,8 @@ def create_partitions():
   boot_type       = linux_fs_type
   if len(devs) > 1:
     esp_type  = linux_raid_type
-    boot_type = linux_raid_type
+    if not boot_btrfs:
+        boot_type = linux_raid_type
   inp = '''label: gpt
 size=1MiB, type={}
 size=200MiB, type={}
@@ -966,16 +969,21 @@ def test_nth_part():
 def mk_fs():
   global state
   devs = get_devices()
+  boot_btrfs = cnf['init']['boot-btrfs']
   if len(devs) == 1:
     boot_efi_dev = nth_part(devs[0], '2')
-    boot_dev     = nth_part(devs[0], '3')
+    boot_dev     = [ nth_part(devs[0], '3') ]
   else:
     boot_efi_dev = mk_raid1('boot-efi', 2, True)
-    boot_dev     = mk_raid1('boot', 3)
+    if boot_btrfs:
+        boot_dev = [ nth_part(d, '3') for d in devs ]
+    else:
+        boot_dev = [ mk_raid1('boot', 3) ]
   state['stage0']['fs-uuid'] = {}
-  u = str(uuid.uuid4())
-  check_output(['mkfs.ext4', '-U', u, boot_dev ])
-  state['stage0']['fs-uuid']['boot'] = u
+  if not boot_btrfs:
+      u = str(uuid.uuid4())
+      check_output(['mkfs.ext4', '-U', u] + boot_dev)
+      state['stage0']['fs-uuid']['boot'] = u
   u = str(uuid.uuid4())[0:8]
   check_output(['mkfs.vfat', '-i', u, boot_efi_dev ])
   u = u.upper()[:4] + '-' + u.upper()[4:]
@@ -995,8 +1003,12 @@ def mk_fs():
       root_dev.append('/dev/mapper/'+d)
   else:
     root_dev = [ nth_part(dev, 4) for dev in devs ]
-  u = str(uuid.uuid4())
   flags = [ '--data', 'raid1' ] if 'mirror' in cnf['init'] else []
+  if boot_btrfs:
+      u = str(uuid.uuid4())
+      check_output(['mkfs.btrfs', '--uuid', u, '--mixed'] + flags + boot_dev)
+      state['stage0']['fs-uuid']['boot'] = u
+  u = str(uuid.uuid4())
   check_output(['mkfs.btrfs', '--uuid', u ] + flags + root_dev)
   state['stage0']['fs-uuid']['root'] = u
   os.makedirs('/mnt/new-root', exist_ok=True)
@@ -1113,7 +1125,7 @@ def enable_initramfs_scripts():
 def unpackages():
     filename = cnf['target']['unpackage-list']
     if not os.path.exists(filename):
-        raise []
+        return []
     with open(filename) as f:
         return f.read().splitlines()
 
@@ -1183,8 +1195,11 @@ def mk_crypttab():
 
 @execute_once
 def mk_fstab():
+  boot_btrfs = cnf['init']['boot-btrfs']
+  boot_fs    = 'btrfs' if boot_btrfs else 'ext4'
+  boot_fsck  = '0' if boot_btrfs else '2'
   fstab_conf = '''
-UUID={0}   /boot      ext4     defaults,noatime                                  1 2
+UUID={0}   /boot      {3}      defaults,noatime                                  0 {4}
 UUID={1}   /boot/efi  vfat     umask=0077,shortname=winnt,noatime                0 2
 UUID={2}   /          btrfs    subvol=root,x-systemd.device-timeout=0,noatime    0 0
 UUID={2}   /home      btrfs    subvol=home,x-systemd.device-timeout=0,noatime    0 0'''
@@ -1192,7 +1207,8 @@ UUID={2}   /home      btrfs    subvol=home,x-systemd.device-timeout=0,noatime   
   with open(fstab, 'w') as f:
     print(fstab_conf.format(state['stage0']['fs-uuid']['boot'],
         state['stage0']['fs-uuid']['boot-efi'],
-        state['stage0']['fs-uuid']['root']), file=f)
+        state['stage0']['fs-uuid']['root'],
+        boot_fs, boot_fsck), file=f)
 
 
 # Even without real serial hardware available - configuring it just in case

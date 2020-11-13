@@ -9,6 +9,7 @@ old-var = /mnt/old/var
 device = /dev/vdb
 #mirror = /dev/vdc
 cryptsetup = false
+boot-btrfs = true
 # set to false when installing to removable media
 # the fallback yields UEFI bootmanager updates
 uefi-fallback = true
