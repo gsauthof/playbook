@@ -12,6 +12,7 @@ dmidecode
 dosfstools
 edac-utils
 efibootmgr
+fio
 gcc
 gcc-c++
 gdb
@@ -26,6 +27,7 @@ htop
 iotop
 iperf
 iperf3
+irqbalance
 kernel-modules-extra
 kexec-tools
 langpacks-en
@@ -41,7 +43,7 @@ lm_sensors
 lshw
 lsof
 ltrace
-lua-devel
+make
 mcelog
 mdadm
 memtester
@@ -53,6 +55,7 @@ nfs-utils
 ninja-build
 nmap
 ntpdate
+omping
 patch
 pciutils
 pcp-system-tools
@@ -70,9 +73,13 @@ strace
 sysstat
 tar
 tcpdump
+tmux
 tuna
 tuned
+tuned-profiles-cpu-partitioning
+tuned-profiles-realtime
 usbutils
 vim-enhanced
+wireshark-cli
 xfsprogs
 zsh

@@ -10,11 +10,13 @@ device=/dev/disk/by-id/ata-TOSHIBA_1234
 mirror=/dev/disk/by-id/ata-INTEL_1234
 cryptsetup = false
 password-file=pw
-release = 31
+release = 33
 authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
 
 [target]
-rpmfusion-fingerprint = 59A7 FE07 F664 C1B2 7687  C5D2 6DEE F051 C481 937A
+release = 33
+rpmfusion-year = 2020
+rpmfusion-fingerprint = E9A4 91A3 DE24 7814 E7E0  67EA E06F 8ECD D651 FF2E
 package-list = package-nfsd.list
 unpackage-list = unpackage-nfsd.list
 git-name = Joe User

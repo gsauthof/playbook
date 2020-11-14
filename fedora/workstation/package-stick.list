@@ -20,13 +20,17 @@ htop
 iotop
 iperf
 iperf3
+iwd
 iwl*-firmware
+jq
 kernel-modules-extra
 kexec-tools
 langpacks-en
+lm_sensors
 lshw
 lsof
 ltrace
+lvm2
 mcelog
 mdadm
 memtester
@@ -36,6 +40,7 @@ ncdu
 nfs-utils
 nmap
 ntpdate
+omping
 patch
 pciutils
 pcp-system-tools
