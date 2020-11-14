@@ -1003,7 +1003,7 @@ def mk_fs():
       root_dev.append('/dev/mapper/'+d)
   else:
     root_dev = [ nth_part(dev, 4) for dev in devs ]
-  flags = [ '--data', 'raid1' ] if 'mirror' in cnf['init'] else []
+  flags = [ '--data', 'raid1', '--metadata', 'raid1' ] if 'mirror' in cnf['init'] else []
   if boot_btrfs:
       u = str(uuid.uuid4())
       check_output(['mkfs.btrfs', '--uuid', u, '--mixed'] + flags + boot_dev)
