@@ -1181,6 +1181,9 @@ dracut_rescue_image="no"''', file=f)
 # Meaning: no serious implications with the current luks defaults.
 # Also note that the fstrim.timer job is disabled, by default
 # (as of Fedora 27).
+#
+# Basically, the discard option is the only reason for even creating
+# a crypttab as it isn't strictly required for boot
 @execute_once
 def mk_crypttab():
   if cnf['init']['cryptsetup'] != 'true':
