@@ -55,7 +55,6 @@ chrony
 chrpath
 clang
 clang-analyzer
-clapham
 clementine
 clevis
 clevis-luks
@@ -75,8 +74,6 @@ csv
 cyrus-sasl-plain
 dash
 ddrescue
-delve
-dibbler-client
 dietlibc-devel
 dislocker
 dnstracer
@@ -272,7 +269,6 @@ libxml2-devel
 libzstd-devel
 links
 linuxptp
-liquibase
 lld
 lldb
 llvm
@@ -289,7 +285,6 @@ lz4
 lz4-devel
 maildrop
 man2html
-mbrowse
 mcabber
 mdadm
 meld
@@ -328,7 +323,7 @@ nbd
 nbdkit
 nbdkit-basic-plugins
 nbdkit-curl-plugin
-nbdkit-gzip-plugin
+nbdkit-gzip-filter
 nbdkit-tar-plugin
 nbdkit-xz-filter
 ncdu
@@ -604,7 +599,6 @@ vlgothic-p-fonts
 vmtouch
 whois
 wine
-wine-docs
 wireshark
 wkhtmltopdf
 wodim
