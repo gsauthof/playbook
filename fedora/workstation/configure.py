@@ -658,7 +658,7 @@ def disable_avahi():
 
 def personalize_main_cf():
   host = cnf['target']['hostname']
-  m = re.match('^([^.]+)(\.|$)', host)
+  m = re.match('^([^.]+)(\\.|$)', host)
   short = m.group(1)
   def f(line):
     if line.startswith('mydomain '):
@@ -864,6 +864,60 @@ def get_devices():
     devs.append(cnf['init']['mirror'])
   return devs
 
+def active_mds(devs):
+    s = set()
+    xs = [ re.compile(' ' + d[d.rindex('/')+1:]  + '[0-9]*\\[') for d in devs ]
+    with open('/proc/mdstat') as f:
+        for line in f:
+            if line.startswith('md'):
+                for x in xs:
+                    if x.search(line):
+                        i = line.index(' ')
+                        s.add(line[:i])
+    rs = list(s)
+    rs.sort()
+    return rs
+
+# work-around bug:
+# http://bugs.python.org/issue21258
+# cf. http://stackoverflow.com/questions/24779893/customizing-unittest-mock-mock-open-for-iteration
+def mock_open(*args, **kargs):
+    import unittest.mock as mock
+    f_open = mock.mock_open(*args, **kargs)
+    f_open.return_value.__iter__ = lambda self : iter(self.readline, '')
+    return f_open
+
+def test_active_mds():
+    import unittest.mock as mock
+    with mock.patch(f'{__name__}.open', mock_open(read_data='''Personalities : [raid1]
+md126 : active raid1 sdd2[1] sdc2[0]
+      204736 blocks super 1.0 [2/2] [UU]
+
+md127 : active raid1 sdd3[1] sdc3[0]
+      1046528 blocks super 1.2 [2/2] [UU]
+
+unused devices: <none>''')):
+        mds = active_mds(['/dev/sdd', '/dev/sda'])
+        assert mds == [ 'md126', 'md127' ]
+
+def test_active_mds_sub():
+    import unittest.mock as mock
+    with mock.patch(f'{__name__}.open', mock_open(read_data='''Personalities : [raid1]
+md126 : active raid1 sdd2[1] sdc2[0]
+      204736 blocks super 1.0 [2/2] [UU]
+
+md127 : active raid1 sde3[1] sdf3[0]
+      1046528 blocks super 1.2 [2/2] [UU]
+
+unused devices: <none>''')):
+        mds = active_mds(['/dev/sdf', '/dev/sdx'])
+        assert mds == [ 'md127' ]
+
+def stop_mds(devs):
+    mds = active_mds(devs)
+    for md in mds:
+        check_output(['mdadm', '--stop', '/dev/' + md])
+
 
 # echo -e 'label: gpt\nsize=1MiB, type=21686148-6449-6E6F-744E-656564454649\nsize=200MiB, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B\nsize=1GiB, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4\ntype=0FC63DAF-8483-4772-8E79-3D69D8477DE4' | sfdisk /dev/sdb
 
@@ -890,6 +944,7 @@ size=200MiB, type={}
 size=1GiB, type={}
 type={}
 '''.format(bios_boot_type, esp_type, boot_type, linux_fs_type)
+  stop_mds(devs)
   for dev in devs:
     check_output(['wipefs', '--all'] + get_partitions(dev) + [dev])
     # if this fails with:
