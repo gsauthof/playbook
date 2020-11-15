@@ -649,13 +649,14 @@ def remove_packages():
 
 @execute_once
 def disable_avahi():
-  if not os.path.exists('/usr/lib/systemd/system/avahi-daemon.socket'):
-    raise SkipThis()
-  check_output(['systemctl', 'disable',
-      'avahi-daemon.socket', 'avahi-daemon.service'])
-  check_output(['systemctl', 'stop',
-      'avahi-daemon.socket', 'avahi-daemon.service'])
-  #systemctl mask avahi-daemon.socket avahi-daemon.service
+    if not os.path.exists('/usr/lib/systemd/system/avahi-daemon.socket'):
+        raise SkipThis()
+    # yes, disabling both service and socket isn't sufficient
+    # -> i.e. the avahi service is still socket activated then!
+    for verb in ( 'disable', 'stop', 'mask'):
+        check_output(['systemctl', verb,
+            'avahi-daemon.socket', 'avahi-daemon.service'])
+
 
 def personalize_main_cf():
   host = cnf['target']['hostname']
