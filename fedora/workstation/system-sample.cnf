@@ -10,6 +10,8 @@ device = /dev/vdb
 #mirror = /dev/vdc
 cryptsetup = false
 boot-btrfs = true
+# issue whole-device TRIM if target device is an SSD
+discard = true
 # set to false when installing to removable media
 # the fallback yields UEFI bootmanager updates
 uefi-fallback = true

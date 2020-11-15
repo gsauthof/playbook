@@ -135,6 +135,7 @@ def read_config(filename):
           'hostonly': 'true',
           'password-file': 'pw',
           'selinux': 'true',
+          'discard': 'true',
         }
       })
   c.read(filename)
@@ -919,6 +920,16 @@ def stop_mds(devs):
         check_output(['mdadm', '--stop', '/dev/' + md])
 
 
+def discard(dev):
+    if cnf['init']['discard'] != 'true':
+        return
+    d = dev[dev.rindex('/') + 1:]
+    with open(f'/sys/block/{d}/queue/rotational') as f:
+        if f.read().strip() != '0':
+            return
+    check_output(['blkdiscard', dev])
+
+
 # echo -e 'label: gpt\nsize=1MiB, type=21686148-6449-6E6F-744E-656564454649\nsize=200MiB, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B\nsize=1GiB, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4\ntype=0FC63DAF-8483-4772-8E79-3D69D8477DE4' | sfdisk /dev/sdb
 
 # XXX verify that created partitions are 4 KiB aligned ...
@@ -947,6 +958,7 @@ type={}
   stop_mds(devs)
   for dev in devs:
     check_output(['wipefs', '--all'] + get_partitions(dev) + [dev])
+    discard(dev)
     # if this fails with:
     # blockdev: ioctl error on BLKRRPART: Device or resource busy
     # cf. https://serverfault.com/a/940531/63769
