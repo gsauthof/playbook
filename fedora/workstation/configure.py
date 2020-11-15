@@ -732,6 +732,14 @@ def enable_services():
     check_output(['systemctl', 'enable', service])
 
 @execute_once
+def disable_services():
+    if 'disable-services' not in cnf['target']:
+        raise SkipThis()
+    services = cnf['target']['disable-services'].split()
+    for service in services:
+        check_output(['systemctl', 'disable', service])
+
+@execute_once
 def set_locale():
   locale = cnf['target']['locale']
   names = [ 'locale.conf', 'vconsole.conf']
@@ -844,6 +852,7 @@ def stage1(fast):
   restore_postgres()
   restore_etc()
   enable_services()
+  disable_services()
   set_pam_u2f()
   mk_mount_points()
   set_nfsd()

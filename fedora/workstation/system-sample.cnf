@@ -44,6 +44,7 @@ init-user = true
 locale = LANG=en_US.UTF-8
 timezone = Europe/Berlin
 enable-services = gdm.service
+disable-services = pmlogger.service pmcd.service pmie.service
 restore-postfix = true
 restore-postgres = true
 setup-pamu2f = true
