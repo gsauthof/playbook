@@ -43,7 +43,8 @@ logout/login with Wayland).
 
 See also the official [GNOME Shell extension repository][2].
 
-## Dangerous Extensions
+
+## Systray - The Neverending Story
 
 On Fedora 26 (GNOME shell 3.24) both top icons extensions for
 displaying tray bar icons [easily crash GNOME
@@ -56,10 +57,25 @@ all is to keep the bottom-left tray icon bar expanded after
 interactively expanding it (it's minimized, by default).
 
 With Fedora 27 (GNOME shell 3.26) the bottom-left tray icon bar
-[isn't available anymore][6]. The Top Icons Plus extension doesn't
+[isn't available anymore][6]. The TopIcons Plus extension doesn't
 crash GNOME shell anymore. But (as of 2018-04) it's unmaintained
 and contains a bug where the space of icons of closed programs
 isn't freed. It's packaged in the Fedora repository, though.
+
+As of Fedora 33 (GNOME shell 3.38; and also before under Fedora
+31), The [TopIcons Plus extension][7] is still available from the main
+Fedora package repository and works well enough, i.e. no crashes
+and no visual bugs, anymore. The extension is still marked as
+unmaintained, although the maintainer accepts pull-requests
+and packages releases. Curiously, it even works under Wayland
+while the README states the contrary.
+
+It's really unfortunate that Gnome-Shell doesn't support the
+traditional system tray area such that one has to install an
+extension to use such a basic and proven feature. Even more,
+Gnome-Shell developers seem to keep making it harder and harder
+for an extension to provide a systray.
+
 
 ## Other Settings
 
@@ -112,3 +128,4 @@ other nice settings in bulk.
 [4]: https://en.wikipedia.org/wiki/Compose_key
 [5]: https://gitlab.com/paddatrapper/log-out-button-gnome-extension
 [6]: https://blogs.gnome.org/aday/2017/08/31/status-icons-and-gnome/
+[7]: https://github.com/phocean/TopIcons-plus

@@ -1,8 +1,6 @@
 uuid,name,url,system
 LogOutButton@kyle.aims.ac.za,Log Out Button,https://gitlab.com/paddatrapper/log-out-button-gnome-extension,false
 TopIcons@phocean.net,TopIcons Plus,https://github.com/phocean/TopIcons-plus,true
-alternate-tab@gnome-shell-extensions.gcampax.github.com,AlternateTab,http://git.gnome.org/gnome-shell-extensions,true
-caffeine@patapon.info,Caffeine,https://github.com/eonpatapon/gnome-shell-extension-caffeine,false
 datetime-format@Daniel-Khodabakhsh.github.com,Datetime Format,https://github.com/Daniel-Khodabakhsh/datetime-format,false
 drive-menu@gnome-shell-extensions.gcampax.github.com,Removable Drive Menu,http://git.gnome.org/gnome-shell-extensions,true
 radio@hslbck.gmail.com,Internet Radio,https://github.com/hslbck/gnome-shell-extension-radio,false
