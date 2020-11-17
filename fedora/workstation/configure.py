@@ -707,7 +707,8 @@ def restore_postgres():
   if cnf['target']['restore-postgres'] != 'true':
     raise SkipThis()
   old_var = cnf['self']['old-var']
-  check_output(['rsync', '-a', old_var + '/lib/pgsql/data', '/var/lib/pgsql'])
+  check_output(['chattr', '+C', '/var/lib/pgsql', '/var/lib/pgsql/data', '/var/lib/pgsql/backups'])
+  check_output(['rsync', '-a', old_var + '/lib/pgsql/data/', '/var/lib/pgsql/data'])
   if old_pg_version() < pg_version():
     check_output(['postgresql-setup', '--upgrade'])
 
