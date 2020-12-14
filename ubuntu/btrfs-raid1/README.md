@@ -47,12 +47,14 @@ The last steps can also be executed from any other rescue system.
 It doesn't have to be the Ubuntu Live system.
 
 
-## Related Work
+## See Also
 
-
+- UNIX SE answer: [Mirroring EFI System Partition (ESP) on
+  Ubuntu][2]
 - Blog article: [Ubuntu 20.04 with btrfs-luks-RAID1 full disk encryption
   including /boot and auto-apt snapshots with Timeshift][1]
 
 
 
 [1]: https://mutschler.eu/linux/install-guides/ubuntu-btrfs-raid1/
+[2]: https://unix.stackexchange.com/a/623076/1131
