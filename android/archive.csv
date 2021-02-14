@@ -1,4 +1,4 @@
-id,name,playstore,fdroid,source,url
+id,name,playstore,fdroid,source,url,comment
 air.de.projektionisten.efa.app.gvh
 at.mroland.android.apps.nfctaginfo
 be.digitalia.fosdem
@@ -10,23 +10,32 @@ com.csipsimple
 com.csipsimple.plugins.codecs.pack1
 com.fjsoft.mylocalaccount
 com.floern.xkcd
+com.google.android.apps.authenticator2,Google Authenticator 2-factor,true,false,,,there are better open source alternatives such as FreeOTP
+com.google.android.apps.genie.geniewidget,Google News,true,false,awful google relaunch;too much garbage
 com.keuwl.functiongenerator
-com.simplemobiletools.gallery
-com.xabber.android
+com.mubi,Arthouse netflix - 1 movie for each day,true,false,terrible streaming performance
+com.ptvag.android.adacgasprices,ADAC Spritpreise,true,false,terrible UI;Bertha is better
+com.simplemobiletools.gallery,,,,,,unmaintained - dev went pro ...
+com.uberspot.a2048,2048 the game,true,true,https://github.com/uberspot/2048-android,,too much battery usage
+com.xabber.android,,,,,,Jabber is dead - was never ready for mobile
 de.azapps.mirakelandroid
 de.dwd.ku1fg.pollen
 de.myhermes.app
-de.uni_potsdam.hpi.openmensa
+de.uni_potsdam.hpi.openmensa,,,,,,abandoned by the author
 kvj.taskw
 me.guillaumin.android.osmtracker
 mnc.android.zvvticket
 net.openvpn.openvpn
+net.sourceforge.servestream,Servestream,true,true,https://sourceforge.net/projects/servestream/,,unmaintained;unreliable streaming - VLC does a better job
 net.xelnaga.exchanger
 org.intoorbit.spectrum
-org.fedorahosted.freeotp
-org.openintents.notepad
-org.openintents.shopping
-org.secuso.privacyfriendlyweather
+org.mariotaku.twidere,Twidere Twitter Client,true,true,https://github.com/TwidereProject/Twidere-Android,,abandonned by the author without any notice; sketchy resurface
+org.ntpsync,NTP client,true,true,https://github.com/Free-Software-for-Android/NTPSync,,unmaintained and broken
+org.openintents.notepad,,,,,,no releases;no simple backup/restore/export/import
+org.openintents.shopping,,,,,,no simple backup/restore/import/export;Markor is much better
+org.secuso.privacyfriendlynotes,Notes,true,true,https://github.com/SecUSo/privacy-friendly-notes/,https://www.secuso.informatik.tu-darmstadt.de/en/secuso/research/results/privacy-friendly-apps/notes/,no backup/restore;Markor is much better
+org.secuso.privacyfriendlysudoku,Sudoko game without ads,true,true,https://www.secuso.informatik.tu-darmstadt.de/en/secuso/research/results/privacy-friendly-apps/notes/,
+org.secuso.privacyfriendlyweather,,,,,,data source isn't that great
 org.sufficientlysecure.localcalendar
 se.anyro.nfc_reader,NFC reader,true,true,https://github.com/nadam/nfc-reader,
 uk.co.nickfines.RealCalc
