@@ -44,6 +44,7 @@ omping
 patch
 pciutils
 pcp-system-tools
+picocom
 powertop
 psmisc
 python3-tracer
