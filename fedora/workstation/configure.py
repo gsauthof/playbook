@@ -549,7 +549,7 @@ def set_ssh():
 # cf. sshd_config(5)
 
 PasswordAuthentication no''')
-          commit_etc(lfn, 'disable sshd password auth')
+      commit_etc(lfn, 'disable sshd password auth')
   else:
       def f(line):
         if line.startswith('PasswordAuthentication yes'):
