@@ -60,12 +60,12 @@
         digital_ocean_droplet:
             state: present
             ipv6: yes
-            name: f32-initramfs-test
+            name: "f{{ fedora_release }}-initramfs-test"
             region: fra1
-            image: fedora-32-x64
+            image: "fedora-{{ fedora_release }}-x64"
             size: s-1vcpu-2gb
             ssh_keys: [ '{{ do_key_id }}' ]
-            tags: [ fedora, f32, test ]
+            tags: [ fedora, test ]
             # we want this to be idempotent:
             unique_name: yes
             # digital uses cloud-init and user_data allows to add config for it
@@ -153,8 +153,8 @@
             url: "https://georg.so/pub/{{ item }}"
             dest: "/root/{{ item }}"
         loop:
-          - f32.cpio.xz
-          - f32.vmlinuz
+          - f{{ fedora_release }}.cpio.xz
+          - f{{ fedora_release }}.vmlinuz
         tags: kexec
       - name: install kexec
         package:
@@ -199,13 +199,13 @@
       - name: add sideload
         shell:
             chdir: /root
-            cmd: cat f32.cpio.xz sideload.cpio.xz > f32-rescue.cpio.xz
-            creates: /root/f32-rescue.cpio.xz
+            cmd: "cat f{{ fedora_release }}.cpio.xz sideload.cpio.xz > f{{ fedora_release }}-rescue.cpio.xz"
+            creates: "/root/f{{ fedora_release }}-rescue.cpio.xz"
         tags: kexec
       - name: load new kernel
         command:
             chdir: /root
-            cmd: kexec -l f32.vmlinuz --initrd=f32-rescue.cpio.xz --command-line='console=ttyS0,115200'
+            cmd: "kexec -l f{{ fedora_release }}.vmlinuz --initrd=f{{ fedora_release }}-rescue.cpio.xz --command-line='console=ttyS0,115200'"
         tags: kexec
       - name: kexec into rescue system
         reboot:

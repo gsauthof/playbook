@@ -8,6 +8,6 @@ device = /dev/NOTFOUND
 {% endif %}
 cryptsetup = true
 password-file = pw
-release = 32
+release = {{ fedora_release }}
 authorized-keys = {{ lookup('file', lookup('env', 'HOME')+'/.ssh/' + ssh_key_name + '-ed25519.pub') }}
 
