@@ -42,8 +42,6 @@
   hosts: localhost
   connection: local
   gather_facts: false
-  vars:
-      ssh_key_name: dell12-2020
   tags: droplet_play
 
   tasks:
@@ -109,7 +107,6 @@
       - name: set facts for later plays
         set_fact:
             droplet: "{{ droplet }}"
-            ssh_key_name: "{{ ssh_key_name }}"
 
 
 # we do this such that getting access to the droplets user-data doesn't
@@ -214,15 +211,13 @@
         tags: kexec
 
       - name: bootstrap python
-        raw: test -e /usr/bin/python || microdnf --setopt=tsflags=nodocs install python dnf && microdnf clean all
+        raw: test -e /usr/bin/python || microdnf -y --setopt=tsflags=nodocs install python dnf && microdnf clean all
         tags: kexec
 
 - name: install via rescue system
   hosts: do
   remote_user: root
   tags: rescue_play
-  vars:
-      ssh_key_name: "{{ hostvars['localhost']['ssh_key_name'] }}"
 
   tasks:
       # already part of the bootstrap

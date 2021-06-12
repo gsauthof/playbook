@@ -1,2 +1,4 @@
 
 fedora_release: 34
+
+ssh_key_name: dell12-2020
