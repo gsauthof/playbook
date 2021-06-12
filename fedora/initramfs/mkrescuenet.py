@@ -24,7 +24,7 @@ def mk_arg_parser():
     p.add_argument('--destdir', '-d',
             help=('base directory where to build the initramfs directory tree'
                 ' (default: $PWD/initramfs-$family$release'))
-    p.add_argument('--release', default='32',
+    p.add_argument('--release', default='34',
             help='distribution release (default: %(default)s)')
     p.add_argument('--family', default='f',
             help='short distribution family id (default: %(default)s)')
@@ -100,6 +100,7 @@ minimal_pkgs = [
     'openssh-clients',
     'openssh-server',
     'systemd',
+    'systemd-networkd',
     'tmux',
     'vim-minimal',
     'which',
@@ -249,7 +250,14 @@ ex_paths = [
         'etc/udev/hwdb.bin',
         'usr/bin/tzselect',
         'usr/lib/.build-id/',
+        'usr/lib/firmware/amdgpu',
+        'usr/lib/firmware/mellanox', # switch firmwares
+        'usr/lib/firmware/mrvl/prestera', # switch firmwares
+        'usr/lib/firmware/qcom', # Qualcom media
         'usr/lib/modules/[^/]\+/vmlinuz',
+        'usr/lib64/gconv/IBM', # legacy IBM charsets
+        'usr/lib64/gconv/libCNS.so', # charset I don't know
+        'usr/lib64/gconv/BIG5HKSCS.so', # charset I don't know
         'usr/share/locale/',
         'usr/share/zoneinfo/',
         'var/cache/',
