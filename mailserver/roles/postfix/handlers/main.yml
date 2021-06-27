@@ -43,3 +43,9 @@
   systemd:
       state: reloaded
       name: postfix
+
+- name: restart crond
+  systemd:
+      state: restarted
+      name: crond
+

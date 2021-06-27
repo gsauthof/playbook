@@ -8,6 +8,9 @@
   notify:
       - enable postfix
       - reload postfix
+      # to reenable mail sending if /usr/sbin/sendmail wasn't available before
+      # because crond checks this path during startup
+      - restart crond
   tags: [ pkg, postfix ]
 
 - name: install additional packages
@@ -110,17 +113,18 @@
       group: root
       mode: '644'
   notify: "map virtual_mailbox"
-  tags: [ conf, postfix ]
+  tags: [ conf, postfix, aliases, valiases ]
 
 - name: create aliases
-  template:
-      src: aliases.j2
+  blockinfile:
+      block: "{{ lookup('template', 'aliases.j2') }}"
+      insertafter: "^#root:"
       dest: /etc/aliases
       owner: root
       group: root
       mode: '644'
   notify: map aliases
-  tags: [ conf, postfix ]
+  tags: [ conf, postfix, aliases ]
 
 - name: create virtual_re
   template:
@@ -131,11 +135,12 @@
       mode: '644'
   tags: [ conf, postfix ]
 
+# shared with web (ngninx) playbook
 - name: generate TLS dh parameter set
   command:
-      cmd: openssl dhparam -out /etc/postfix/dh2048.pem 2048
-      creates: /etc/postfix/dh2048.pem
-  tags: [ conf, postfix ]
+      cmd: openssl dhparam -out /etc/pki/tls/dhparam-2048.pem 2048
+      creates: /etc/pki/tls/dhparam-2048.pem
+  tags: [ conf, postfix, dhparam ]
   notify: reload postfix
 
 
@@ -163,6 +168,7 @@
       service: smtp
       state: enabled
       permanent: yes
+      immediate: yes
   tags: [ conf, firewall, postfix ]
 
 
