@@ -1,0 +1,8 @@
+---
+
+- name: restart spool-mail2s3
+  systemd:
+      state: restarted
+      name: spool-mail2s3
+
+

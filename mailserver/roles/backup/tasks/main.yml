@@ -1,0 +1,43 @@
+---
+
+- name: install spool2s3
+  package:
+      name: spool2s3
+      state: latest
+  tags: [ backup, pkg ]
+
+- name: create backup secrets
+  template:
+      src: mail_backup_env.sh.j2
+      dest: /usr/local/etc/mail_backup_env.sh
+      owner: root
+      group: root
+      mode: '0640'
+  notify: restart spool-mail2s3
+  tags: [backup, env]
+
+
+- name: create backup service
+  template:
+      src: spool-mail2s3.service.j2
+      dest: /etc/systemd/system/spool-mail2s3.service
+      owner: root
+      group: root
+      mode: '0644'
+  register: backup_service
+  notify: restart spool-mail2s3
+  tags: [backup, backupservice]
+
+
+- name: reload systemd
+  systemd:
+      daemon_reload: yes
+  when: backup_service.changed
+  tags: [backup, backupservice]
+
+- name: enable backup service
+  systemd:
+      name: spool-mail2s3
+      enabled: yes
+  tags: [backup, backupservice]
+

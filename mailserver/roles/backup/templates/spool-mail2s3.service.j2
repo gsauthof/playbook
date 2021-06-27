@@ -1,0 +1,23 @@
+[Unit]
+Description=Spool maildir files to S3
+#Documentation=https://example.org
+
+After=network.target
+
+[Service]
+EnvironmentFile=/usr/local/etc/mail_backup_env.sh
+User={{ mda_user }}
+Group={{ mda_user }}
+Type=notify
+ExecStart=/usr/bin/spool2s3 --bucket ${bucket} ${spool_dir} -v --compress
+
+WorkingDirectory=/home/{{ mda_user }}
+
+# Restart the service if it exited cleanly/dirty/because of a signal/timeout
+Restart=always
+
+# Sleep X seconds between a Restart= triggered restart
+RestartSec=1200
+
+[Install]
+WantedBy=multi-user.target

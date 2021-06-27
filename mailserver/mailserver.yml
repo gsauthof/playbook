@@ -2,5 +2,6 @@
 - hosts: mailserver
   roles:
       - maildrop
+      - backup
       - postfix
       - dovecot
