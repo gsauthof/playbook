@@ -3,5 +3,5 @@
 # use with ssh.
 # Make sure that you directly ssh to root or the user has password-less sudo
 # configured.
-host1
-host2
+host1 ansible_host=host1.example.org
+host2 ansible_host=host2.example.net
