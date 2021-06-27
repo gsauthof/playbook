@@ -11,8 +11,8 @@ ssl = required
 # dropping root privileges, so keep the key file unreadable by anyone but
 # root. Included doc/mkcert.sh can be used to easily generate self-signed
 # certificate, just make sure to update the domains in dovecot-openssl.cnf
-ssl_cert = </etc/letsencrypt/live/{{ myhostname|d(ansible_fqdn) }}/fullchain.pem
-ssl_key = </etc/letsencrypt/live/{{ myhostname|d(ansible_fqdn) }}/privkey.pem
+ssl_cert = </etc/pki/tls/certs/{{ myhostname|d(ansible_fqdn) }}.crt
+ssl_key = </etc/pki/tls/private/{{ myhostname|d(ansible_fqdn) }}.key
 
 # If key file is password protected, give the password here. Alternatively
 # give it when starting dovecot with -p parameter. Since this file is often
@@ -29,11 +29,16 @@ ssl_key = </etc/letsencrypt/live/{{ myhostname|d(ansible_fqdn) }}/privkey.pem
 #ssl_require_crl = yes
 
 # Directory and/or file for trusted SSL CA certificates. These are used only
-# when Dovecot needs to act as an SSL client (e.g. imapc backend). The
-# directory is usually /etc/pki/dovecot/certs in Debian-based systems and the file is
-# /etc/pki/tls/cert.pem in RedHat-based systems.
+# when Dovecot needs to act as an SSL client (e.g. imapc backend or
+# submission service). The directory is usually /etc/pki/dovecot/certs in
+# Debian-based systems and the file is /etc/pki/tls/cert.pem in
+# RedHat-based systems. Note that ssl_client_ca_file isn't recommended with
+# large CA bundles, because it leads to excessive memory usage.
 #ssl_client_ca_dir =
 #ssl_client_ca_file =
+
+# Require valid cert when connecting to a remote server
+#ssl_client_require_valid_cert = yes
 
 # Request client to send a certificate. If you also want to require it, set
 # auth_ssl_require_client_cert=yes in auth section.
@@ -44,17 +49,43 @@ ssl_key = </etc/letsencrypt/live/{{ myhostname|d(ansible_fqdn) }}/privkey.pem
 # auth_ssl_username_from_cert=yes.
 #ssl_cert_username_field = commonName
 
-# DH parameters length to use.
-#ssl_dh_parameters_length = 1024
+# SSL DH parameters
+# Generate new params with `openssl dhparam -out /etc/dovecot/dh.pem 4096`
+# Or migrate from old ssl-parameters.dat file with the command dovecot
+# gives on startup when ssl_dh is unset.
+# GS: shared with e.g. nginx and postfix, locally generated
+ssl_dh = </etc/pki/tls/dhparam-2048.pem
 
-# SSL protocols to use
-ssl_protocols = !SSLv2 !SSLv3
+# Minimum SSL protocol version to use. Potentially recognized values are SSLv3,
+# TLSv1, TLSv1.1, and TLSv1.2, depending on the OpenSSL version used.
+ssl_min_protocol = TLSv1.2
 
-# SSL ciphers to use
-#ssl_cipher_list = ALL:!LOW:!SSLv2:!EXP:!aNULL
+# SSL ciphers to use, the default is:
+#ssl_cipher_list = ALL:!kRSA:!SRP:!kDHd:!DSS:!aNULL:!eNULL:!EXPORT:!DES:!3DES:!MD5:!PSK:!RC4:!ADH:!LOW@STRENGTH
+# To disable non-EC DH, use:
+#ssl_cipher_list = ALL:!DH:!kRSA:!SRP:!kDHd:!DSS:!aNULL:!eNULL:!EXPORT:!DES:!3DES:!MD5:!PSK:!RC4:!ADH:!LOW@STRENGTH
+#ssl_cipher_list = PROFILE=SYSTEM
+
+# GS:
+# generated 2020-08-29, Mozilla Guideline v5.6, Dovecot 2.3.10.1, OpenSSL 1.1.1g, intermediate configuration
+# https://ssl-config.mozilla.org/#server=dovecot&version=2.3.10.1&config=intermediate&openssl=1.1.1g&guideline=5.6
+#
+ssl_cipher_list = ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+ssl_prefer_server_ciphers = no
+
+
+# Colon separated list of elliptic curves to use. Empty value (the default)
+# means use the defaults from the SSL library. P-521:P-384:P-256 would be an
+# example of a valid value.
+#ssl_curve_list =
 
 # Prefer the server's order of ciphers over client's.
 #ssl_prefer_server_ciphers = no
 
 # SSL crypto device to use, for valid values run "openssl engine"
 #ssl_crypto_device =
+
+# SSL extra options. Currently supported options are:
+#   compression - Enable compression.
+#   no_ticket - Disable SSL session tickets.
+#ssl_options =
