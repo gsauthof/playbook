@@ -43,6 +43,16 @@ local_mailfilter: |
       to md/devel
     }
 
+# additional maildirs to create
+local_maildirs:
+    - md/devel
+
+
+# extra mail directories to clean, i.e. retain mail for X days
+# extra_md_clean:
+#    - { name: devel, days: 60 }
+
+
 # used to create mda_user entries in /etc/dovecot/{userdb,passwd},
 # also used by Postfix via SASL (i.e. socket to Dovecot)
 #
@@ -56,9 +66,5 @@ user_hashes:
     # juser:{SHA512-CRYPT}xyz123
     - "juser:{SHA512-CRYPT}$6$v90XZaZzqYesb1ht$HgvedJnZ11r.iwWAB5Du3eY1uT4hCMRdKNW/E7IwMODFHkNMZuQ887YmawuMwBdaRNFghxoTl0CncXlhbUJJ10"
     - "jane:{SHA512-CRYPT}$6$P3CNkQyRZo4DHpAm$Awr61X.YlKnKcOaupUWmg3Wom3leIZlp9QGMjp6hCDZqIbrQoUm9O.grqGaS6ZuFHZckgSHv6BUQrfOsxvoLV/"
-
-# extra mail directories to clean, i.e. retain mail for X days
-# extra_md_clean:
-#    - { name: announce-ml, days: 60 }
 
 
