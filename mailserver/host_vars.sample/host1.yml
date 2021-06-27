@@ -18,11 +18,10 @@ mta_domain: example.org
 smtp_bind_address: 203.0.113.23
 smtp_bind_address6: 2001:DB8:fac:17::23
 
-# /etc/postfix/virtual body
-virtual: |
-    # XXX redundant to virtual_re, remove
-    postmeister@example.org postmaster
 
+# fqdn used on buddy for cert checks etc.
+# mx_name: "{{ ansible_host }}
+mx_name: mail1.example.org
 
 # address to redirect all aliases to a virtual mailbox
 mda_address: mail@example.net
@@ -32,4 +31,10 @@ mda_address: mail@example.net
 imapd_listen:
     - "203.0.113.23"
     - "2001:DB8:fac:17::23"
+
+backup:
+    bucket: some_bucket
+    s3_key_id: 0123456789abcdef012345678
+    s3_key: lookup-somewhere
+    file_key: lookup-in-some-store
 

@@ -7,5 +7,4 @@ mta_domain: example.net
 # address to redirect all aliases to a virtual mailbox
 mda_address: mail@example.org
 
-# extra name server for dnsbl check
-# extra_ns: 198.51.100.23
+# etc. cf. host1.yml
