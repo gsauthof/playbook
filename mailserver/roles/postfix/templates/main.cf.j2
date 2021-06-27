@@ -5,10 +5,18 @@
 # For common configuration examples, see BASIC_CONFIGURATION_README
 # and STANDARD_CONFIGURATION_README. To find these documents, use
 # the command "postconf html_directory readme_directory", or go to
-# http://www.postfix.org/.
+# http://www.postfix.org/BASIC_CONFIGURATION_README.html etc.
 #
 # For best results, change no more than 2-3 parameters at a time,
 # and test if Postfix still works after every change.
+
+
+# Run with default settings of the specified major version.
+# Useful when migrating an existing configuration to a new Postfix version.
+# Warns about changed defaults when current version > specified version.
+# cf. http://www.postfix.org/postconf.5.html#compatibility_level
+#
+compatibility_level = 3
 
 # SOFT BOUNCE
 #
@@ -143,8 +151,8 @@ inet_protocols = all
 # compatible delivery agent that lookups all recipients in /etc/passwd
 # and /etc/aliases or their equivalent.
 #
-# The default is $myhostname + localhost.$mydomain.  On a mail domain
-# gateway, you should also include $mydomain.
+# The default is $myhostname + localhost.$mydomain + localhost.  On
+# a mail domain gateway, you should also include $mydomain.
 #
 # Do not specify the names of virtual domains - those domains are
 # specified elsewhere (see VIRTUAL_README).
@@ -239,7 +247,7 @@ unknown_local_recipient_reject_code = 550
 #
 # By default (mynetworks_style = subnet), Postfix "trusts" SMTP
 # clients in the same IP subnetworks as the local machine.
-# On Linux, this does works correctly only with interfaces specified
+# On Linux, this works correctly only with interfaces specified
 # with the "ifconfig" command.
 # 
 # Specify "mynetworks_style = class" when Postfix should "trust" SMTP
@@ -491,7 +499,7 @@ alias_database = hash:/etc/aliases
 # can be used to take advantage of the single instance message store
 # capability of Cyrus. The concurrency limit can be used to control
 # how many simultaneous LMTP sessions will be permitted to the Cyrus
-# message store. 
+# message store.
 #
 # Cyrus IMAP via command line. Uncomment the "cyrus...pipe" and
 # subsequent line in master.cf.
@@ -634,7 +642,7 @@ debugger_command =
 #	>$config_directory/$process_name.$process_id.log & sleep 5
 #
 # Another possibility is to run gdb under a detached screen session.
-# To attach to the screen sesssion, su root and run "screen -r
+# To attach to the screen session, su root and run "screen -r
 # <id_string>" where <id_string> uniquely matches one of the detached
 # sessions (from "screen -list").
 #
@@ -679,11 +687,11 @@ manpage_directory = /usr/share/man
 # sample_directory: The location of the Postfix sample configuration files.
 # This parameter is obsolete as of Postfix 2.1.
 #
-sample_directory = /usr/share/doc/postfix-2.10.1/samples
+sample_directory = /usr/share/doc/postfix/samples
 
 # readme_directory: The location of the Postfix README files.
 #
-readme_directory = /usr/share/doc/postfix-2.10.1/README_FILES
+readme_directory = /usr/share/doc/postfix/README_FILES
 
 # Whether or not to use the local biff service. This service sends "new mail"
 # notifications to users who have requested new mail notification with the UNIX
@@ -914,7 +922,7 @@ smtpd_tls_security_level = may
 #    File with the Postfix SMTP server RSA certificate in PEM format. This file
 #    may also contain the Postfix SMTP server private RSA key. 
 #
-smtpd_tls_cert_file = /etc/letsencrypt/live/{{ myhostname|d(ansible_fqdn) }}/fullchain.pem
+smtpd_tls_cert_file = /etc/pki/tls/certs/{{ myhostname|d(ansible_fqdn) }}.crt
 
 #smtpd_tls_key_file (default: $smtpd_tls_cert_file)
 #
@@ -926,7 +934,7 @@ smtpd_tls_cert_file = /etc/letsencrypt/live/{{ myhostname|d(ansible_fqdn) }}/ful
 #    be encrypted. File permissions should grant read-only access to the system
 #    superuser account ("root"), and no access to anyone else.
 #
-smtpd_tls_key_file = /etc/letsencrypt/live/{{ myhostname|d(ansible_fqdn) }}/privkey.pem
+smtpd_tls_key_file = /etc/pki/tls/private/{{ myhostname|d(ansible_fqdn) }}.key
 
 #smtpd_tls_session_cache_database (default: empty)
 #
@@ -1169,7 +1177,7 @@ virtual_mailbox_base = /var/mail/virtual
 #    virtual(8) delivery agent will terminate with a
 #    fatal error.
 #
-virtual_uid_maps = static:1001
+#virtual_uid_maps = static:1001
 
 # virtual_gid_maps (default: empty)
 #
@@ -1208,7 +1216,7 @@ virtual_uid_maps = static:1001
 #    table directly. Before Postfix version 2.2, the
 #    virtual(8) delivery agent will terminate with a
 #    fatal error.
-virtual_gid_maps = static:1001
+#virtual_gid_maps = static:1001
 
 
 # transport_destination_recipient_limit (default: $default_destination_recipient_limit)
@@ -1315,8 +1323,8 @@ smtp_tls_security_level = may
 #
 #    smtp_tls_CApath = /etc/postfix/certs
 #
-# GS: rhel 7 seems to use just one bundle file
-#smtp_tls_CApath = /etc/ssl/certs
+# GS: the distributions's cert selection is bundled, though (cf. smtp_tls_CAfile)
+smtp_tls_CApath = /etc/pki/tls/certs
 
 # smtp_tls_CAfile (default: empty)
 #
@@ -1339,7 +1347,7 @@ smtp_tls_security_level = may
 #
 #    smtp_tls_CAfile = /etc/postfix/CAcert.pem
 #
-smtp_tls_CAfile = /etc/ssl/certs/ca-bundle.crt
+smtp_tls_CAfile = /etc/pki/tls/certs/ca-bundle.crt
 
 # smtp_tls_loglevel (default: 0)
 #
@@ -1383,38 +1391,57 @@ smtp_bind_address  = {{ smtp_bind_address }}
 smtp_bind_address6 = {{ smtp_bind_address6 }}
 {% endif %}
 
+# location of shared config-like files
+meta_directory = /etc/postfix
+# location of postfix shared libraries and plugins
+shlib_directory = /usr/lib64/postfix
+
+
 # default:  4000s
 maximal_backoff_time = 30m
-# the default of 4 days is grotesque - e.g. if you get a 554 error for some policy violation
+# the default of 5 days is grotesque - e.g. if you get a 554 error for some policy violation
 # the RFC suggests 4-5 days ...
 # default: 5d
 maximal_queue_lifetime = 4h
 # default: 5d
 bounce_queue_lifetime = 4h
 
+# See also:
+# https://ssl-config.mozilla.org/#server=postfix&version=3.5.6&config=intermediate&openssl=1.1.1g&guideline=5.6
+
 # anti drown meassures
 # cf. https://drownattack.com/postfix
-smtpd_tls_protocols = !SSLv2, !SSLv3
-smtp_tls_protocols  = !SSLv2, !SSLv3
-lmtp_tls_protocols  = !SSLv2, !SSLv3
+smtpd_tls_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+smtp_tls_protocols  = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+lmtp_tls_protocols  = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
 tlsproxy_tls_protocols = $smtpd_tls_protocols
- 
-smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3
-smtp_tls_mandatory_protocols  = !SSLv2, !SSLv3
-lmtp_tls_mandatory_protocols  = !SSLv2, !SSLv3
+
+# NB: the *_mandatory_* options are only effective if mandatory
+# authentication is enabled, i.e. if smtp*_tls_security_level=encrypt
+# or higher; however, we do opportunistic TLS (... = may), see above
+smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+smtp_tls_mandatory_protocols  = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+lmtp_tls_mandatory_protocols  = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
 tlsproxy_tls_mandatory_protocols = $smtpd_tls_mandatory_protocols
- 
+
+# NB: medium is already the default
 smtpd_tls_ciphers = medium
+# NB: medium is already the default
 smtp_tls_ciphers  = medium
  
 # Instead of using the exact same parameter sets as distributed with other TLS
 # packages, it is more secure to generate your own set of parameters 
 # http://www.postfix.org/postconf.5.html#smtpd_tls_dh1024_param_file
-# openssl dhparam -out /etc/postfix/dh2048.pem 2048
-smtpd_tls_dh1024_param_file = /etc/postfix/dh2048.pem
+# e.g. openssl dhparam -out /etc/postfix/dh2048.pem 2048
+# GS: shared with e.g. NGINX - locally generated
+smtpd_tls_dh1024_param_file = /etc/pki/tls/dhparam-2048.pem
  
 smtp_tls_exclude_ciphers = EXPORT, LOW, MD5,
     aDSS, kECDHe, kECDHr, kDHd, kDHr,
     SEED, IDEA, RC2
 smtpd_tls_exclude_ciphers = EXPORT, LOW, MD5, SEED, IDEA, RC2
+
+# https://ssl-config.mozilla.org/#server=postfix&version=3.5.6&config=intermediate&openssl=1.1.1g&guideline=5.6
+tls_medium_cipherlist = ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+
 
