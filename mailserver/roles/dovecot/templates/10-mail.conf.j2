@@ -77,6 +77,8 @@ namespace inbox {
   # Namespace handles its own subscriptions. If set to "no", the parent
   # namespace handles them (empty prefix should always have this as "yes")
   #subscriptions = yes
+
+  # See 15-mailboxes.conf for definitions of special mailboxes.
 }
 
 # Example shared namespace configuration
@@ -126,9 +128,21 @@ namespace inbox {
 # or ~user/.
 #mail_full_filesystem_access = no
 
-# Dictionary for key=value mailbox attributes. Currently used by URLAUTH, but
-# soon intended to be used by METADATA as well.
+# Dictionary for key=value mailbox attributes. This is used for example by
+# URLAUTH and METADATA extensions.
 #mail_attribute_dict =
+
+# A comment or note that is associated with the server. This value is
+# accessible for authenticated users through the IMAP METADATA server
+# entry "/shared/comment". 
+#mail_server_comment = ""
+
+# Indicates a method for contacting the server administrator. According to
+# RFC 5464, this value MUST be a URI (e.g., a mailto: or tel: URL), but that
+# is currently not enforced. Use for example mailto:admin@example.com. This
+# value is accessible for authenticated users through the IMAP METADATA server
+# entry "/shared/admin".
+#mail_server_admin = 
 
 ##
 ## Mail processes
@@ -148,19 +162,15 @@ namespace inbox {
 #   never: Never use it (best performance, but crashes can lose data)
 #mail_fsync = optimized
 
-# Mail storage exists in NFS. Set this to yes to make Dovecot flush NFS caches
-# whenever needed. If you're using only a single mail server this isn't needed.
-#mail_nfs_storage = no
-# Mail index files also exist in NFS. Setting this to yes requires
-# mmap_disable=yes and fsync_disable=no.
-#mail_nfs_index = no
-
 # Locking method for index files. Alternatives are fcntl, flock and dotlock.
 # Dotlocking uses some tricks which may create more disk I/O than other locking
 # methods. NFS users: flock doesn't work, remember to change mmap_disable.
 #lock_method = fcntl
 
-# Directory in which LDA/LMTP temporarily stores incoming mails >128 kB.
+# Directory where mails can be temporarily stored. Usually it's used only for
+# mails larger than >= 128 kB. It's used by various parts of Dovecot, for
+# example LDA/LMTP while delivering large mails or zlib plugin for keeping
+# uncompressed mails.
 #mail_temp_dir = /tmp
 
 # Valid UID range for users, defaults to 500 and above. This is mostly
@@ -215,7 +225,16 @@ first_valid_uid = 1000
 
 # Mailbox list indexes can be used to optimize IMAP STATUS commands. They are
 # also required for IMAP NOTIFY extension to be enabled.
-#mailbox_list_index = no
+#mailbox_list_index = yes
+
+# Trust mailbox list index to be up-to-date. This reduces disk I/O at the cost
+# of potentially returning out-of-date results after e.g. server crashes.
+# The results will be automatically fixed once the folders are opened.
+#mailbox_list_index_very_dirty_syncs = yes
+
+# Should INBOX be kept up-to-date in the mailbox list index? By default it's
+# not, because most of the mailbox accesses will open INBOX anyway.
+#mailbox_list_index_include_inbox = no
 
 # The minimum number of mails in a mailbox before updates are done to cache
 # file. This allows optimizing Dovecot's behavior to do less disk writes at
@@ -224,7 +243,7 @@ first_valid_uid = 1000
 
 # When IDLE command is running, mailbox is checked once in a while to see if
 # there are any new mails or other changes. This setting defines the minimum
-# time to wait between those checks. Dovecot can also use dnotify, inotify and
+# time to wait between those checks. Dovecot can also use inotify and
 # kqueue to find out immediately when changes occur.
 #mailbox_idle_check_interval = 30 secs
 
@@ -242,6 +261,19 @@ first_valid_uid = 1000
 # How often to scan for stale temporary files and delete them (0 = never).
 # These should exist only after Dovecot dies in the middle of saving mails.
 #mail_temp_scan_interval = 1w
+
+# How many slow mail accesses sorting can perform before it returns failure.
+# With IMAP the reply is: NO [LIMIT] Requested sort would have taken too long.
+# The untagged SORT reply is still returned, but it's likely not correct.
+#mail_sort_max_read_count = 0
+
+protocol !indexer-worker {
+  # If folder vsize calculation requires opening more than this many mails from
+  # disk (i.e. mail sizes aren't in cache already), return failure and finish
+  # the calculation via indexer process. Disabled by default. This setting must
+  # be 0 for indexer-worker processes.
+  #mail_vsize_bg_after_count = 0
+}
 
 ##
 ## Maildir-specific settings
@@ -267,6 +299,10 @@ first_valid_uid = 1000
 # This can be useful in systems where a lot of the Maildir filenames have a
 # broken size. The performance hit for enabling this is very small.
 #maildir_broken_filename_sizes = no
+
+# Always move mails from new/ directory to cur/, even when the \Recent flags
+# aren't being reset.
+#maildir_empty_new = no
 
 ##
 ## mbox-specific settings
@@ -333,7 +369,7 @@ mbox_write_locks = fcntl
 ##
 
 # Maximum dbox file size until it's rotated.
-#mdbox_rotate_size = 2M
+#mdbox_rotate_size = 10M
 
 # Maximum dbox file age until it's rotated. Typically in days. Day begins
 # from midnight, so 1d = today, 2d = yesterday, etc. 0 = check disabled.
@@ -369,3 +405,13 @@ mbox_write_locks = fcntl
 # variables: %{md4}, %{md5}, %{sha1}, %{sha256}, %{sha512}, %{size}.
 # Variables can be truncated, e.g. %{sha256:80} returns only first 80 bits
 #mail_attachment_hash = %{sha1}
+
+# Settings to control adding $HasAttachment or $HasNoAttachment keywords.
+# By default, all MIME parts with Content-Disposition=attachment, or inlines
+# with filename parameter are consired attachments.
+#   add-flags-on-save - Add the keywords when saving new mails.
+#   content-type=type or !type - Include/exclude content type. Excluding will
+#     never consider the matched MIME part as attachment. Including will only
+#     negate an exclusion (e.g. content-type=!foo/* content-type=foo/bar).
+#   exclude-inlined - Exclude any Content-Disposition=inline MIME part.
+#mail_attachment_detection_options =
