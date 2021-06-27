@@ -1,0 +1,95 @@
+
+## <summary>policy for maildrop</summary>
+
+########################################
+## <summary>
+##	Execute maildrop_exec_t in the maildrop domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`maildrop_domtrans',`
+	gen_require(`
+		type maildrop_t, maildrop_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, maildrop_exec_t, maildrop_t)
+')
+
+######################################
+## <summary>
+##	Execute maildrop in the caller domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`maildrop_exec',`
+	gen_require(`
+		type maildrop_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	can_exec($1, maildrop_exec_t)
+')
+
+########################################
+## <summary>
+##	Execute maildrop in the maildrop domain, and
+##	allow the specified role the maildrop domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to transition
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	The role to be allowed the maildrop domain.
+##	</summary>
+## </param>
+#
+interface(`maildrop_run',`
+	gen_require(`
+		type maildrop_t;
+		attribute_role maildrop_roles;
+	')
+
+	maildrop_domtrans($1)
+	roleattribute $2 maildrop_roles;
+')
+
+########################################
+## <summary>
+##	Role access for maildrop
+## </summary>
+## <param name="role">
+##	<summary>
+##	Role allowed access
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	User domain for the role
+##	</summary>
+## </param>
+#
+interface(`maildrop_role',`
+	gen_require(`
+		type maildrop_t;
+		attribute_role maildrop_roles;
+	')
+
+	roleattribute $1 maildrop_roles;
+
+	maildrop_domtrans($2)
+
+	ps_process_pattern($2, maildrop_t)
+	allow $2 maildrop_t:process { signull signal sigkill };
+')

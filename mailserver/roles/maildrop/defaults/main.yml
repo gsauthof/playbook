@@ -9,3 +9,5 @@ extra_md_clean: []
 # extra name server for dnsbl check
 extra_ns:
 
+# extra maildirectories to create
+local_maildirs: []

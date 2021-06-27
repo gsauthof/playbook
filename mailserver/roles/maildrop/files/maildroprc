@@ -1,0 +1,6 @@
+# Maildrop starts a shell for _each_ external command such as a filter
+# The maildrop default is the user's login shell.
+# Using bash is arguably a better default for users - especially ones
+# with exotic shells - and because it's arguably less surprising.
+# Using bash also simplifies writing a SELinux policy for maildrop.
+SHELL="/usr/bin/bash"

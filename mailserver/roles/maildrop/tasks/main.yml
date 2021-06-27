@@ -32,6 +32,24 @@
       state: latest
   tags: [pkg, maildrop]
 
+- name: install extra packages
+  package:
+      name:
+          - selinux-policy-devel
+          - gonzofilter
+      state: latest
+  notify: restorecon
+  tags: [pkg, selinux, maildrop]
+
+- name: set maildrop shell to bash
+  copy:
+      src: maildroprc
+      dest: /etc/maildroprc
+      owner: root
+      group: root
+      mode: '0644'
+  tags: [maildroprc, maildrop]
+
 # Alternative way to enable a Copr repo - doesn't abstract away implementation
 # details how Copr .repo files are built.
 #
@@ -66,38 +84,66 @@
       that:
           - maildrop_version.stdout is version('3', '>=')
       msg: 'We need Maildrop >= 3 for the :H expression option'
+  ignore_errors: "{{ ansible_check_mode }}"
   tags: [pkg, maildrop]
+
+
+- name: copy selinux policy modules
+  copy:
+      src: selinux/
+      dest: /root/selinux/
+  register: sepol
+  tags: [selinux, maildrop]
+
+- name: remove state files if policy changed
+  file:
+      state: absent
+      path: /root/selinux.loaded
+  when: sepol.changed
+  tags: [selinux, maildrop]
+
+
+- name: load selinux policies
+  shell:
+      cmd: |
+          set -eux
+          for i in maildrop gonzofilter; do
+              cd /root/selinux/$i
+              make -f /usr/share/selinux/devel/Makefile $i.pp
+              /usr/sbin/semodule -i $i.pp
+          done
+          /sbin/restorecon -F -R -v /usr/bin/maildrop
+          /sbin/restorecon -F -R -v /usr/bin/gonzofilter
+          touch /root/selinux.loaded
+      creates: /root/selinux.loaded
+  notify: restorecon
+  tags: [selinux, maildrop]
+
+
 
 - name: create maildirectories
   file:
-      path: "/home/{{ mda_user }}/{{ item }}"
+      path: "/home/{{ mda_user + '/' + item[0] + '/' + item[1] }}"
       state: directory
       owner: "{{ mda_user }}"
       group: "{{ mda_user }}"
       mode: '0700'
-  tags: [conf, maildrop]
-  loop:
-      - md
-      - md/copy
-      - md/copy/cur
-      - md/copy/new
-      - md/copy/tmp
-      - md/ham
-      - md/ham/cur
-      - md/ham/new
-      - md/ham/tmp
-      - md/spam
-      - md/spam/cur
-      - md/spam/new
-      - md/spam/tmp
-      - md/spamfilter
-      - md/spamfilter/cur
-      - md/spamfilter/new
-      - md/spamfilter/tmp
-      - "{{ inbox_dir }}"
-      - "{{ inbox_dir }}/cur"
-      - "{{ inbox_dir }}/new"
-      - "{{ inbox_dir }}/tmp"
+      setype: _default
+      seuser: _default
+  # the _default isn't sufficient when creating all directories from scratch
+  # i.e. executing the playbook multiple times isn't sufficient
+  notify: restorecon
+  tags: [conf, maildrop, maildir]
+  vars:
+      - maildirs:
+          - md/copy
+          - md/ham
+          - md/spam
+          - md/spamfilter
+          - md/spool
+          - "{{ inbox_dir }}"
+          - "{{ inbox_dir }}/.Spam"
+  loop: "{{ (maildirs + local_maildirs) | product(['cur', 'new', 'tmp']) | list }}"
 
 - name: copy mailfilter
   template:
@@ -106,7 +152,10 @@
       owner: "{{ mda_user }}"
       group: "{{ mda_user }}"
       mode: '0600'
-  tags: [conf, maildrop]
+      setype: _default
+      seuser: _default
+  notify: restorecon
+  tags: [conf, maildrop, mailfilter]
 
 - name: cron job - remove old mail
   cron:
@@ -122,6 +171,16 @@
       - "{{ extra_md_clean }}"
   tags: [cron, maildrop]
 
+- name: create train spam script
+  copy:
+      remote_src: yes
+      src: /root/utility/train-spam.sh
+      dest: /usr/local/bin/train-spam.sh
+      owner: root
+      group: root
+      mode: '0755'
+  tags: [cron, localbin, maildrop]
+
 - name: cron job - train spam
   cron:
         name: train_spam
@@ -130,20 +189,35 @@
         # calls gonzofilter which eats all mail under ~/maildir/.Spam/ which
         # were moved there by an IMAP client
         # cf. https://github.com/gsauthof/utility
-        job: $HOME/local/bin/train-spam.sh
+        job: PATH=/usr/local/bin:$PATH /usr/local/bin/train-spam.sh
         user: "{{ mda_user }}"
   tags: [cron, maildrop]
 
 - name: cron job - check dnsbl
   cron:
-        name: check_dnsbl
+        name: check-dnsbl
         minute: "30"
         hour: "7"
         # cf. https://github.com/gsauthof/utility
-        job: "$HOME/program/utility/check-dnsbl.py {{ ns_flag }} {{ other_host }}"
+        job: "check-dnsbl {{ ns_flag }} {{ other_host }}"
         user: "{{ mda_user }}"
+        cron_file: check-dnsbl
   vars:
     - ns_flag: "{% if extra_ns %}--ns {{ extra_ns }}{% endif %}"
-    - other_host: "{{ hostvars[(hostvars.keys() | list)[((hostvars | length) + (hostvars.keys() | list).index(inventory_hostname) - 1) % (hostvars | length)]].mta_domain }}"
+    - other_host: "{{ hostvars[(hostvars.keys() | list)[((hostvars | length) + (hostvars.keys() | list).index(inventory_hostname) - 1) % (hostvars | length)]].mx_name }}"
   tags: [cron, maildrop]
+
+- name: cron job - check certs
+  cron:
+        name: check-cert
+        minute: "35"
+        hour: "7"
+        # cf. https://github.com/gsauthof/utility
+        job: "check-cert {{ other_host }}_{25_smtp,443,993}"
+        user: "{{ mda_user }}"
+        cron_file: check-cert
+  vars:
+    - other_host: "{{ hostvars[(hostvars.keys() | list)[((hostvars | length) + (hostvars.keys() | list).index(inventory_hostname) - 1) % (hostvars | length)]].mx_name }}"
+  tags: [cron, maildrop]
+
 

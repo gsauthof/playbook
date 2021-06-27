@@ -1,0 +1,7 @@
+/usr/bin/gonzofilter		--	gen_context(system_u:object_r:gonzofilter_exec_t,s0)
+
+###########################################################################
+# GS: End of auto-generated content
+###########################################################################
+
+HOME_DIR/hamspam.db    -- gen_context(system_u:object_r:gonzofilter_home_rw_t,s0)

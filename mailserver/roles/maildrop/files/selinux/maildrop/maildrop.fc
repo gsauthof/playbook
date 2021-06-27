@@ -1,0 +1,11 @@
+/usr/bin/maildrop		--	gen_context(system_u:object_r:maildrop_exec_t,s0)
+
+
+###########################################################################
+# GS: End of auto-generated content
+###########################################################################
+
+HOME_DIR/.mailfilter     -- gen_context(system_u:object_r:mail_home_t,s0)
+HOME_DIR/md(/.*)?           gen_context(system_u:object_r:mail_home_rw_t,s0)
+HOME_DIR/maildir(/.*)?      gen_context(system_u:object_r:mail_home_rw_t,s0)
+

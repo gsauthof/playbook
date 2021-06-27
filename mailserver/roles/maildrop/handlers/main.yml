@@ -1,0 +1,6 @@
+---
+
+
+- name: restorecon
+  command: "restorecon -rv /home/{{ mda_user }}/{{ inbox_dir }} /home/{{ mda_user }}/md /home/{{ mda_user }}/.mailfilter"
+
