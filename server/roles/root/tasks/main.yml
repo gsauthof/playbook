@@ -1,0 +1,30 @@
+---
+
+- name: clone utility
+  git:
+      repo: https://github.com/gsauthof/utility.git
+      dest: /root/utility
+      depth: 1
+  tags: [root, utility]
+
+- name: clone config
+  git:
+      repo: https://github.com/gsauthof/user-config.git
+      dest: /root/config
+      # depth: 1
+  tags: [root, config]
+
+- name: install config
+  command:
+      cmd: ./install.sh
+      chdir: /root/config
+      creates: /root/.inputrc
+  tags: [root, config]
+
+- name: set zsh for root
+  user:
+      name: root
+      shell: /usr/bin/zsh
+  tags: [root, zsh]
+
+
