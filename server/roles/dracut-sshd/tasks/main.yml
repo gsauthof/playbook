@@ -1,0 +1,36 @@
+
+
+- name: check dracut-sshd copr
+  shell:
+      cmd: |
+          dnf copr list --enabled | grep '/gsauthof/dracut-sshd$' || true
+      warn: no
+  check_mode: no
+  register: dracut_sshd_copr
+  changed_when: false
+  tags: [pkg, dracut-sshd]
+
+- name: enable dracut-sshd copr
+  command:
+      cmd: dnf -y copr enable gsauthof/dracut-sshd
+      warn: no
+  when:
+      - dracut_sshd_copr.stdout == ''
+  tags: [pkg, dracut-sshd]
+
+- name: install dracut-sshd
+  package:
+      name: dracut-sshd
+      state: latest
+  notify: update dracut
+  tags: [dracut-sshd]
+
+- name: enable networkd in dracut
+  copy:
+      src: 90-networkd.conf
+      dest: /etc/dracut.conf.d/90-networkd.conf
+      mode: '0644'
+      owner: root
+      group: root
+  notify: update dracut
+  tags: [dracut-sshd]
