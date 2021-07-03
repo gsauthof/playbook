@@ -1,0 +1,73 @@
+
+
+
+- name: install postgres
+  package:
+      name:
+          - postgresql
+          - postgresql-server
+  tags: [postgres]
+
+
+- name: disable copy-on-write for postgres
+  shell:
+      cmd: "chattr +C /var/lib/pgsql/{data,backups}"
+  tags: [postgres,cow]
+
+
+- name: initialize postgres
+  command:
+      creates: /var/lib/pgsql/data/PG_VERSION
+      cmd: '/usr/bin/postgresql-setup --initdb'
+  environment:
+      PGSETUP_INITDB_OPTIONS: '--encoding=UTF8 --locale=C --text-search-config=english'
+  tags: [postgres]
+
+
+# e.g. setup SCRAM
+- name: create postgresql.conf
+  template:
+      src: postgresql.conf.j2
+      dest: /var/lib/pgsql/data/postgresql.conf
+      owner: postgres
+      group: postgres
+      mode: '0600'
+  notify: reload postgresql
+  tags: [postgres]
+
+# e.g. setup SCRAM, open connections
+- name: create pg_hba.conf
+  copy:
+      src: pg_hba.conf
+      dest: /var/lib/pgsql/data/pg_hba.conf
+      owner: postgres
+      group: postgres
+      mode: '0600'
+  notify: reload postgresql
+  tags: [postgres]
+
+
+- name: start postgres
+  systemd:
+      state: started
+      name: postgresql
+  tags: [postgres]
+
+
+- name: enable postgres
+  systemd:
+      enabled: yes
+      name: postgresql
+  tags: [postgres]
+
+
+- name: add clean up old log postgres log files cron job
+  cron:
+      name: pg-log-watch
+      job: 'tmpwatch --mtime 31d --nodirs /var/lib/pgsql/data/log'
+      hour: '0'
+      minute: '23'
+      cron_file: postgresql
+      user: root
+
+
