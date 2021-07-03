@@ -1,0 +1,8 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4{% if ipv4_address is not defined %} {{ fqdn }}{% endif %}{{ '' }}
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6{% if ipv6_address is not defined %} {{ fqdn }}{% endif %}{{ '' }}
+{% if ipv4_address is defined %}
+{{ ipv4_address }}   {{ fqdn }}
+{% endif %}
+{% if ipv6_address is defined %}
+{{ ipv6_address }}   {{ fqdn }}
+{% endif %}

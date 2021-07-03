@@ -1,0 +1,200 @@
+---
+
+- name: configure networkd
+  copy:
+      src: "host_files/{{ inventory_hostname }}/20-wired.network"
+      dest: /etc/systemd/network/20-wired.network
+      owner: root
+      group: root
+      mode: '0644'
+  notify: restart networkd
+  tags: [basic, networkd]
+
+- name: set hostname
+  hostname:
+      name: "{{ fqdn }}"
+  tags: host
+
+- name: set hosts
+  template:
+      src: hosts.j2
+      dest: /etc/hosts
+      owner: root
+      group: root
+      mode: '0644'
+  tags: host
+
+- name: disable ssh password auth
+  copy:
+      src: sshd_config.d/00-local.conf
+      dest: /etc/ssh/sshd_config.d/00-local.conf
+      owner: root
+      group: root
+      mode: '0644'
+  # yes, a reload isn't sufficient here
+  notify: restart sshd
+  tags: sshd
+
+
+- name: check gms-utils copr
+  shell:
+      cmd: |
+          dnf copr list --enabled | grep '/gsauthof/gms-utils$' || true
+      warn: no
+  check_mode: no
+  register: gms_utils_copr
+  changed_when: false
+  tags: [pkg, gms-utils]
+
+- name: enable gms-utils copr
+  command:
+      cmd: dnf -y copr enable gsauthof/gms-utils
+      warn: no
+  when:
+      - gms_utils_copr.stdout == ''
+  tags: [pkg, gms-utils]
+
+
+- name: install basic packages
+  package:
+      name:
+          - dnf-automatic
+          - etckeeper
+          - git
+          - glibc-langpack-en
+          - gms-utils # from copr
+          - lz4
+          - mosh
+          - ncdu
+          - ripgrep
+          - rsync
+          - python3-policycoreutils # for sefcontext
+          - socat
+          - sqlite # for e.g. zsh dnf completion
+          - tar
+          - tmpwatch
+          - tmux
+          - vim
+          - zsh
+          - zstd
+      state: latest
+  tags: [pkg, chrony, mosh, basicpkg]
+
+
+- name: remove superfluous packages
+  package:
+      name:
+        - NetworkManager
+        - NetworkManager-libnm
+      state: absent
+  tags: [pkg, no-nm, networkd]
+
+
+# we have to repeat ourselves here because a templated notify
+# unconditionally notifies all handlers
+- name: install at
+  package:
+      name: at
+      state: latest
+  notify: restart atd
+  tags: [pkg, atd]
+
+- name: install chrony
+  package:
+      name: chrony
+      state: latest
+  notify: restart chronyd
+  tags: [pkg, chrony]
+
+- name: install cronie
+  package:
+      name: cronie
+      state: latest
+  notify: restart crond
+  tags: [pkg, cron]
+
+
+- name: setup dnf cron job
+  cron:
+      name: dnf-auto
+      job: silence /usr/bin/dnf-automatic /etc/dnf/automatic.conf --timer --installupdates
+      hour: '6'
+      minute: '23'
+      cron_file: dnf-automatic
+      user: root
+  tags: [dnf-auto, cron]
+
+- name: setup etckeeper
+  shell:
+      cmd: |
+          etckeeper init
+          etckeeper vcs status
+          git config user.email "root@example.com"
+          git config user.name "Knecht Rootrecht"
+          etckeeper vcs commit -m 'initial etckeeper commit'
+      creates: /etc/.git/HEAD
+  tags: etckeeper
+
+
+- name: add cron job to check for outdated kernel
+  cron:
+      name: check-kernel
+      job: /usr/bin/latest-kernel-running -v
+      hour: '19'
+      minute: '23'
+      cron_file: check-kernel
+      user: root
+  tags: [basic, cron, latest-kernel]
+
+- name: add cron job to check for outdated processes
+  cron:
+      name: check-processes
+      job: /usr/bin/oldprocs
+      hour: '19'
+      minute: '24'
+      cron_file: check-processes
+      user: root
+  tags: [basic, cron, check-proc]
+
+- name: filter unused services
+  firewalld:
+      service: "{{ item }}"
+      state: disabled
+      permanent: yes
+  notify: reload firewalld
+  loop:
+      - dhcpv6-client
+      - mdns
+  tags: [basic, firewall, filterservices]
+
+- name: enable mosh port
+  firewalld:
+      service: mosh
+      state: enabled
+      permanent: yes
+  notify: reload firewalld
+  tags: [basic, firewall, mosh]
+
+- name: check whether udisks2 is installed
+  stat:
+      path: /usr/lib/systemd/system/udisks2.service
+  register: udisks2
+  tags: [basic, udisks]
+
+# we don't need that on a server ...
+- name: disable udisks2 daemon
+  systemd:
+      enabled: no
+      name: udisks2.service
+  when: udisks2.stat.exists
+  tags: [basic, udisks]
+
+
+- name: remove udisks2 daemon
+  package:
+      name: udisks2
+      state: absent
+      autoremove: yes
+  tags: [basic, udisks]
+
+

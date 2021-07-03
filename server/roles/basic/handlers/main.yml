@@ -1,0 +1,33 @@
+---
+
+- name: restart sshd
+  systemd:
+      state: restarted
+      name: sshd
+
+# NB: networkd service doesn't support reload
+- name: restart networkd
+  systemd:
+      state: restarted
+      name: systemd-networkd
+
+
+- name: restart atd
+  systemd:
+      state: restarted
+      name: atd
+
+- name: restart chronyd
+  systemd:
+      state: restarted
+      name: chronyd
+
+- name: restart crond
+  systemd:
+      state: restarted
+      name: crond
+
+- name: reload firewalld
+  systemd:
+      state: reloaded
+      name: firewalld
