@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -eu
+
+# Certbot post hook script.
+#
+# To be called like this:
+#
+#     certbot renew --post-hook 'sudo /path/to/certbot-renew-hook.sh ...
+#
+# We could also use the --deploy certbot hook for copying the files
+# but then we would have to sanitize the supplied environment variables such as
+# $RENEWED_LINEAGE.
+#
+# 2020, Georg Sauthoff <mail@gms.tf>
+
+updated=0
+for i in {% for cert in letsencrypt_certs %}{{ cert.domain }} {% endfor %} ; do
+    if ! cmp -s /home/certbot/etc/live/"$i"/privkey.pem /etc/pki/tls/private/"$i".key; then
+        install -m 600 /home/certbot/etc/live/"$i"/privkey.pem /etc/pki/tls/private/"$i".key
+        updated=1
+    fi
+    if ! cmp -s /home/certbot/etc/live/"$i"/fullchain.pem /etc/pki/tls/certs/"$i".crt; then
+        install -m 644 /home/certbot/etc/live/"$i"/fullchain.pem /etc/pki/tls/certs/"$i".crt
+        updated=1
+    fi
+
+done
+
+if [ "$updated" = 0 ]; then
+    exit 0
+fi
+
+echo 'Restarting Nginx ... '
+systemctl restart nginx.service
+echo 'Restarting Nginx ... DONE'
+
+if systemctl is-active -q dovecot; then
+    echo 'Reloading Dovecot ... '
+    systemctl reload dovecot.service
+    echo 'Reloading Dovecot ... DONE'
+fi
+

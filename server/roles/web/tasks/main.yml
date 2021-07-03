@@ -1,0 +1,224 @@
+---
+
+
+- name: install web pks
+  package:
+      name:
+          - certbot
+          - goaccess
+          - nginx
+      state: latest
+  tags: [web, certbot, pkg]
+
+
+- name: create certbot user
+  user:
+      name: certbot
+  tags: [web, certbot, user]
+
+
+# nginx need to connect a OCSP server on port 80 of OCSP stapling
+# although unintuitively named, httpd_graceful_shutdown allows
+# outgoing connects to port 80.
+# The related httpd_can_network_connect is more broad, i.e. it
+# allows to connect to any port.
+# See also:
+# https://bugzilla.redhat.com/show_bug.cgi?id=1515764
+# https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/message/6DPDKEQ7UOUYP3ONLIDR74SUFZN5M7BD/
+- name: allow nginx to connect to port 80 because of ocsp stapling
+  seboolean:
+      name: httpd_graceful_shutdown
+      state: yes
+      persistent: yes
+  tags: [web, nginx, selinux]
+
+
+- name: add nginx file contexts
+  sefcontext:
+      target: '/srv/letsencrypt(/.*)?'
+      setype: httpd_sys_content_t
+      state: present
+  tags: [web, nginx, selinux]
+
+- name: create acme challenge webroot
+  file:
+      state: directory
+      dest: /srv/letsencrypt
+      owner: certbot
+      group: certbot
+      mode: '0755'
+      setype: _default
+      seuser: _default
+  tags: [web, certbot, srv]
+
+
+- name: register account
+  shell:
+      creates: /home/certbot/etc/accounts
+      cmd: 'certbot register -n --email {{ letsencrypt_email }} --agree-tos --config-dir /home/certbot/etc --logs-dir /home/certbot/log --work-dir /home/certbot/work'
+  become: yes
+  become_user: certbot
+  tags: [web, certbot, register]
+
+
+- name: nginx config
+  copy:
+      src: nginx.conf
+      dest: /etc/nginx/nginx.conf
+      owner: root
+      group: root
+      mode: '0644'
+  notify: restart nginx
+  tags: [web, nginx]
+
+- name: create server config
+  template:
+      src: server.conf.j2
+      dest: "/etc/nginx/conf.d/{{ item.key }}.conf"
+      owner: root
+      group: root
+      mode: '0644'
+  notify: restart nginx
+  loop: "{{ nginx_servers | dict2items }}"
+  tags: [web, nginx, server-conf]
+
+
+- name: enable nginx
+  systemd:
+      enabled: yes
+      name: nginx
+  tags: [web, nginx]
+
+- name: open http ports
+  firewalld:
+      service: "{{ item }}"
+      state: enabled
+      permanent: yes
+  notify: reload firewalld
+  loop:
+      - http
+      - https
+  tags: [web, firewall]
+
+- name: add nginx server file contexts
+  sefcontext:
+      target: '/srv/{{ item }}(/.*)?'
+      setype: httpd_sys_content_t
+      state: present
+  loop: "{{ nginx_servers | list }}"
+  tags: [web, selinux, nginx-servers, selinux-srv]
+
+- name: create webroot
+  file:
+      state: directory
+      dest: "/srv/{{ item.key }}"
+      owner: "{{ item.value.owner }}"
+      group: "{{ item.value.group }}"
+      mode: '0755'
+      setype: _default
+      seuser: _default
+  loop: "{{ nginx_servers | dict2items }}"
+  tags: [web, srv, nginx-servers, selinux-srv]
+
+
+- name: create dhparam file
+  shell:
+      creates: /etc/pki/tls/dhparam-2048.pem
+      cmd: 'openssl dhparam -out /etc/pki/tls/dhparam-2048.pem 2048'
+  tags: [web, cert, dhparam]
+
+
+# i.e. to bootstrap nginx without having to change its cert config
+# over and over again
+- name: create dummy certificate
+  shell:
+      creates: "/etc/pki/tls/private/{{ item }}.key"
+      cmd: |
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/pki/tls/private/{{ item }}.key -out /etc/pki/tls/certs/{{ item }}.crt -subj '/C=DE/L=nowhere/O=nosuchcompany/CN=void'
+  loop: "{{ nginx_servers | list }}"
+  tags: [web, cert, dummy]
+
+
+- name: flush handlers before requesting certs
+  meta: flush_handlers
+  tags: [web, certbot]
+
+# make sure nginx is started in case nginx config didn't change
+- name: start nginx
+  systemd:
+      state: started
+      name: nginx
+  tags: [web, nginx]
+
+
+- name: request certificates
+  shell:
+      creates: "/home/certbot/etc/live/{{ item.domain }}/privkey.pem"
+      cmd: "certbot certonly --webroot -w /srv/letsencrypt -d {{ ( [item.domain] + (item.add_domains|d([])) ) | join(',') }} -n --config-dir /home/certbot/etc --logs-dir /home/certbot/log --work-dir /home/certbot/work"
+  loop: "{{ letsencrypt_certs }}"
+  become: yes
+  become_user: certbot
+  tags: [web, certbot, reqcert]
+
+- name: sync private key
+  copy:
+      remote_src: yes
+      src: "/home/certbot/etc/live/{{ item.domain }}/privkey.pem"
+      dest: "/etc/pki/tls/private/{{ item.domain }}.key"
+      owner: root
+      group: root
+      mode: '0600'
+  loop: "{{ letsencrypt_certs }}"
+  notify: restart nginx
+  tags: [web, certbot, synccert]
+
+- name: sync cert
+  copy:
+      remote_src: yes
+      src: "/home/certbot/etc/live/{{ item.domain }}/fullchain.pem"
+      dest: "/etc/pki/tls/certs/{{ item.domain }}.crt"
+      owner: root
+      group: root
+      mode: '0644'
+  loop: "{{ letsencrypt_certs }}"
+  notify: restart nginx
+  tags: [web, certbot, synccert]
+
+
+- name: copy renew hook
+  template:
+      src: certbot-renew-hook.sh.j2
+      dest: /usr/local/bin/certbot-renew-hook.sh
+      owner: root
+      group: root
+      mode: '0755'
+  tags: [web, certbot, hook]
+
+- name: setup certbot sudo
+  copy:
+      content: "certbot ALL = (root) NOPASSWD: /usr/local/bin/certbot-renew-hook.sh\n"
+      dest: /etc/sudoers.d/certbot
+      owner: root
+      group: root
+      mode: '0644'
+  tags: [web, certbot, hook, sudo]
+
+- name: add certbot renew cron job
+  cron:
+      name: certbot
+      job: >
+          certbot renew --quiet 
+          --post-hook 'sudo /usr/local/bin/certbot-renew-hook.sh'
+          --deploy-hook '/usr/bin/echo "Successfully renewed $RENEWED_LINEAGE - $RENEWED_DOMAINS"'
+          --config-dir /home/certbot/etc
+          --logs-dir /home/certbot/log
+          --work-dir /home/certbot/work
+      hour: '18'
+      minute: '23'
+      cron_file: certbot
+      user: certbot
+  tags: [web, certbot, hook, cron]
+
+
+
+
