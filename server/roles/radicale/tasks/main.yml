@@ -1,0 +1,96 @@
+
+- name: install radicale
+  package:
+      name: radicale3
+      state: latest
+  notify: restart radicale
+  tags: [radicale, radicalepkg]
+
+- name: install radicale related packages
+  package:
+      name: httpd-tools
+      state: latest
+  tags: [radicale, radicalepkg]
+
+- name: create radicale config
+  template:
+      src: radicale.conf.j2
+      dest: /etc/radicale/config
+      owner: root
+      group: radicale
+      mode: '0640'
+  notify: restart radicale
+  tags: [radicale, radicaleconf]
+
+- name: add radicale users
+  htpasswd:
+      path: /etc/radicale/passwd
+      name: "{{ item.user }}"
+      password: "{{ item.password }}"
+      owner: root
+      group: radicale
+      mode: '0640'
+  loop: "{{ radicale_users }}"
+  # don't print the passwords to the console ...
+  loop_control:
+      label: "{{ item.user }}"
+  tags: [radicale, radicalepass, htpasswd]
+
+
+- name: create gitignore for radicale
+  copy:
+      src: gitignore
+      dest: /var/lib/radicale/collections/.gitignore
+      owner: root
+      group: root
+      mode: '0644'
+  tags: [radicale, radicalegit]
+
+- name: create radicale git repository
+  shell:
+      cmd: |
+        set -x
+        git init /var/lib/radicale/collections
+        cd /var/lib/radicale/collections
+        git add -A && (git diff --cached --quiet || git commit -m 'status quo')
+      creates: /var/lib/radicale/collections/.git/HEAD
+  become: yes
+  become_user: radicale
+  tags: [radicale, radicalegit]
+
+
+- name: enable radicale
+  systemd:
+      enabled: yes
+      name: radicale.service
+  tags: [radicale]
+
+- name: open radicale port
+  firewalld:
+      port: 5232/tcp
+      state: enabled
+      permanent: yes
+      immediate: yes
+  tags: [radicale, radicaleport]
+
+- name: allow nginx to reverse proxy to radicale
+  seboolean:
+      # allow to connect to http_port_t, http_cache_port_t etc.
+      #name: httpd_can_network_relay
+      # allow to connect to any port, i.e. we need this for 5232
+      name: httpd_can_network_connect
+      state: yes
+      persistent: yes
+  tags: [radicale, selinux]
+
+
+# adding it to http_port_t isn't a solution because the
+# radicale selinux policy expects that port to be in radicale_port_t ...
+- name: add radicale port to radicale_port_t
+  seport:
+    ports: 5232
+    proto: tcp
+    setype: radicale_port_t
+    state: present
+  tags: [radicale, selinux]
+
