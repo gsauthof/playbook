@@ -1,0 +1,61 @@
+---
+
+- name: add main user
+  user:
+      name: "{{ main_user }}"
+      append: yes
+      groups: wheel
+      shell: /usr/bin/zsh
+  tags: [user, createuser]
+
+- name: make sure home has right label
+  file:
+      path: "/home/{{ main_user }}"
+      owner: "{{ main_user }}"
+      group: "{{ main_user }}"
+      mode: "0700"
+      setype: _default
+      seuser: _default
+  register: userdir
+  tags: [user, createuser]
+
+- name: restore home context
+  command: "restorecon -vr /home/{{ main_user }}"
+  when: userdir.changed
+  tags: [user, createuser]
+
+
+- name: add authorized ssh key
+  authorized_key:
+      exclusive: yes
+      user: "{{ main_user }}"
+      key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/' + ssh_key_name + '.pub') }}"
+  tags: user
+
+- name: clone utility
+  git:
+      repo: https://github.com/gsauthof/utility.git
+      dest: "/home/{{ main_user }}/utility"
+      depth: 1
+  become: yes
+  become_user: "{{ main_user }}"
+  tags: [user, utility]
+
+- name: clone config
+  git:
+      repo: https://github.com/gsauthof/user-config.git
+      dest: "/home/{{ main_user }}/config"
+      # depth: 1
+  become: yes
+  become_user: "{{ main_user }}"
+  tags: [user, config]
+
+- name: install config
+  command:
+      cmd: ./install.sh
+      chdir: "/home/{{ main_user }}/config"
+      creates: "/home/{{ main_user }}/.inputrc"
+  become: yes
+  become_user: "{{ main_user }}"
+  tags: [user, config]
+
