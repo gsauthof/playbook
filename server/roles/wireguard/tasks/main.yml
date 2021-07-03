@@ -1,0 +1,99 @@
+
+
+- name: create wireguard firewalld config
+  copy:
+      src: wireguard.xml
+      dest: /etc/firewalld/services/wireguard.xml
+      owner: root
+      group: root
+      mode: '0644'
+  notify: reload firewalld
+  tags: [ wireguard ]
+
+- name: install wireguard
+  package:
+      name: wireguard-tools
+      state: latest
+  tags: [wireguard]
+
+
+- name: create wireguard key directories
+  file:
+      state: directory
+      dest: "/etc/pki/{{ item.dest }}"
+      owner: root
+      group: root
+      mode: "{{ item.mode }}"
+  loop:
+      - dest: wireguard
+        mode: '0755'
+      - dest: wireguard/public
+        mode: '0755'
+      - dest: wireguard/private
+        mode: '0700'
+  tags: [wireguard]
+
+
+- name: generate wireguard key pair
+  shell:
+    cmd: |
+      touch /etc/pki/wireguard/private/wg.key
+      chmod 600 /etc/pki/wireguard/private/wg.key
+      wg genkey | tee /etc/pki/wireguard/private/wg.key | wg pubkey > /etc/pki/wireguard/public/wg.key
+    creates: /etc/pki/wireguard/public/wg.key
+  tags: [wireguard]
+
+- name: get wireguard private key
+  slurp:
+      src: /etc/pki/wireguard/private/wg.key
+  register: wg_private
+  tags: [wireguard]
+
+- name: fetch wireguard public key
+  fetch:
+      src: /etc/pki/wireguard/public/wg.key
+      dest: fetched
+  tags: [wireguard]
+
+- name: create wireguard netdev
+  template:
+      src: 99-wg0.netdev.j2
+      dest: /etc/systemd/network/99-wg0.netdev
+      mode: '0640'
+      owner: root
+      group: systemd-network
+  notify: restart networkd
+  tags: [wireguard]
+
+- name: create wireguard network
+  template:
+      src: 99-wg0.network.j2
+      dest: /etc/systemd/network/99-wg0.network
+      mode: '0644'
+      owner: root
+      group: root
+  notify: restart networkd
+  tags: [wireguard]
+
+# i.e. in case firewalld config has changed
+- name: flush handlers
+  meta: flush_handlers
+  tags: [wireguard]
+
+- name: open wireguard port
+  firewalld:
+      service: wireguard
+      state: enabled
+      permanent: yes
+  notify: reload firewalld
+  tags: [wireguard]
+
+- name: add wireguard interface to trusted zone
+  firewalld:
+      zone: trusted
+      interface: wg0
+      permanent: yes
+      state: enabled
+  notify: reload firewalld
+  tags: [wireguard]
+

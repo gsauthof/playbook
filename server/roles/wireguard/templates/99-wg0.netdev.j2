@@ -1,0 +1,14 @@
+[NetDev]
+Name=wg0
+Kind=wireguard
+Description=Main WireGuard tunnel
+
+[WireGuard]
+ListenPort=51820
+PrivateKey={{ wg_private.content | b64decode }}
+
+[WireGuardPeer]
+PublicKey={{ lookup('file', 'fetched/' + wireguard.buddy.split('.')[0] + '/etc/pki/wireguard/public/wg.key' ) }}
+AllowedIPs=10.23.23.{{ wireguard.buddy_index }}/32
+AllowedIPs=fd23::{{ wireguard.buddy_index }}/128
+Endpoint={{ wireguard.buddy }}:51820

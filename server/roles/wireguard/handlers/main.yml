@@ -1,0 +1,14 @@
+---
+
+- name: reload firewalld
+  systemd:
+      state: reloaded
+      name: firewalld
+
+# NB: networkd service doesn't support reload
+- name: restart networkd
+  systemd:
+      state: restarted
+      name: systemd-networkd
+
+
