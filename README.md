@@ -60,7 +60,9 @@ mail servers and more.
 
 - `gnome-shell` - a selection of useful [GNOME Shell][gs] extensions
 
-- `mailserver` - Ansible Playbook for installing a set of mail servers
+- `mailserver` - Ansible playbook for installing a set of mail servers
+
+- `server` - a set of Ansible roles for setting up servers
 
 - `vpn` - quickly deploy/tear-down a VPN 'in the cloud' using
   Vagrant and some custom scripts
