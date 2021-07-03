@@ -1,0 +1,6 @@
+export RESTIC_REPOSITORY={{ restic_repository }}
+export RESTIC_PASSWORD={{ restic_password }}
+
+{% for k, v in restic_env_vars.items() %}
+export {{ k }}={{ v }}
+{% endfor %}

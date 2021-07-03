@@ -1,0 +1,95 @@
+---
+
+
+- name: install restic
+  package:
+      name:
+          - restic
+      state: latest
+  tags: [restic, pkg]
+
+
+- name: create restic user
+  user:
+      name: restic
+      # this is the default auto-created group anyways; if specified this fails
+      # since it doesn't exist, yet ...
+      #group: restic
+  tags: [restic, user]
+
+
+- name: copy restic for extra capability
+  copy:
+      remote_src: yes
+      src: /usr/bin/restic
+      dest: /usr/local/bin/restic-cap_dac_read_search
+      owner: root
+      group: restic
+      mode: '0750'
+  tags: [restic, cap]
+
+# https://restic.readthedocs.io/en/latest/080_examples.html#backing-up-your-system-without-running-restic-as-root
+- name: set restic capability
+  capabilities:
+      path: /usr/local/bin/restic-cap_dac_read_search
+      capability: 'cap_dac_read_search+ep'
+      state: present
+  tags: [restic, cap]
+
+
+- name: create restic secrets
+  template:
+      src: restic_env.sh.j2
+      dest: /usr/local/etc/restic_env.sh
+      owner: root
+      group: restic
+      mode: '0640'
+  tags: [restic, env]
+
+- name: create restic script
+  copy:
+      src: restic-backup.sh
+      dest: /usr/local/bin/restic-backup.sh
+      owner: root
+      group: root
+      mode: '0755'
+  tags: restic
+
+- name: init restic repository
+  shell:
+      cmd: |
+          . /usr/local/etc/restic_env.sh
+          set -eux
+          if restic cat config >/dev/null; then
+              echo 'already initialized'
+          else
+              restic init
+          fi
+      chdir: /home/restic
+      creates: /usr/local/etc/restic-initialized
+  register: restic_init
+  become: yes
+  become_user: restic
+  tags: [restic, init-restic]
+
+- name: mark restic as initialized
+  file:
+      state: touch
+      dest: /usr/local/etc/restic-initialized
+      mode: '0644'
+      group: root
+      owner: root
+  when: restic_init.changed
+  tags: [restic, init-restic]
+
+- name: setup backup cron job
+  cron:
+      name: restic
+      job: '. /usr/local/etc/restic_env.sh && silence lockf -c $HOME/backup.lock -u /usr/local/bin/restic-backup.sh'
+      hour: '6'
+      minute: '23'
+      cron_file: restic
+      user: restic
+  tags: [restic, cron]
+
+
