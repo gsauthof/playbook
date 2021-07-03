@@ -1,0 +1,52 @@
+
+
+- name: make matrix config directory
+  file:
+      path: "/home/{{ main_user }}/.config/matrixto"
+      state: directory
+      owner: "{{ main_user }}"
+      group: "{{ main_user }}"
+      mode: '0700'
+  tags: [matrix]
+
+
+- name: create matrix config file
+  template:
+      src: config.ini.j2
+      dest: "/home/{{ main_user }}/.config/matrixto/config.ini"
+      owner: "{{ main_user }}"
+      group: "{{ main_user }}"
+      mode: '0600'
+  tags: [matrix]
+
+
+- name: add cron job to notify about reboots
+  cron:
+      name: boot-notify
+      job: |
+          matrixto -u {{ matrix.recipient }} -m "$HOSTNAME is back at it since $(date -Is)"
+      special_time: reboot
+      cron_file: matrix-client
+      user: "{{ main_user }}"
+  tags: [matrix, matrixcron]
+
+- name: install fortune
+  package:
+      name:
+          - fortune-mod
+      state: latest
+  tags: [matrix]
+
+
+- name: add fortune cron job
+  cron:
+      name: fortune
+      # yes, % must be escaped for cron
+      job: |
+          sleep $((RANDOM\%600)); { fortune; date -Is; } | matrixto -u {{ matrix.recipient }}
+      hour: '18'
+      minute: '23'
+      cron_file: matrix-client
+      user: "{{ main_user }}"
+  tags: [matrix, matrixcron]
+
