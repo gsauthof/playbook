@@ -1,0 +1,6 @@
+
+- name: restart syncthing
+  systemd:
+      state: restarted
+      name: "syncthing@{{ main_user }}.service"
+

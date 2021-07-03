@@ -1,0 +1,24 @@
+
+
+- name: install syncthing
+  package:
+      name: syncthing
+      state: latest
+  notify: restart syncthing
+  tags: [syncthing, syncthingpkg]
+
+- name: enable syncthing
+  systemd:
+      name: "syncthing@{{ main_user }}.service"
+      enabled: yes
+      state: started
+  tags: [syncthing]
+
+- name: open syncthing ports
+  firewalld:
+      service: syncthing
+      state: enabled
+      permanent: yes
+      immediate: yes
+  tags: [syncthing, syncthingport]
+
