@@ -1,0 +1,48 @@
+---
+
+fqdn: mars.example.net
+
+ipv4_address: 203.0.113.23
+ipv6_address: 2001:DB8::23
+
+listen6:
+    gapc.eu: 2001:DB8::101
+    georg.so: 2001:DB8::404
+
+
+# use lookup('passwordstore', ...), Ansible Vault or something like that
+# instead of storing the plain-text password directly, in this file
+restic_env_vars:
+    B2_ACCOUNT_ID: '123'
+    B2_ACCOUNT_KEY: "..."
+
+
+nginx_servers:
+    mars.example.net:
+        owner: "{{ main_user }}"
+        group: "{{ main_user }}"
+    example.org:
+        letsencrypt_buddy: saturn.example.net
+        owner: "{{ main_user }}"
+        group: "{{ main_user }}"
+
+
+letsencrypt_certs:
+    - domain: mars.example.net
+    - domain: example.org
+    - domain: example.com
+      add_domains:
+          - www.example.com
+
+matrix:
+    home_server: https://matrix.example.eu
+    user: "@juser:example.eu"
+    password: "..."
+    recipient: "@hanspeter:matrix.example.de"
+
+wireguard:
+    buddy: staturn.example.net
+    buddy_index: 1
+    index: 2
+
+

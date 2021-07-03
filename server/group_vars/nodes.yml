@@ -1,0 +1,15 @@
+---
+
+# Example group configuration
+
+main_user: juser
+ssh_key_name: some-name
+
+letsencrypt_email: hostmaster@example.org
+
+restic_repository: "b2:mybucket:restic"
+
+# use lookup('passwordstore', ...), Ansible Vault or something like that
+# instead of storing the plain-text password directly, in this file
+restic_password: "..."
+

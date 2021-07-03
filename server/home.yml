@@ -1,0 +1,13 @@
+---
+
+- hosts: home_node
+  roles:
+      - basic
+      - dracut-sshd
+      - root
+      - user
+      - web
+      - syncthing
+      - radicale
+      - restic
+

@@ -1,0 +1,16 @@
+---
+
+- hosts: nodes
+  roles:
+      - basic
+      - root
+      - user
+      - matrix-client
+      - restic
+      - wireguard
+      - postgres
+      - manpath
+      - web
+      - feeder
+      - mensa
+
