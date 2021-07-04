@@ -1,7 +1,10 @@
 
 - name: install radicale
   package:
-      name: radicale3
+      name:
+          - radicale3
+          - radicale3-selinux
+          - selinux-policy-devel
       state: latest
   notify: restart radicale
   tags: [radicale, radicalepkg]
@@ -57,6 +60,42 @@
   become: yes
   become_user: radicale
   tags: [radicale, radicalegit]
+
+
+- name: copy radicale update hook script
+  copy:
+      src: radicale-change-hook.sh
+      dest: /usr/local/bin/radicale-change-hook.sh
+      owner: root
+      group: root
+      mode: '0755'
+  tags: [radicale, radicalegit]
+
+- name: copy radicale selinux policy modules
+  copy:
+      src: selinux/
+      dest: /root/selinux/
+  register: sepol
+  tags: [selinux, radicalegit]
+
+- name: remove state files if policy changed
+  file:
+      state: absent
+      path: /root/radicale-selinux.loaded
+  when: sepol.changed
+  tags: [selinux, radicalegit]
+
+- name: load radicale selinux policies
+  shell:
+      cmd: |
+          set -eux
+          cd /root/selinux/
+          make -f /usr/share/selinux/devel/Makefile radicalehook.pp
+          /usr/sbin/semodule -i radicalehook.pp
+          /sbin/restorecon -F -v /usr/local/bin/radicale-change-hook.sh
+          touch /root/radicale-selinux.loaded
+      creates: /root/radicale-selinux.loaded
+  tags: [selinux, radicalegit]
 
 
 - name: enable radicale

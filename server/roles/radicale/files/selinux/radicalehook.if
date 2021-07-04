@@ -1,0 +1,95 @@
+
+## <summary>policy for radicalehook</summary>
+
+########################################
+## <summary>
+##	Execute radicalehook_exec_t in the radicalehook domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`radicalehook_domtrans',`
+	gen_require(`
+		type radicalehook_t, radicalehook_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, radicalehook_exec_t, radicalehook_t)
+')
+
+######################################
+## <summary>
+##	Execute radicalehook in the caller domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`radicalehook_exec',`
+	gen_require(`
+		type radicalehook_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	can_exec($1, radicalehook_exec_t)
+')
+
+########################################
+## <summary>
+##	Execute radicalehook in the radicalehook domain, and
+##	allow the specified role the radicalehook domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to transition
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	The role to be allowed the radicalehook domain.
+##	</summary>
+## </param>
+#
+interface(`radicalehook_run',`
+	gen_require(`
+		type radicalehook_t;
+		attribute_role radicalehook_roles;
+	')
+
+	radicalehook_domtrans($1)
+	roleattribute $2 radicalehook_roles;
+')
+
+########################################
+## <summary>
+##	Role access for radicalehook
+## </summary>
+## <param name="role">
+##	<summary>
+##	Role allowed access
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	User domain for the role
+##	</summary>
+## </param>
+#
+interface(`radicalehook_role',`
+	gen_require(`
+		type radicalehook_t;
+		attribute_role radicalehook_roles;
+	')
+
+	roleattribute $1 radicalehook_roles;
+
+	radicalehook_domtrans($2)
+
+	ps_process_pattern($2, radicalehook_t)
+	allow $2 radicalehook_t:process { signull signal sigkill };
+')

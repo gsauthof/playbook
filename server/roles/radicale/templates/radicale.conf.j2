@@ -101,7 +101,7 @@ htpasswd_encryption = md5
 # Command that is run after changes to storage
 # Example: ([ -d .git ] || git init) && git add -A && (git diff --cached --quiet || git commit -m "Changes by "%(user)s)
 
-#hook = git add -A && (git diff --cached --quiet || git commit -m "Changes by "%(user)s)
+hook = /usr/local/bin/radicale-change-hook.sh %(user)s
 
 
 [web]
