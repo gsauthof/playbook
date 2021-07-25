@@ -64,10 +64,17 @@
 - name: add clean up old log postgres log files cron job
   cron:
       name: pg-log-watch
-      job: 'tmpwatch --mtime 31d --nodirs /var/lib/pgsql/data/log'
+      # without TZ= tmpwatch tries to open /etc/localtime for each file
+      # probably because it calls localtime()
+      job: 'TZ= tmpwatch --mtime 31d --nodirs /var/lib/pgsql/data/log'
       hour: '0'
       minute: '23'
       cron_file: postgresql
-      user: root
+      # otherwise, we get dac_override SELinux AVCs because root
+      # can only write (unlink) in the postgres directory by overriding
+      # the standard permission check - which isn't granted
+      # by the tmpwatch policy
+      user: postgres
+  tags: [postgres, pglogrotate]
 
 
