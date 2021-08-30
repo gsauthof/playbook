@@ -114,10 +114,12 @@
   tags: [pkg, cron]
 
 
+# NB: don't execute on the same day on every host in case an update
+# breaks a host!
 - name: setup dnf cron job
   cron:
       name: dnf-auto
-      job: silence /usr/bin/dnf-automatic /etc/dnf/automatic.conf --timer --installupdates
+      job: "test $(($(date +\\%s) / 86400 \\% 2)) -eq {{ groups['all'].index(inventory_hostname) % 2 }} || silence /usr/bin/dnf-automatic /etc/dnf/automatic.conf --timer --installupdates"
       hour: '6'
       minute: '23'
       cron_file: dnf-automatic
