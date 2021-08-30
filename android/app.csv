@@ -21,6 +21,7 @@ com.google.android.youtube,Youtube,true,false,
 com.google.zxing.client.android,Barcode Scanner,true,true,https://github.com/zxing/zxing,
 com.ilit.wikipaintings,Wikipaintings,true,false,
 com.keuwl.spiritlevel,Bubble Level ad-free,true,false,
+com.manimarank.websitemonitor,Website Monitor,true,true,https://gitlab.com/manimaran/website-monitor,https://gitlab.com/manimaran/website-monitor
 com.mendhak.gpslogger,GPS logger,true,true,https://github.com/mendhak/gpslogger/,
 com.mdv.VRRCompanion,VRR Fahrplanauskunft/Tickets,true,false,
 com.netflix.mediaclient,Netflix,true,false,
@@ -40,6 +41,7 @@ de.deutschlandradio.dlf24,Deutschlandfunk Nachrichten,true,false,https://https:/
 de.dwd.warnapp,DWD Warnwetter,true,false
 de.hafas.android.db,Deutsche Bahn Fahrplanauskunft/Tickets,true,false
 de.init.verkehrszeichenapp,BMVI Verkehrszeichen,true,false
+de.kai_morich.serial_usb_terminal,Serial USB Terminal,true,false,https://github.com/kai-morich/SimpleUsbTerminal,http://www.kai-morich.de/android/
 de.ph1b.audiobook,Voice Audiobook Player,true,true,https://github.com/PaulWoitaschek/Voice/,
 de.rki.coronawarnapp,Corona Warnapp,true,false,https://github.com/corona-warn-app/cwa-app-android,https://www.coronawarn.app/en/faq/
 de.schildbach.oeffi,Oeffi Fahrplanauskunft,true,false,,https://oeffi.schildbach.de/
