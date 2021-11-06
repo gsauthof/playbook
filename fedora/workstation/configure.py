@@ -522,7 +522,8 @@ def set_networkd():
 Name=e*
 
 [Network]
-DHCP=ipv4'''
+DHCP=ipv4
+'''
     filename = '/etc/systemd/network/20-wired.network'
     if os.path.exists(filename):
         commit_etc(filename, 'record existing networkd config')
