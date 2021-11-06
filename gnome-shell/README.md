@@ -63,12 +63,18 @@ and contains a bug where the space of icons of closed programs
 isn't freed. It's packaged in the Fedora repository, though.
 
 As of Fedora 33 (GNOME shell 3.38; and also before under Fedora
-31), The [TopIcons Plus extension][7] is still available from the main
+31), the [TopIcons Plus extension][7] is still available from the main
 Fedora package repository and works well enough, i.e. no crashes
 and no visual bugs, anymore. The extension is still marked as
 unmaintained, although the maintainer accepts pull-requests
 and packages releases. Curiously, it even works under Wayland
 while the README states the contrary.
+
+When using Fedora 35 (GNOME shell 41), the best choice seems to
+be the [AppIndicator][8] extension, since [TopIcons Plus][7]
+development stopped and it recommends AppIndicator as a
+replacement. Consequently, Fedora 35 doesn't package
+TopIcons Plus anymore, but AppIndicator, at least.
 
 It's really unfortunate that Gnome-Shell doesn't support the
 traditional system tray area such that one has to install an
@@ -129,3 +135,4 @@ other nice settings in bulk.
 [5]: https://gitlab.com/paddatrapper/log-out-button-gnome-extension
 [6]: https://blogs.gnome.org/aday/2017/08/31/status-icons-and-gnome/
 [7]: https://github.com/phocean/TopIcons-plus
+[8]: https://github.com/ubuntu/gnome-shell-extension-appindicator

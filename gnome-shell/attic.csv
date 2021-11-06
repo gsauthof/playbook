@@ -1,8 +1,9 @@
 uuid,name,url,system
+LogOutButton@kyle.aims.ac.za,Log Out Button,https://gitlab.com/paddatrapper/log-out-button-gnome-extension,false
 ShellTile@emasab.it,ShellTile,https://bitbucket.org/emasab/shelltile,false
+TopIcons@phocean.net,TopIcons Plus,https://github.com/phocean/TopIcons-plus,true
 alternate-tab@gnome-shell-extensions.gcampax.github.com,AlternateTab,http://git.gnome.org/gnome-shell-extensions,true
 background-logo@fedorahosted.org,Background Logo,https://git.fedorahosted.org/git/background-logo-extension.git,true
-caffeine@patapon.info,Caffeine,https://github.com/eonpatapon/gnome-shell-extension-caffeine,false
 drop-down-terminal@gs-extensions.zzrough.org,Drop Down Terminal,https://github.com/zzrough/gs-extensions-drop-down-terminal,false
 shell-volume-mixer@derhofbauer.at,Volume Mixer,https://github.com/aleho/gnome-shell-volume-mixer,false
 topIcons@adel.gadllah@gmail.com,TopIcons,http://94.247.144.115/repo/topicons/,false
