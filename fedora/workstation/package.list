@@ -33,7 +33,6 @@ binwalk
 bison
 bison-devel
 boltdb
-bonnie++
 boost-devel
 boost-doc
 boost-examples
@@ -92,6 +91,7 @@ efibootmgr
 efivar
 elinks
 enscript
+entr
 eog
 ettercap
 evince
@@ -103,10 +103,10 @@ fdupes
 fedora-release
 fedora-review
 fedora-workstation-backgrounds
-feh
 ffmpeg
 file-devel
 fio
+fira-code-fonts
 firefox
 firejail
 flex
@@ -173,6 +173,7 @@ google-benchmark-devel
 google-droid-sans-fonts
 google-droid-sans-mono-fonts
 google-droid-serif-fonts
+google-roboto-mono-fonts
 gperf
 graphviz
 grub2-efi-x64
@@ -226,6 +227,7 @@ latexmk
 lcov
 ldns
 leptonica-devel
+levien-inconsolata-fonts
 lftp
 libaacs-utils
 libasan
@@ -388,7 +390,6 @@ powertop
 pps-tools
 protobuf-c-devel
 proxychains-ng
-psi
 pulseaudio-utils
 pv
 pybind11-devel
@@ -412,12 +413,14 @@ python3-eyed3
 python3-flask
 python3-freezegun
 python3-gssapi
+python3-httpx
 python3-idle
 python3-img2pdf
 python3-inema
 python3-ipython
 python3-ipython-doc
 python3-isodate
+python3-jsonpickle
 python3-jupyter-client
 python3-libnacl
 python3-lockfile
@@ -436,6 +439,7 @@ python3-prettyprinter
 python3-psutil
 python3-pybind11
 python3-pydbus
+python3-pygal
 python3-pygments-markdown-lexer
 python3-pytest
 python3-pytest-asyncio
@@ -506,7 +510,13 @@ rsync
 rtmpdump
 rubygem-asciidoctor
 rubygem-asciidoctor-pdf
+rubygem-gem2rpm
+rubygem-gist
 rubygem-mustache
+rubygem-ronn
+rubygem-rspec
+rubygem-webmock
+rubygems-devel
 rust
 rust-gdb
 rust-lldb
@@ -543,7 +553,6 @@ tar
 tcpdump
 tcpflow
 tcpick
-terminator
 tesseract
 tesseract-langpack-deu
 tesseract-langpack-fra
@@ -569,9 +578,9 @@ texlive-texdoc
 texmaker
 tftp-server
 tidy
-tilix
 time
 timew
+tmpwatch
 tmux
 tor
 traceroute
@@ -587,7 +596,6 @@ twine
 u2f-host
 u2f-server
 udftools
-umbrello
 unar
 undbx
 unifont
@@ -621,6 +629,7 @@ wireshark
 wkhtmltopdf
 wodim
 wol
+x2goclient
 xfce4-terminal
 xfsdump
 xine-ui
@@ -638,6 +647,9 @@ xsane-gimp
 xterm
 xterm-resize
 youtube-dl
+yubico-piv-tool
+yubikey-manager
+yubikey-manager-qt
 yubikey-personalization-gui
 zathura-plugins-all
 zbar
