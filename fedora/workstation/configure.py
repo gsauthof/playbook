@@ -6,7 +6,6 @@
 import argparse
 import configparser
 import datetime
-from distutils.version import LooseVersion
 import functools
 import getpass
 import glob
@@ -696,11 +695,11 @@ def restore_postfix():
 
 def old_pg_version():
   with open('/var/lib/pgsql/data/PG_VERSION') as f:
-    return LooseVersion(f.read().strip())
+    return int(f.read().strip())
 
 def pg_version():
   v = check_output(['rpm', '-q', '--qf', '%{VERSION}', 'postgresql']).stdout.strip()
-  return LooseVersion('.'.join(v.split('.')[0:2]))
+  return int(v.split('.')[0])
 
 @execute_once
 def restore_postgres():
