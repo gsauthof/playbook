@@ -25,7 +25,7 @@ nbd
 ncdu
 nfs-utils
 nmap
-ntpdate
+ntpsec
 pavucontrol
 pcp-system-tools
 psmisc

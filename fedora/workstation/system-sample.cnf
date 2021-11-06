@@ -41,7 +41,7 @@ git-mail = juser@example.org
 hostname = hostb.example.org
 user = juser
 init-user = true
-locale = LANG=en_US.UTF-8
+locale = LANG=C.UTF-8
 timezone = Europe/Berlin
 enable-services = gdm.service
 disable-services = pmlogger.service pmcd.service pmie.service

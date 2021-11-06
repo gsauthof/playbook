@@ -54,7 +54,7 @@ ncdu
 nfs-utils
 ninja-build
 nmap
-ntpdate
+ntpsec
 omping
 patch
 pciutils

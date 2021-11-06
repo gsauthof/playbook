@@ -117,7 +117,7 @@ def read_config(filename):
         'target': {
           'etc-mirror': '/root/etc-mirror',
           'init-user': 'false',
-          'locale': 'LANG=en_US.UTF-8',
+          'locale': 'LANG=C.UTF-8',
           'restore-postfix': 'false',
           'restore-postgres': 'false',
           'setup-pamu2f': 'false',

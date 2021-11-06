@@ -343,7 +343,7 @@ netpbm-progs
 nginx
 ninja-build
 nmap
-ntpdate
+ntpsec
 numactl
 nvme-cli
 octave
