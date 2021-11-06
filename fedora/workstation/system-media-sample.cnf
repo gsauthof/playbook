@@ -14,11 +14,11 @@ cryptsetup = true
 uefi-fallback = true
 # Set `password-file = -` if you prefer an interactive prompt
 password-file = -
-release = 33
+release = 35
 authorized-keys = ssh-ed25519 t3Hk3Y juser@hosta.example.org
 
 [target]
-release = 33
+release = 35
 rpmfusion-year = 2020
 rpmfusion-fingerprint = E9A4 91A3 DE24 7814 E7E0  67EA E06F 8ECD D651 FF2E
 package-list = package-media.list

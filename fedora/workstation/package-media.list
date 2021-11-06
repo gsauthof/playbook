@@ -1,13 +1,16 @@
 @gnome-desktop
 chromium
 chrony
-colorhug-client-flash
 ddrescue
 dracut-network
 ffmpeg
 firefox
 genisoimage
 git
+gnome-extensions-app
+gnome-shell-extension-appindicator
+gnome-shell-extension-caffeine
+gnome-shell-extension-sound-output-device-chooser
 gnome-tweaks
 gstreamer1-plugins-bad-free
 gstreamer1-plugins-bad-freeworld
@@ -28,9 +31,11 @@ nmap
 ntpsec
 pavucontrol
 pcp-system-tools
+pipewire-codec-aptx
 psmisc
 python3-requests
 qt5-qttools
+restic
 rsync
 screen
 smartmontools
@@ -39,6 +44,7 @@ sqlite
 strace
 tar
 tcpdump
+tmux
 vim-enhanced
 vlc
 wodim

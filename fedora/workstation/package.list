@@ -61,9 +61,6 @@ clevis-luks
 cloud-utils-growpart
 cmake
 cmospwd
-colorhug-client-ccmx
-colorhug-client-common
-colorhug-client-flash
 conakry-fonts
 copr-cli
 cppcheck
@@ -142,10 +139,13 @@ gitk
 glibc-devel
 glibc-utils
 gnome-color-manager
+gnome-extensions-app
+gnome-shell-extension-appindicator
+gnome-shell-extension-caffeine
 gnome-shell-extension-drive-menu
 gnome-shell-extension-refresh-wifi
+gnome-shell-extension-sound-output-device-chooser
 gnome-shell-extension-suspend-button
-gnome-shell-extension-topicons-plus
 gnome-terminal
 gnome-tweaks
 gnumeric
@@ -378,6 +378,7 @@ pgpdump
 picocom
 pilot-link
 pingus
+pipewire-codec-aptx
 podofo
 policycoreutils-devel
 policycoreutils-sandbox
