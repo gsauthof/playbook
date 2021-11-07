@@ -535,6 +535,10 @@ DHCP=ipv4
     if os.path.exists('/etc/systemd/system/multi-user.target.wants/NetworkManager.service'):
         check_output(['systemctl', 'disable', 'NetworkManager'])
         check_output(['systemctl', 'mask', 'NetworkManager'])
+    # clean up after refresh_chroot()
+    if os.path.exists('/etc/resolv.conf'):
+        os.unlink('/etc/resolv.conf')
+    check_output(['ln', '-sf', '../run/systemd/resolve/stub-resolv.conf', '/etc/resolv.conf'])
 
 @execute_once
 def set_ssh():
