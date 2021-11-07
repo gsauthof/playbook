@@ -379,7 +379,7 @@ def mk_etc_mirror():
   git_dir = '--git-dir=' + mirror
   os.makedirs(mirror, exist_ok=True)
   if os.path.exists(mirror + '/HEAD'):
-    log.warn('Reusing already initialized git repo: {}'.format(mirror))
+    log.warning('Reusing already initialized git repo: {}'.format(mirror))
   else:
     check_output(['git', '--work-tree='+etc, git_dir, 'init'])
   check_output(['git', git_dir, 'config', 'user.email',
