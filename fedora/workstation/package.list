@@ -15,8 +15,6 @@ annobin-annocheck
 ansible
 antiword
 ardour6
-arduino
-arduino-doc
 argyllcms
 asciinema
 asn1c
@@ -38,7 +36,6 @@ boost-doc
 boost-examples
 bpftrace
 bsdiff
-btrfs-progs
 cabal-install
 cabextract
 cadaver
@@ -65,7 +62,6 @@ conakry-fonts
 copr-cli
 cppcheck
 cryptopp-devel
-cryptsetup
 cscope
 csv
 cyrus-sasl-plain
@@ -84,8 +80,6 @@ dump
 dwarves
 easy-rsa
 edac-utils
-efibootmgr
-efivar
 elinks
 enscript
 entr
@@ -97,7 +91,6 @@ exif
 f3
 fbreader
 fdupes
-fedora-release
 fedora-review
 fedora-workstation-backgrounds
 ffmpeg
@@ -107,8 +100,6 @@ fira-code-fonts
 firefox
 firejail
 flex
-flex-devel
-flex-doc
 fortune-mod
 fping
 freecad
@@ -176,8 +167,6 @@ google-droid-serif-fonts
 google-roboto-mono-fonts
 gperf
 graphviz
-grub2-efi-x64
-grub2-pc
 gsl-devel
 gstreamer1-plugins-bad-free
 gstreamer1-plugins-bad-freeworld
@@ -292,7 +281,6 @@ maildrop
 man2html
 man-pages
 maven
-mdadm
 meld
 memtester
 mencoder
@@ -315,11 +303,6 @@ moreutils
 mosh
 mplayer
 msitools
-msv-demo
-msv-manual
-msv-msv
-msv-rngconv
-msv-xmlgen
 mumble
 mupdf
 murmur
@@ -331,7 +314,6 @@ nbdkit-basic-plugins
 nbdkit-curl-plugin
 nbdkit-gzip-filter
 nbdkit-tar-filter
-nbdkit-tar-plugin
 nbdkit-xz-filter
 ncdu
 ndisc6
@@ -504,8 +486,6 @@ rootsh
 rpkg
 rpm-devel
 rpmdevtools
-rpmfusion-free-release
-rpmfusion-free-release-tainted
 rpmlint
 rsync
 rtmpdump
@@ -530,7 +510,6 @@ selinux-policy-sandbox
 setools-console
 sg3_utils
 sgabios
-shim-x64
 simple-mtpfs
 sipcalc
 sloccount
@@ -567,7 +546,6 @@ texlive-blindtext
 texlive-collection-langgerman
 texlive-comment
 texlive-impatient-doc
-texlive-knuth-doc
 texlive-koma-script
 texlive-koma-script-examples-doc
 texlive-komacv
@@ -585,7 +563,6 @@ tmpwatch
 tmux
 tor
 traceroute
-trang
 transmission-cli
 transmission-qt
 transmission-remote-gtk
@@ -631,17 +608,17 @@ wkhtmltopdf
 wodim
 wol
 x2goclient
+xclock
+xeyes
 xfce4-terminal
 xfsdump
 xine-ui
 xmlcopyeditor
 xmlstarlet
 xonsh
-xorg-x11-apps
 xorg-x11-server-Xnest
 xorg-x11-server-Xvfb
 xorg-x11-twm
-xorg-x11-utils
 xpdf
 xsane
 xsane-gimp
