@@ -51,9 +51,11 @@ require {
     type radicale_var_lib_t;
 }
 
+# workaround: https://bugzilla.redhat.com/show_bug.cgi?id=2020942
+init_nnp_daemon_domain(radicale_t)
 
 radicalehook_domtrans(radicale_t)
-
+allow radicale_t radicalehook_t:process2 nnp_transition;
 
 auth_use_nsswitch(radicalehook_t)
 corecmd_exec_shell(radicalehook_t)

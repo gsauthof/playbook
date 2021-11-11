@@ -76,14 +76,14 @@
       src: selinux/
       dest: /root/selinux/
   register: sepol
-  tags: [selinux, radicalegit]
+  tags: [selinux, radicalegit, radicaleselinux]
 
 - name: remove state files if policy changed
   file:
       state: absent
       path: /root/radicale-selinux.loaded
   when: sepol.changed
-  tags: [selinux, radicalegit]
+  tags: [selinux, radicalegit, radicaleselinux]
 
 - name: load radicale selinux policies
   shell:
@@ -95,7 +95,7 @@
           /sbin/restorecon -F -v /usr/local/bin/radicale-change-hook.sh
           touch /root/radicale-selinux.loaded
       creates: /root/radicale-selinux.loaded
-  tags: [selinux, radicalegit]
+  tags: [selinux, radicalegit, radicaleselinux]
 
 
 - name: enable radicale
