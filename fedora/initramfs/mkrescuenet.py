@@ -91,6 +91,7 @@ def parse_args(*a):
     return args
 
 minimal_pkgs = [
+    'bind-utils',
     'btrfs-progs',
     'cryptsetup',
     'dosfstools',
@@ -99,13 +100,16 @@ minimal_pkgs = [
     'git-core',
     'glibc-minimal-langpack',
     'iproute',
+    'iputils',
     'kernel-modules',
     'less',
     'microdnf',
+    'ncdu',
     'openssh-clients',
     'openssh-server',
     'systemd',
     'systemd-networkd',
+    'systemd-resolved',
     'tmux',
     'vim-minimal',
     'which',
@@ -263,7 +267,9 @@ ex_paths = [
         'usr/lib64/gconv/IBM', # legacy IBM charsets
         'usr/lib64/gconv/libCNS.so', # charset I don't know
         'usr/lib64/gconv/BIG5HKSCS.so', # charset I don't know
+        'usr/share/cracklib/', # serious users don't use dictionary passwords, anyways
         'usr/share/locale/',
+        'usr/share/misc/magic.mgc', # file isn't installed by default - can be compiled on demand
         'usr/share/zoneinfo/',
         'var/cache/',
         'var/lib/dnf/',
