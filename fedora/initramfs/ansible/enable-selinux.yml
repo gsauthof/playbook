@@ -8,6 +8,11 @@
   gather_facts: no
 
   tasks:
+      - name: install selinux python package
+        package:
+            name: python3-libselinux
+            state: present
+        tags: [pkg]
       - name: enable selinux permissively
         template:
             src: selinux_config.j2
