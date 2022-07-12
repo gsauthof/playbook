@@ -1,4 +1,5 @@
 fedora-repos-modular
+power-profiles-daemon
 tracker
 zram-generator
 zram-generator-defaults
