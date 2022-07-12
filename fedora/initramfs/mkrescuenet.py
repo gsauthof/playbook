@@ -83,6 +83,11 @@ def parse_args(*a):
     if not args.vmlinuz:
         args.vmlinuz = f'{args.family}{args.release}.vmlinuz'
     args.vmlinuz = os.path.abspath(args.vmlinuz)
+    if args.make_config:
+        with open(args.keys) as f:
+            s = f.read()
+            if 'PRIVATE KEY' in s:
+                raise RuntimeError('You have to specify public keys with --keys')
     return args
 
 minimal_pkgs = [
