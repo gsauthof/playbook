@@ -1,25 +1,32 @@
 id,name,playstore,fdroid,source,url,comment
 air.de.projektionisten.efa.app.gvh
-at.mroland.android.apps.nfctaginfo
 be.digitalia.fosdem
 be.digitalia.stib
 be.stib
 ch.sbb.mobile.android.b2c
+com.alphablind.nabu,NABU Vogelführer,true,fals,,,removed from store
+com.bosch.glm100C,Bosch Measurements,true,false,,,removed from store
 com.casticalabs.forecastie
 com.csipsimple
 com.csipsimple.plugins.codecs.pack1
+com.farproc.barometer,Baromter,true,false,,,removed from store
 com.fjsoft.mylocalaccount
 com.floern.xkcd
 com.google.android.apps.authenticator2,Google Authenticator 2-factor,true,false,,,there are better open source alternatives such as FreeOTP
 com.google.android.apps.genie.geniewidget,Google News,true,false,awful google relaunch;too much garbage
+com.ilit.wikipaintings,Wikipaintings,true,false,,,removed from store
 com.keuwl.functiongenerator
+com.mdv.VRRCompanion,VRR Fahrplanauskunft/Tickets,true,false,,,removed from store
 com.mubi,Arthouse netflix - 1 movie for each day,true,false,terrible streaming performance
 com.ptvag.android.adacgasprices,ADAC Spritpreise,true,false,terrible UI;Bertha is better
 com.simplemobiletools.gallery,,,,,,unmaintained - dev went pro ...
 com.uberspot.a2048,2048 the game,true,true,https://github.com/uberspot/2048-android,,too much battery usage
 com.xabber.android,,,,,,Jabber is dead - was never ready for mobile
 de.azapps.mirakelandroid
+de.deutschebahn.bahnhoflive,DB Bahnhöfe,true,false,,,limited usefulness
+de.deutschepost.postmobil,Deutsche Post,true,false,,,removed from store
 de.dwd.ku1fg.pollen
+de.init.verkehrszeichenapp,BMVI Verkehrszeichen,true,false,,,removed from store
 de.myhermes.app
 de.uni_potsdam.hpi.openmensa,,,,,,abandoned by the author
 kvj.taskw

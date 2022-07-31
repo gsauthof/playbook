@@ -1,2 +1,10 @@
 id,name,playstore,fdroid,source,url
+com.ingenuity.pokit.dev,Pokit Multimeter,true,false,,https://www.pokitinnovations.com/
+com.github.ashutoshgngwr.noice,Noice: Natural calming noise,true,true,https://github.com/trynoice/android-app,
+com.shell.sitibv.retail,Shell payment,true,false,
+com.zafaco.breitbandmessung,Bundes Breitbandmessung Funklock App,true, false,,
 de.heise.android.ix.magazin,iX magazine,true,false,
+de.rki.covpass.checkapp,CovPassCheck,true,false,https://github.com/Digitaler-Impfnachweis/covpass-android,https://www.digitaler-impfnachweis-app.de/covpasscheck-app/
+de.tk.apps.android.husteblume,TK Pollen App,true,false
+eevblog.x121gw,EEVblog 121GW Multimeter App,true,false
+org.inaturalist.android,iNaturalist,true,false

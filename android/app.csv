@@ -6,24 +6,20 @@ com.abcdjdj.rootverifier,Checks if device is rooted,false,true,https://github.co
 com.android.gpstest,GPSTest,true,false,https://github.com/barbeau/gpstest,
 com.android.keepass,KeePassDroid,true,true,https://github.com/bpellin/keepassdroid,
 com.artifex.mupdfdemo,MuPDF Reader,true,false,http://git.ghostscript.com/?p=mupdf.git;a=summary,https://www.mupdf.com/
-com.alphablind.nabu,NABU Vogelführer,true,false,
-com.bosch.glm100C,Bosch Measurements,true,false,
 com.calintat.sensors,Seonsrs,true,false,https://github.com/calintat/sensors,
 com.cubic.cumo.android.rmv,RMV Fahrplanauskunft/Tickets,true,false,
+com.cubic.cumo.rmvsmt,RMVsmart Fahrplanauskunft/Tickets,true,false
 com.daimler.bertha.android,Bertha gas prices,true,false,,https://www.bertha.app/
 com.ebay.mobile,eBay,true,false,,https://www.ebay.de
 com.emacberry.uuid0xfd6fscan,UUID 0xFD6F Scanner,false,true,https://github.com/marq24/UUID0xFD6FTracer,
 com.github.catfriend1.syncthingandroid,Syncthing Fork,true,true,https://github.com/Catfriend1/syncthing-android,
-com.farproc.barometer,Baromter,true,false
 com.fsck.k9,K9-Mail,true,true,https://github.com/k9mail/k-9
 com.google.android.apps.maps,Google Maps,true,false,
 com.google.android.youtube,Youtube,true,false,
 com.google.zxing.client.android,Barcode Scanner,true,true,https://github.com/zxing/zxing,
-com.ilit.wikipaintings,Wikipaintings,true,false,
 com.keuwl.spiritlevel,Bubble Level ad-free,true,false,
 com.manimarank.websitemonitor,Website Monitor,true,true,https://gitlab.com/manimaran/website-monitor,https://gitlab.com/manimaran/website-monitor
 com.mendhak.gpslogger,GPS logger,true,true,https://github.com/mendhak/gpslogger/,
-com.mdv.VRRCompanion,VRR Fahrplanauskunft/Tickets,true,false,
 com.netflix.mediaclient,Netflix,true,false,
 com.termux,Termux,true,true,https://github.com/termux,https://termux.com/
 com.termux.api,Termux API,true,true,https://github.com/termux-api,https://termux.com/
@@ -32,22 +28,25 @@ com.tughi.aggregator,Aggregator Feed Reader,true,false,,
 com.twitter.android,Official Twitter app (supports alerts),true,false,
 com.ubnt.usurvey,WiFiman,true,false,,https://www.ui.com/
 com.wakdev.wdnfc,NFC Tools,true,false,,https://www.wakdev.com/
+com.zell_mbc.medilog,Log medical metrics,false,true,https://gitlab.com/toz12/medilog,
+de.boersefrankfurt.xetra,Boerse Frankfurt real-time prices,true,false,
 de.byte_fm.app,Byte FM,true,false,
 de.danoeh.antennapod,Antennapod,true,true,https://github.com/AntennaPod/AntennaPod,
-de.deutschebahn.bahnhoflive,DB Bahnhöfe,true,false,
-de.deutschepost.postmobil,Deutsche Post,true,false,
 de.deutschlandfunk.dlfaudiothek,Deutschlandfunk Audiothek,true,false,https://https://www.deutschlandfunk.de/
 de.deutschlandradio.dlf24,Deutschlandfunk Nachrichten,true,false,https://https://www.deutschlandfunk.de/
+de.dhl.paket,Deutsche Post/DHL App,true,false,
 de.dwd.warnapp,DWD Warnwetter,true,false
 de.hafas.android.db,Deutsche Bahn Fahrplanauskunft/Tickets,true,false
-de.init.verkehrszeichenapp,BMVI Verkehrszeichen,true,false
+de.kaffeemitkoffein.tinyweatherforecastgermany,DWD wheather forecast,false,true,https://codeberg.org/Starfish/TinyWeatherForecastGermany
 de.kai_morich.serial_usb_terminal,Serial USB Terminal,true,false,https://github.com/kai-morich/SimpleUsbTerminal,http://www.kai-morich.de/android/
 de.ph1b.audiobook,Voice Audiobook Player,true,true,https://github.com/PaulWoitaschek/Voice/,
 de.rki.coronawarnapp,Corona Warnapp,true,false,https://github.com/corona-warn-app/cwa-app-android,https://www.coronawarn.app/en/faq/
+de.rwth_aachen.phyphox,phyphox expirement with sensors,true,true,https://phyphox.org/source/,https://phyphox.org/
 de.schildbach.oeffi,Oeffi Fahrplanauskunft,true,false,,https://oeffi.schildbach.de/
 de.swr.avp.ard,ARD Mediathek,true,false,
 de.vrsinfo,VRS Fahrplanauskunft/Tickets,true,false,
 im.vector.app,Element Matrix Messenger,true,true,https://github.com/vector-im/element-android,https://element.io/
+info.zamojski.soft.towercollector,Cell Tower Collector,true,true,https://github.com/zamojski/TowerCollector
 net.gsantner.markor,Markor Notes/ToDo/Markdown text editor,true,true,https://github.com/gsantner/markor,
 net.he.networktools,HE.net Networktools,true,false,
 net.osmand,OSMand,true,false,https://github.com/osmandapp/Osmand/,
@@ -61,8 +60,10 @@ org.navitproject.navit,Navit OSM navigation,true,true,http://wiki.navit-project.
 org.schabi.newpipe,Newpipe - better youtube app,false,true,https://github.com/TeamNewPipe/NewPipe/,https://newpipe.net/
 org.quantumbadger.redreader,Redreader Reddit browser,true,true,https://github.com/QuantumBadger/RedReader,
 org.thoughtcrime.securesms,Signal,true,false,https://github.com/WhisperSystems/Signal-Android,https://whispersystems.org/
+org.torproject.torbrowser,Tor Browser,true,false,https://gitlab.torproject.org/tpo/applications/fenix,https://www.torproject.org/
 org.videolan.vlc,VLC Mediaplayer,true,false,https://wiki.videolan.org/GetTheSource/,http://www.videolan.org/
 org.wikipedia,Wikipedia,true,true,https://www.mediawiki.org/wiki/Wikimedia_Apps/Team/Android/App_hacking,
+org.woheller69.gpscockpit,GPS Cockpit,false,true,https://github.com/woheller69/gpscockpit
 org.zephyrsoft.trackworktime,Track Work Time,true,true,https://github.com/mathisdt/trackworktime,https://zephyrsoft.org/trackworktime
 streetwalrus.usbmountr,Create USB mass storage devices,false,true,https://github.com/Streetwalrus/android_usb_msd,
 taxi.android.client,MyTaxi,true,false,
