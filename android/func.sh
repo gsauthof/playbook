@@ -28,3 +28,9 @@ function fdinstall
   adb shell am start -a android.intent.action.VIEW \
     -d 'market://details?id='"$1" org.fdroid.fdroid
 }
+
+function ffopen
+{
+  adb shell am start -a android.intent.action.VIEW \
+    -d "$1" org.mozilla.firefox
+}
