@@ -12,6 +12,11 @@ function adview
   firefox 'https://play.google.com/store/apps/details?id='"$1"
 }
 
+function fdview
+{
+  firefox 'https://f-droid.org/de/packages/'"$1"/
+}
+
 function adinstall
 {
   adb shell am start -a android.intent.action.VIEW \
