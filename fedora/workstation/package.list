@@ -1,9 +1,12 @@
 R
+R-CRAN-avar
+R-CoprManager
 ShellCheck
 Thunar
 adjtimex
 adobe-source-code-pro-fonts
 adobe-source-sans-pro-fonts
+adobe-source-serif-pro-fonts
 aircrack-ng
 aircrack-ng-doc
 alsa-utils
@@ -23,6 +26,9 @@ aspell-en
 autoconf-archive
 autoconf213
 autossh
+avr-gcc
+avr-gcc-c++
+avr-libc
 batik-css
 bcc-tools
 bind-utils
@@ -69,6 +75,7 @@ dash
 datamash
 ddrescue
 dietlibc-devel
+diffoscope
 dislocker
 dnstracer
 doxygen
@@ -107,6 +114,7 @@ fros-recordmydesktop
 ftp
 fuse-dislocker
 fuse-sshfs
+fwupd
 gcc-c++
 gcc-plugin-devel
 gcc-riscv64-linux-gnu
@@ -119,6 +127,7 @@ ghc-json-devel
 ghc-language-c
 ghc-language-c-devel
 ghc-regex-posix-devel
+ghex
 gimagereader-gtk
 gimagereader-qt
 gimp
@@ -162,6 +171,7 @@ google-benchmark-devel
 google-droid-sans-fonts
 google-droid-sans-mono-fonts
 google-droid-serif-fonts
+google-noto-sans-mono-fonts
 google-roboto-mono-fonts
 gperf
 graphviz
@@ -175,6 +185,7 @@ gtkterm
 haveged
 hdparm
 hedgewars
+hexer
 hping3
 hplip-gui
 htop
@@ -209,6 +220,7 @@ kitty
 koji-utils
 krita
 ksh
+ktechlab
 ktouch
 lame
 langpacks-en
@@ -278,8 +290,8 @@ lynx
 lz4
 lz4-devel
 maildrop
-man2html
 man-pages
+man2html
 maven
 meld
 memtester
@@ -290,6 +302,7 @@ meson
 micropython
 midori
 mingw64-boost
+mingw64-boost-static
 mingw64-filesystem
 mingw64-gcc
 mingw64-gcc-c++
@@ -364,7 +377,9 @@ pinentry-tty
 pingus
 pipewire-codec-aptx
 pipewire-utils
+podman
 podofo
+poke
 policycoreutils-devel
 policycoreutils-sandbox
 postfix
@@ -378,18 +393,22 @@ pps-tools
 protobuf-c-devel
 proxychains-ng
 pulseaudio-utils
+pulseview
 pv
 pybind11-devel
 pykickstart
 pyp2rpm
 pypy3
 python-xdot
+python3-CacheControl
 python3-Cython
 python3-PyPDF2
 python3-aiohttp
 python3-aioresponses
+python3-astral
 python3-asyncssh
 python3-autopep8
+python3-bash-kernel
 python3-bcrypt
 python3-configargparse
 python3-dateutil
@@ -408,10 +427,12 @@ python3-ipython
 python3-ipython-doc
 python3-isodate
 python3-jsonpickle
+python3-jupyter-c-kernel
 python3-jupyter-client
 python3-libnacl
 python3-lockfile
 python3-lz4
+python3-markdown
 python3-matrix-nio
 python3-mitogen
 python3-networkx
@@ -429,6 +450,7 @@ python3-pybind11
 python3-pydbus
 python3-pygal
 python3-pygments-markdown-lexer
+python3-pyserial
 python3-pytest
 python3-pytest-asyncio
 python3-pytest-benchmark
@@ -437,13 +459,16 @@ python3-pytest-remotedata
 python3-pytest-xdist
 python3-qrcode
 python3-requests-mock
+python3-scikit-learn
 python3-scons
 python3-seaborn
 python3-simplejson
 python3-sqlalchemy
 python3-sympy
 python3-xmlsec
+python3-z3
 qemu
+qpdfview-qt5
 qrencode
 qt-at-spi
 qt-creator
@@ -514,6 +539,7 @@ selinux-policy-sandbox
 setools-console
 sg3_utils
 sgabios
+sigrok-cli
 simple-mtpfs
 sipcalc
 sloccount
@@ -528,6 +554,7 @@ ssldump
 stfl-devel
 strace
 subversion
+sunwait
 syslinux-tftpboot
 sysstat
 system-config-printer
