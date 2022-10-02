@@ -1,6 +1,6 @@
 id,name,playstore,fdroid,source,url
 at.bitfire.davdroid,DAVx5,true,true,https://gitlab.com/bitfireAT/davx5-ose,https://www.davx5.com
-at.bitfire.icsdroid,ICSx5,true,true,https://gitlab.com/bitfireAT/icsx5,https://icsx5.bitfire.at
+at.bitfire.icsdroid,ICSx5,true,true,https://github.com/bitfireAT/icsx5,https://icsx5.bitfire.at
 at.mroland.android.apps.nfctaginfo,NFC TagInfo,true,false,
 com.abcdjdj.rootverifier,Checks if device is rooted,false,true,https://github.com/abcdjdj/RootVerifier-APP,
 com.android.gpstest,GPSTest,true,false,https://github.com/barbeau/gpstest,
@@ -53,7 +53,7 @@ net.osmand,OSMand,true,false,https://github.com/osmandapp/Osmand/,
 org.birthdayadapter,Contacts birthdays to calendar provider adaptor,true,true,https://github.com/SufficientlySecure/birthday-calendar,https://www.schuermann.eu/about/
 org.efalk.rpncalc,RPN calculator,true,false,
 org.fdroid.fdroid,The F-Droid open source app store,false,true
-org.fedorahosted.freeotp,FreeOTP - open google authenticator clone,true,true,https://github.com/freeotp/freeotp-android,
+org.fedorahosted.freeotp,FreeOTP - open google authenticator clone,true,true,https://github.com/freeotp/freeotp-android,https://freeotp.github.io/
 org.geometerplus.zlibrary.ui.android,FBreader epub reader,true,false,https://github.com/geometer/FBReaderJ,
 org.mozilla.firefox,Firefox,true,false,https://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/Build_Instructions/Simple_Firefox_for_Android_build#Getting_the_source.,https://www.mozilla.org/firefox/android/
 org.navitproject.navit,Navit OSM navigation,true,true,http://wiki.navit-project.org/index.php/Main_Page,
