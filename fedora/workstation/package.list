@@ -1,6 +1,4 @@
 R
-R-CRAN-avar
-R-CoprManager
 ShellCheck
 Thunar
 adjtimex
@@ -362,6 +360,7 @@ patchelf
 patchutils
 pavucontrol
 pax
+pciutils
 pcp-doc
 pcp-system-tools
 pcsc-tools
@@ -384,6 +383,7 @@ policycoreutils-devel
 policycoreutils-sandbox
 postfix
 postgis
+postgis-upgrade
 postgresql-contrib
 postgresql-docs
 postgresql-server
@@ -651,7 +651,6 @@ xmlstarlet
 xonsh
 xorg-x11-server-Xnest
 xorg-x11-server-Xvfb
-xorg-x11-twm
 xpdf
 xsane
 xsane-gimp
