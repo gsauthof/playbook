@@ -395,6 +395,8 @@ def commit_core_files():
       files.append(fn)
   commit_etc(files, 'add core etc files')
 
+wscp_re = re.compile(' +')
+
 # cf. https://unix.stackexchange.com/a/40857/1131
 @execute_once
 def add_rpmfusion():
@@ -407,8 +409,8 @@ def add_rpmfusion():
     download('https://rpmfusion.org/keys?action=AttachFile&do=get&target='
         + 'RPM-GPG-KEY-rpmfusion-free-fedora-{}'.format(key_year), key_name)
   r = check_output(['gpg2', '--show-keys', '--with-fingerprint', key_name])
-  fingerprint = r.stdout.splitlines()[1].strip()
-  trusted_fingerprint = 'BD12 7385 C312 090F F2F3  5FA1 1191 A7C4 42F1 9ED0'
+  fingerprint = wscp_re.sub(' ', r.stdout.splitlines()[1].strip())
+  trusted_fingerprint = wscp_re.sub(' ', 'BD12 7385 C312 090F F2F3  5FA1 1191 A7C4 42F1 9ED0')
   if 'rpmfusion-fingerprint' in cnf['target']:
       trusted_fingerprint = cnf['target']['rpmfusion-fingerprint']
   if fingerprint != trusted_fingerprint:
