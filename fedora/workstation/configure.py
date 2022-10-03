@@ -1420,7 +1420,8 @@ def create_user():
   if has_user(user):
     log.info('Not creating user {} because it is already present'.format(user))
   else:
-    check_output(['useradd', '--groups', 'dialout,wheel,wireshark', '--create-home', user],
+    # XXX wireshark would be useful, but only availble after wireshark is installed ...
+    check_output(['useradd', '--groups', 'dialout,wheel', '--create-home', user],
         chroot=True)
 
 @execute_once
