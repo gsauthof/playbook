@@ -1,12 +1,15 @@
 bind-utils
 binutils
 btrfs-progs
+bolt
 chrony
 ddrescue
 dmidecode
 dosfstools
 dracut-network
 edac-utils
+fio
+fwupd
 gdisk
 git
 hdparm
@@ -19,6 +22,7 @@ iwl*-firmware
 jq
 kernel-modules-extra
 kexec-tools
+kitty-terminfo
 langpacks-en
 lm_sensors
 lshw
@@ -34,6 +38,7 @@ ncdu
 nfs-utils
 nmap
 ntpsec
+nvme-cli
 omping
 patch
 pciutils
@@ -41,7 +46,6 @@ pcp-system-tools
 picocom
 powertop
 psmisc
-python3-tracer
 rclone
 restic
 rsync
