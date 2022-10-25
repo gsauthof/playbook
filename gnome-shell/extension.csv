@@ -4,7 +4,6 @@ caffeine@patapon.info,Caffeine,https://github.com/eonpatapon/gnome-shell-extensi
 datetime-format@Daniel-Khodabakhsh.github.com,Datetime Format,https://github.com/Daniel-Khodabakhsh/datetime-format,false
 drive-menu@gnome-shell-extensions.gcampax.github.com,Removable Drive Menu,http://git.gnome.org/gnome-shell-extensions,true
 radio@hslbck.gmail.com,Internet Radio,https://github.com/hslbck/gnome-shell-extension-radio,false
-refresh-wifi@kgshank.net,Refresh Wifi Connections,https://github.com/kgshank/gse-refresh-wifi,true
 sound-output-device-chooser@kgshank.net,Sound Input & Output Device Chooser,https://github.com/kgshank/gse-sound-output-device-chooser,true
 suspend-button@laserb,Suspend Button,https://github.com/laserb/gnome-shell-extension-suspend-button,true
 world_clock_lite@ailin.nemui,Panel World Clock (Lite),,false
