@@ -1,12 +1,12 @@
 mozilla_url,slug,guid,name,compatible_android,url
-https://addons.mozilla.org/en-US/firefox/addon/resurrect-pages/,resurrect-pages,{0c8fbd76-bdeb-4c52-9b24-d587ce7b9dc3},Resurrect Pages,true,https://github.com/arantius/resurrect-pages
+https://addons.mozilla.org/en-US/firefox/addon/resurrect-pages/,resurrect-pages,{0c8fbd76-bdeb-4c52-9b24-d587ce7b9dc3},Resurrect Pages,false,https://github.com/arantius/resurrect-pages
 https://addons.mozilla.org/en-US/firefox/addon/tree-style-tab/,tree-style-tab,treestyletab@piro.sakura.ne.jp,Tree Style Tab,false,http://piro.sakura.ne.jp/xul/_treestyletab.html.en
-https://addons.mozilla.org/en-US/firefox/addon/german-dictionary/,german-dictionary,de-DE@dictionaries.addons.mozilla.org,German Dictionary,true,https://addons.mozilla.org/en-US/firefox/addon/german-dictionary/
-https://addons.mozilla.org/en-US/firefox/addon/united-states-english-spellche/,united-states-english-spellche,en-US@dictionaries.addons.mozilla.org,United States English Spellchecker,true,https://addons.mozilla.org/it/firefox/addon/3497
-https://addons.mozilla.org/en-US/firefox/addon/dont-track-me-google1/,dont-track-me-google1,dont-track-me-google@robwu.nl,Don't track me Google,true,https://github.com/Rob--W/dont-track-me-google
+https://addons.mozilla.org/en-US/firefox/addon/german-dictionary/,german-dictionary,de-DE@dictionaries.addons.mozilla.org,German Dictionary,false,https://addons.mozilla.org/en-US/firefox/addon/german-dictionary/
+https://addons.mozilla.org/en-US/firefox/addon/united-states-english-spellche/,united-states-english-spellche,en-US@dictionaries.addons.mozilla.org,United States English Spellchecker,false,https://addons.mozilla.org/it/firefox/addon/3497
 https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/,ublock-origin,uBlock0@raymondhill.net,uBlock Origin,true,https://github.com/gorhill/uBlock#ublock-origin
-https://addons.mozilla.org/en-US/firefox/addon/cookie-autodelete/,cookie-autodelete,CookieAutoDelete@kennydo.com,Cookie AutoDelete,true,https://github.com/mrdokenny/Cookie-AutoDelete
-https://addons.mozilla.org/en-US/firefox/addon/tridactyl-vim/,tridactyl-vim,tridactyl.vim@cmcaine.co.uk,Tridactyl,true,https://github.com/cmcaine/tridactyl
-https://addons.mozilla.org/en-US/firefox/addon/open-in-browser/,open-in-browser,openinbrowser@www.spasche.net,Open in Browser,true,https://github.com/Rob--W/open-in-browser
+https://addons.mozilla.org/en-US/firefox/addon/cookie-autodelete/,cookie-autodelete,CookieAutoDelete@kennydo.com,Cookie AutoDelete,false,https://github.com/mrdokenny/Cookie-AutoDelete
+https://addons.mozilla.org/en-US/firefox/addon/tridactyl-vim/,tridactyl-vim,tridactyl.vim@cmcaine.co.uk,Tridactyl,false,https://github.com/cmcaine/tridactyl
+https://addons.mozilla.org/en-US/firefox/addon/open-in-browser/,open-in-browser,openinbrowser@www.spasche.net,Open in Browser,false,https://github.com/Rob--W/open-in-browser
 https://addons.mozilla.org/en-US/firefox/addon/archive-webextension/,archive-webextension,archive@peers.community,archive-webextension,false,https://notabug.org/zPlus/archive-webextension
 https://addons.mozilla.org/en-US/firefox/addon/darkreader/,darkreader,addon@darkreader.org,Dark Reader,true,https://darkreader.org/
+https://addons.mozilla.org/en-US/firefox/addon/clearurls/,clearurls,{74145f27-f039-47ce-a470-a662b129930a},ClearURLs,false,https://gitlab.com/KevinRoebert/ClearUrls

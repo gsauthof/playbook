@@ -2,3 +2,4 @@ mozilla_url,slug,guid,name,compatible_android,compatible_57,url
 https://addons.mozilla.org/en-US/firefox/addon/google-search-link-fix/,google-search-link-fix,jid0-XWJxt5VvCXkKzQK99PhZqAn7Xbg@jetpack,Google search link fix,false,true,https://github.com/palant/searchlinkfix
 https://addons.mozilla.org/en-US/firefox/addon/vim-vixen/,vim-vixen,vim-vixen@i-beam.org,Vim Vixen,true,true,https://github.com/ueokande/vim-vixen
 https://addons.mozilla.org/en-US/firefox/addon/dustman/,dustman,,Dustman - AutoClose Tabs,true,true,https://github.com/qzb/dustman
+https://addons.mozilla.org/en-US/firefox/addon/dont-track-me-google1/,dont-track-me-google1,dont-track-me-google@robwu.nl,Don't track me Google,false,https://github.com/Rob--W/dont-track-me-google
