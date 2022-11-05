@@ -10,12 +10,15 @@ function ttermset {
     gsettings set com.gexperts.Tilix.Profile:/com/gexperts/Tilix/profiles/$puuid/ "$1" "$2"
 }
 
+
 gsettings set org.gnome.desktop.input-sources  xkb-options "['compose:ralt']"
 gsettings set org.gnome.desktop.interface      clock-show-date true
+gsettings set org.gnome.desktop.interface      color-scheme    prefer-dark
 gsettings set org.gnome.desktop.interface      cursor-blink    false
 gsettings set org.gnome.desktop.interface      show-battery-percentage true
 gsettings set org.gnome.desktop.wm.preferences focus-mode      mouse
 gsettings set org.gnome.SessionManager         logout-prompt   false
+
 
 puuid=$(gsettings get org.gnome.Terminal.ProfilesList default | tr -d "'")
 gtermset audible-bell                    false
@@ -28,6 +31,7 @@ gtermset use-theme-colors                false
 gtermset use-transparent-background      true
 gtermset word-char-exceptions            '@ms "-=&#:/.?@+~_%;"'
 
+
 puuid=$(gsettings get com.gexperts.Tilix.ProfilesList default | tr -d "'")
 if [ "$puuid" ]; then
     ttermset background-color                '#000000000000'
@@ -35,6 +39,7 @@ if [ "$puuid" ]; then
     ttermset foreground-color                '#7373D2D21616'
     ttermset use-theme-colors                false
 fi
+
 
 systemctl --user mask evolution-calendar-factory.service evolution-source-registry.service evolution-addressbook-factory.service
 
