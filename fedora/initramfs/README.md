@@ -194,6 +194,32 @@ initramfs image to re-install Fedora on an encrypted LUKS device
 and using Btrfs as root filesystem.
 
 
+## Related Work
+
+There is [takeover.sh](https://github.com/marcan/takeover.sh)
+which covers a similar use case.
+That means it allows entering a rescue Linux environment that
+resides in RAM and unmounting the current root partition
+_without_ rebooting the system or execing into another kernel.
+
+FWIW, I haven't tested it, but according to its README it
+requires a few extra steps for actually entering the environment
+and cleaning up remnants of the old host system, such as running
+daemons, all the mounts, device mappings etc.
+Also, if the host system runs SELinux or similar one might have
+to disable it as well, if possible.
+
+Finally, to keep running the original kernel might or might not be
+acceptable for certain rescue or deployment work.
+
+That means the charm of kexecing into a rescue system is
+that it quickly discards any runtime state of the host system,
+i.e.  there are no mounts, device mapping, processes etc. active
+when kexec invokes the rescue kernel.
+Besides starting with a clean kernel that possibly is more
+capable for the target use-case.
+
+
 [1]: https://unix.stackexchange.com/a/584275/1131
 [2]: https://en.wikipedia.org/wiki/Kexec
 [3]: https://en.wikipedia.org/wiki/Initial_ramdisk
