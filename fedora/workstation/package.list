@@ -34,6 +34,7 @@ binutils-riscv64-linux-gnu
 binwalk
 bison
 bison-devel
+bolt
 boltdb
 boost-devel
 boost-doc
@@ -59,12 +60,14 @@ clang-analyzer
 clementine
 clevis
 clevis-luks
+cloud-utils
 cloud-utils-growpart
 cmake
 cmospwd
 conakry-fonts
 copr-cli
 cppcheck
+cpuid
 cryptopp-devel
 cscope
 csv
@@ -102,8 +105,10 @@ file-devel
 fio
 fira-code-fonts
 firefox
+firefox-wayland
 firejail
 flex
+foomatic-db-ppds
 fortune-mod
 fping
 freecad
@@ -133,13 +138,13 @@ git
 git-email
 gitk
 glibc-devel
+glibc-langpack-de
 glibc-utils
 gnome-color-manager
 gnome-extensions-app
 gnome-shell-extension-appindicator
 gnome-shell-extension-caffeine
 gnome-shell-extension-drive-menu
-gnome-shell-extension-refresh-wifi
 gnome-shell-extension-sound-output-device-chooser
 gnome-shell-extension-suspend-button
 gnome-terminal
@@ -200,6 +205,7 @@ inotify-tools
 integritysetup
 intltool
 iotop
+iowatcher
 iperf
 iperf3
 ipv6calc
@@ -316,8 +322,8 @@ mosquitto
 mplayer
 msitools
 mumble
+mumble-server
 mupdf
-murmur
 mutt
 nawk
 nbd
@@ -331,7 +337,6 @@ ncdu
 ndisc6
 nemiver
 net-snmp
-net-snmp-gui
 net-snmp-utils
 netpbm-progs
 nginx
@@ -348,7 +353,6 @@ openrdate
 openscad
 openssl-devel
 opus-tools
-osc
 p7zip
 pamu2fcfg
 pandoc
@@ -365,6 +369,7 @@ pcp-doc
 pcp-system-tools
 pcsc-tools
 pdf-stapler
+pdfgrep
 pdfposter
 perf
 perl-Graph-Easy
@@ -392,6 +397,7 @@ powertop
 pps-tools
 protobuf-c-devel
 proxychains-ng
+psutils
 pulseaudio-utils
 pulseview
 pv
@@ -446,6 +452,7 @@ python3-plumbum
 python3-pretend
 python3-prettyprinter
 python3-psutil
+python3-psycopg3
 python3-pybind11
 python3-pydbus
 python3-pygal
@@ -455,6 +462,7 @@ python3-pytest
 python3-pytest-asyncio
 python3-pytest-benchmark
 python3-pytest-cov
+python3-pytest-httpx
 python3-pytest-remotedata
 python3-pytest-xdist
 python3-qrcode
@@ -465,6 +473,7 @@ python3-seaborn
 python3-simplejson
 python3-sqlalchemy
 python3-sympy
+python3-wheel
 python3-xmlsec
 python3-z3
 qemu
@@ -542,6 +551,7 @@ sgabios
 sigrok-cli
 simple-mtpfs
 sipcalc
+sl
 sloccount
 slrn
 smartmontools
@@ -610,7 +620,6 @@ unar
 undbx
 unifont
 unifont-fonts
-unifont-viewer
 units
 unoconv
 unpaper
@@ -629,8 +638,8 @@ virt-manager
 virt-viewer
 visidata
 vit
-vlc
 vlgothic-p-fonts
+vlc
 vmtouch
 wdiff
 whois
@@ -657,9 +666,9 @@ xsane-gimp
 xterm
 xterm-resize
 youtube-dl
+yt-dlp
 yubico-piv-tool
 yubikey-manager
-yubikey-manager-qt
 yubikey-personalization-gui
 zathura-plugins-all
 zbar
