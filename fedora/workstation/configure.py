@@ -642,6 +642,7 @@ def install_packages():
 # the @workstation-product-environment
 # cf. https://bugzilla.redhat.com/show_bug.cgi?id=747689
 #     https://bugzilla.redhat.com/show_bug.cgi?id=1271872
+#     https://github.blog/2023-10-09-coordinated-disclosure-1-click-rce-on-gnome-cve-2023-43641/
 @execute_once
 def remove_packages():
   filename = cnf['target']['unpackage-list']
