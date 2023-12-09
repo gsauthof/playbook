@@ -5,6 +5,7 @@ adjtimex
 adobe-source-code-pro-fonts
 adobe-source-sans-pro-fonts
 adobe-source-serif-pro-fonts
+advancecomp
 aircrack-ng
 aircrack-ng-doc
 alsa-utils
@@ -36,6 +37,7 @@ bison
 bison-devel
 bolt
 boltdb
+bookworm
 boost-devel
 boost-doc
 boost-examples
@@ -75,6 +77,7 @@ cyrus-sasl-plain
 dash
 datamash
 ddrescue
+dictd
 dietlibc-devel
 diffoscope
 dislocker
@@ -82,6 +85,7 @@ dnstracer
 doxygen
 dpkg
 dracut-network
+drgn
 dsniff
 dtc
 dump
@@ -108,6 +112,7 @@ firefox
 firefox-wayland
 firejail
 flex
+foliate
 foomatic-db-ppds
 fortune-mod
 fping
@@ -135,6 +140,7 @@ gimagereader-gtk
 gimagereader-qt
 gimp
 git
+git-clang-format
 git-email
 gitk
 glibc-devel
@@ -185,6 +191,7 @@ gstreamer1-plugins-ugly
 gstreamer1-plugins-ugly-free
 gtk3-devel
 gtkterm
+hashcat
 haveged
 hdparm
 hedgewars
@@ -211,6 +218,7 @@ iperf3
 ipv6calc
 isomaster
 iwl7260-firmware
+iwyu
 john
 jose
 jpilot
@@ -352,6 +360,7 @@ openldap-clients
 openrdate
 openscad
 openssl-devel
+optipng
 opus-tools
 p7zip
 pamu2fcfg
@@ -417,13 +426,16 @@ python3-autopep8
 python3-bash-kernel
 python3-bcrypt
 python3-configargparse
+python3-csvkit
 python3-dateutil
 python3-devel
 python3-dnf-plugin-show-leaves
 python3-dns
+python3-evdev
 python3-eyed3
 python3-flask
 python3-freezegun
+python3-gitlab
 python3-gssapi
 python3-httpx
 python3-idle
@@ -456,6 +468,7 @@ python3-psycopg3
 python3-pybind11
 python3-pydbus
 python3-pygal
+python3-pygithub
 python3-pygments-markdown-lexer
 python3-pyserial
 python3-pytest
@@ -516,6 +529,7 @@ rclone
 rcs
 re2c
 readline-devel
+remove-retired-packages
 restic
 ripgrep
 ripmime
@@ -565,6 +579,7 @@ stfl-devel
 strace
 subversion
 sunwait
+swaks
 syslinux-tftpboot
 sysstat
 system-config-printer
