@@ -9,4 +9,4 @@ https://addons.mozilla.org/en-US/firefox/addon/tridactyl-vim/,tridactyl-vim,trid
 https://addons.mozilla.org/en-US/firefox/addon/open-in-browser/,open-in-browser,openinbrowser@www.spasche.net,Open in Browser,false,https://github.com/Rob--W/open-in-browser
 https://addons.mozilla.org/en-US/firefox/addon/archive-webextension/,archive-webextension,archive@peers.community,archive-webextension,false,https://notabug.org/zPlus/archive-webextension
 https://addons.mozilla.org/en-US/firefox/addon/darkreader/,darkreader,addon@darkreader.org,Dark Reader,true,https://darkreader.org/
-https://addons.mozilla.org/en-US/firefox/addon/clearurls/,clearurls,{74145f27-f039-47ce-a470-a662b129930a},ClearURLs,false,https://gitlab.com/KevinRoebert/ClearUrls
+https://addons.mozilla.org/en-US/firefox/addon/clearurls/,clearurls,{74145f27-f039-47ce-a470-a662b129930a},ClearURLs,true,https://gitlab.com/KevinRoebert/ClearUrls
