@@ -1,3 +1,5 @@
+@kde-desktop-environment
+AusweisApp2
 R
 ShellCheck
 Thunar
@@ -16,19 +18,20 @@ anka-coder-norm-fonts
 annobin-annocheck
 ansible
 antiword
-ardour6
+ardour8
 argyllcms
 asciinema
-asn1c
 aspell-de
 aspell-en
+at
+audacity
 autoconf-archive
 autoconf213
 autossh
 avr-gcc
 avr-gcc-c++
 avr-libc
-batik-css
+bat
 bcc-tools
 bind-utils
 binutils-riscv64-linux-gnu
@@ -46,10 +49,8 @@ bsdiff
 cabal-install
 cabextract
 cadaver
-capnproto
 cargo
 catch-devel
-cawbird
 cflow
 cgdb
 check-devel
@@ -70,6 +71,7 @@ conakry-fonts
 copr-cli
 cppcheck
 cpuid
+cronie
 cryptopp-devel
 cscope
 csv
@@ -88,7 +90,6 @@ dracut-network
 drgn
 dsniff
 dtc
-dump
 dwarves
 easy-rsa
 edac-utils
@@ -111,12 +112,12 @@ fira-code-fonts
 firefox
 firefox-wayland
 firejail
+flac
 flex
 foliate
 foomatic-db-ppds
 fortune-mod
 fping
-freecad
 fritzing
 fros-recordmydesktop
 ftp
@@ -147,12 +148,6 @@ glibc-devel
 glibc-langpack-de
 glibc-utils
 gnome-color-manager
-gnome-extensions-app
-gnome-shell-extension-appindicator
-gnome-shell-extension-caffeine
-gnome-shell-extension-drive-menu
-gnome-shell-extension-sound-output-device-chooser
-gnome-shell-extension-suspend-button
 gnome-terminal
 gnome-tweaks
 gnumeric
@@ -164,8 +159,8 @@ golang-github-coreos-systemd-devel
 golang-github-edsrzf-mmap-devel
 golang-github-fsnotify-devel
 golang-github-jessevdk-flags-devel
-golang-github-jsternberg-zap-logfmt-devel
 golang-github-lib-pq-devel
+golang-github-martinhoefling-goxkcdpwgen
 golang-github-minio-devel
 golang-github-nytimes-gziphandler-devel
 golang-github-seccomp-libseccomp-devel
@@ -204,6 +199,7 @@ hugs98
 hwloc
 hwloc-gui
 icu
+imv
 indent
 initial-setup-gui
 inkscape
@@ -211,14 +207,16 @@ inkscape-docs
 inotify-tools
 integritysetup
 intltool
+inxi
 iotop
 iowatcher
 iperf
 iperf3
 ipv6calc
 isomaster
-iwl7260-firmware
+iwlwifi-mvm-firmware
 iwyu
+jdupes
 john
 jose
 jpilot
@@ -226,6 +224,7 @@ jq
 json-c-devel
 kcachegrind
 kdiff3
+kernel-modules-extra
 kexec-tools
 kicad
 kitty
@@ -256,7 +255,7 @@ libcxx-devel
 libdvdcss
 libevent-devel
 libgcrypt-devel
-libguestfs-tools
+libguestfs-rescue
 libguestfs-xfs
 libicu-doc
 libjpeg-turbo-utils
@@ -267,6 +266,7 @@ libpq-devel
 libpst
 librecad
 libreoffice
+libreoffice-langpack-de
 librsvg2-tools
 libsqlite3x-devel
 libsvm
@@ -302,9 +302,9 @@ lynx
 lz4
 lz4-devel
 maildrop
+mailx
 man-pages
 man2html
-maven
 meld
 memtester
 mencoder
@@ -327,6 +327,8 @@ mmv
 moreutils
 mosh
 mosquitto
+mozilla-fira-mono-fonts
+mozilla-fira-sans-fonts
 mplayer
 msitools
 mumble
@@ -425,6 +427,7 @@ python3-asyncssh
 python3-autopep8
 python3-bash-kernel
 python3-bcrypt
+python3-build
 python3-configargparse
 python3-csvkit
 python3-dateutil
@@ -433,6 +436,7 @@ python3-dnf-plugin-show-leaves
 python3-dns
 python3-evdev
 python3-eyed3
+python3-feedparser
 python3-flask
 python3-freezegun
 python3-gitlab
@@ -492,12 +496,7 @@ python3-z3
 qemu
 qpdfview-qt5
 qrencode
-qt-at-spi
 qt-creator
-qt-devel
-qt-doc
-qt-postgresql
-qt-qdbusviewer
 qt5-assistant
 qt5-qtbase-devel
 qt5-qtbase-doc
@@ -530,6 +529,7 @@ rcs
 re2c
 readline-devel
 remove-retired-packages
+reptyr
 restic
 ripgrep
 ripmime
@@ -563,7 +563,7 @@ setools-console
 sg3_utils
 sgabios
 sigrok-cli
-simple-mtpfs
+simple-scan
 sipcalc
 sl
 sloccount
@@ -571,6 +571,7 @@ slrn
 smartmontools
 smem
 socat
+sorkintype-merriweather-fonts
 splint
 sqlite-devel
 sqlite-doc
@@ -580,6 +581,7 @@ strace
 subversion
 sunwait
 swaks
+symlinks
 syslinux-tftpboot
 sysstat
 system-config-printer
@@ -601,12 +603,18 @@ texlive-biblatex
 texlive-blindtext
 texlive-collection-langgerman
 texlive-comment
+texlive-fira
+texlive-fontawesome5
 texlive-impatient-doc
 texlive-koma-script
 texlive-koma-script-examples-doc
 texlive-komacv
 texlive-komacv-doc
 texlive-lastpage
+texlive-limecv
+texlive-lipsum
+texlive-multirow
+texlive-pdfcrop
 texlive-pgfgantt
 texlive-pgfgantt-doc
 texlive-texdoc
@@ -615,6 +623,7 @@ tftp-server
 tidy
 time
 timew
+tio
 tmpwatch
 tmux
 tor
@@ -639,7 +648,6 @@ units
 unoconv
 unpaper
 usbutils
-util-linux-user
 v4l-utils
 vagrant
 vagrant-doc
@@ -653,7 +661,7 @@ virt-manager
 virt-viewer
 visidata
 vit
-vlgothic-p-fonts
+vl-pgothic-fonts
 vlc
 vmtouch
 wdiff
@@ -664,6 +672,7 @@ wireshark
 wkhtmltopdf
 wodim
 wol
+words
 x2goclient
 xclock
 xeyes
@@ -687,6 +696,8 @@ yubikey-manager
 yubikey-personalization-gui
 zathura-plugins-all
 zbar
+zbar-gtk
+zbar-qt
 zsh
 zsh-html
 zsnes
