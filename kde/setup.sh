@@ -71,9 +71,9 @@ kwriteconfig5 --file kdedefaults/plasmarc   --group Theme   --key name          
 if grep '^N: Name=".*touchpad' -i /proc/bus/input/devices > /dev/null ; then
     gs=$(awk -F '"' '/^N: Name=".*[tT]ouchpad/ { split(prev, a, "[ =]"); printf("--group %d --group %d --group \"%s\"\n", strtonum("0x"a[5]), strtonum("0x"a[7]), $2); exit 0; }  { prev=$0 }' /proc/bus/input/devices)
     # 'Two-finger tap: Middle-click (three-finger tap right-click)'
-    kwriteconfig5 --file kcminputrc --group Libinput  $g   LmrTapButtonMap      true
-    kwriteconfig5 --file kcminputrc --group Libinput  $g   NaturalScroll        true
-    kwriteconfig5 --file kcminputrc --group Libinput  $g   TapToClick           true
+    kwriteconfig5 --file kcminputrc --group Libinput  $g   --key LmrTapButtonMap      true
+    kwriteconfig5 --file kcminputrc --group Libinput  $g   --key NaturalScroll        true
+    kwriteconfig5 --file kcminputrc --group Libinput  $g   --key TapToClick           true
     # should be enabled, by default
     # cf.
     # qdbus org.kde.kglobalaccel /org/kde/KWin/InputDevice/$(grep touchpad /sys/class/input/event*/device/name -li | head -n 1 | cut -d/ -f5) org.freedesktop.DBus.Properties.Get org.kde.KWin.InputDevice disableWhileTypingEnabledByDefault
