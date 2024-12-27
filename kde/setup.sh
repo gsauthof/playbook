@@ -3,6 +3,15 @@
 set -eux
 
 
+
+if command -v kwriteconfig6 >/dev/null; then
+    function kwriteconfig5
+    {
+        kwriteconfig6 "$@"
+    }
+fi
+
+
 # 'Search -> File Search'
 # 'Enable File Search'
 kwriteconfig5 --file baloofilerc --group 'Basic Settings'  --key  Indexing-Enabled       false
