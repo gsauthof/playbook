@@ -80,6 +80,10 @@ if grep '^N: Name=".*touchpad' -i /proc/bus/input/devices > /dev/null ; then
     # DisableWhileTyping=true
 fi
 
+# 'Appearance & Style -> Colors & Themes -> Global Theme -> System Sounds'
+# 'Enable notifications'
+kwriteconfig5 --file kdeglobals   --group Sounds    --key Enable  false
+
 
 # XXX Color management settings
 # hard to automate in a generic fashion
