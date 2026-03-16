@@ -93,6 +93,11 @@ fi
 # 'Enable notifications'
 kwriteconfig5 --file kdeglobals   --group Sounds    --key Enable  false
 
+# 'Workspace -> General Behavior -> Clicking'
+# 'Clicking files or folders' (single-click == 'opens them')
+kwriteconfig5 --file kdeglobals   --group KDE       --key SingleClick    true
+
+
 
 # XXX Color management settings
 # hard to automate in a generic fashion
