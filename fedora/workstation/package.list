@@ -452,6 +452,7 @@ python3-nltk
 python3-notebook
 python3-paho-mqtt
 python3-passlib
+python3-pelican
 python3-pikepdf
 python3-pillow-devel
 python3-plumbum
