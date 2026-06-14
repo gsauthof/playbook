@@ -15,6 +15,7 @@ gsettings set org.gnome.desktop.input-sources  xkb-options "['compose:ralt']"
 gsettings set org.gnome.desktop.interface      clock-show-date true
 gsettings set org.gnome.desktop.interface      color-scheme    prefer-dark
 gsettings set org.gnome.desktop.interface      cursor-blink    false
+gsettings set org.gnome.desktop.interface      gtk-enable-primary-paste true
 gsettings set org.gnome.desktop.interface      show-battery-percentage true
 gsettings set org.gnome.desktop.wm.preferences focus-mode      mouse
 gsettings set org.gnome.SessionManager         logout-prompt   false
