@@ -97,6 +97,9 @@ kwriteconfig5 --file kdeglobals   --group Sounds    --key Enable  false
 # 'Clicking files or folders' (single-click == 'opens them')
 kwriteconfig5 --file kdeglobals   --group KDE       --key SingleClick    true
 
+# 'Workspace -> Appearance & Style -> Text & Fonts -> Fonts'
+# 'Sub-pixel rendering' (default: None)
+kwriteconfig5 --file kdeglobals   --group General   --key XftSubPixel    rgb
 
 
 # XXX Color management settings
