@@ -41,6 +41,8 @@ kwriteconfig5 --file kglobalshortcutsrc --group org_kde_powerdevil  --key Sleep 
 kwriteconfig5 --file kscreenlockerrc --group Daemon --key Autolock  false
 
 
+# 'Input & Output -> Keyboard -> Virtual Keyboard: None' (default: Plasma Keyboard)
+kwriteconfig5 --file kwinrc --group Wayland --key InputMethod         --delete
 # 'Window Management -> Window Behavior -> Focus'
 # 'Delay focus by'
 kwriteconfig5 --file kwinrc --group Windows --key DelayFocusInterval  100
